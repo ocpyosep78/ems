@@ -1,7 +1,7 @@
 <h1>Create an Account</h1>
 
 <div id="login">
-    <a href="login">Login</a>
+    <a href="registration/login">Login</a>
 </div>
 
 <fieldset>

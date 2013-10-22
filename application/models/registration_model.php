@@ -13,17 +13,18 @@
         
         public function select_registered_voter()
         {
+            $id = $this->input->get('id');
             $searched_record = $this->input->post('searched_record');
             
             $query = $this->db->query("SELECT a.acct_id, a.acct_username, a.acct_password, a.acct_fname, a.acct_mname, a.acct_lname,
                 a.email_address, (SELECT course_name FROM course WHERE course_id = a.course_id) as course_id, a.acct_status,
                 a.reg_status, a.time_date_log, (SELECT acct_type_name FROM account_type WHERE acct_type_id = a.acct_type_id) as
-                acct_type_id FROM account a where a.acct_username = '".$searched_record."' OR a.acct_password = '".$searched_record."'");
+                acct_type_id FROM account a WHERE a.acct_username = '".$searched_record."'  OR a.acct_id = '".$id."'");
             if($query->num_rows() != 0)
             {
                 $registered_voter = $query->result();
+                return $registered_voter;
             }
-            return $registered_voter;
         }
         
         public function create_member()

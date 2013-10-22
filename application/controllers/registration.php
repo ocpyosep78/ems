@@ -102,7 +102,8 @@
         {
             $this->load->model('registration_model');
             $record['searched_record'] = $this->registration_model->select_registered_voter();
-            
+            $_SESSION['message'] = 1;
+	    
             $this->load->view('includes/header');
 	    $this->load->view('search_record', $record);
 	    $this->load->view('includes/footer');
@@ -114,9 +115,12 @@
 	{
 	    $this->load->model('registration_model');
 	    $this->registration_model->confirm_voter_registration();
+	    $this->load->model('registration_model');
+            $record['searched_record'] = $this->registration_model->select_registered_voter();
+	    $_SESSION['message'] = 1;
             
 	    $this->load->view('includes/header');
-            $this->load->view('search_record');
+            $this->load->view('search_record', $record);
             $this->load->view('includes/footer');
 	}
         
