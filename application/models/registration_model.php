@@ -36,7 +36,7 @@
               'acct_lname' => $this->input->post('acct_lname'),
               'email_address' => $this->input->post('email_address'),
               'acct_type_id' => 1,
-              'time_date_log' => 'now()'
+              'time_date_log' => date("Y-m-d H:i:s")
             );
             
             $insert = $this->db->insert('account', $new_member_insert_data);
