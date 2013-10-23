@@ -1,6 +1,6 @@
 body
 {
-    background: #f0f0f0;
+    background: #b6b6b6;
     margin: 0;
     padding: 0;
     font-family: arial;
@@ -9,7 +9,7 @@ body
 #login_form
 {
     width: 300px;
-    background: #b6b6b6;
+    background: #f0f0f0;
     border: 1px solid white;
     margin: 250px auto 0;
     padding: 1em;
@@ -24,7 +24,7 @@ h1, h2, h3, h4 h5
     text-align: center;
 }
 
-#login, form a
+form a
 {
     top: 10px;
     right: 100px;
@@ -44,15 +44,15 @@ h1, h2, h3, h4 h5
     
 }
 
-#login:hover
-{
-    background: ;
-    cursor: pointer;
-}
-
-#successful_message
+#message
 {
     text-align: center;
+}
+
+#record_lastname, #record_id, form a
+{
+    text-decoration: none;
+    font-size: 12px;
 }
 
 input[type=text], input[type=password]
@@ -66,7 +66,7 @@ input[type=text], input[type=password]
     padding: 1em;
 }
 
-input[type=submit], form a
+input[type=submit]
 {
     border:  none;
     margin-right: 1em;
@@ -82,7 +82,7 @@ input[type=submit], form a
     -webkit-box-shadow: 0 1px 0 white;
 }
 
-input[type=submit]:hover, form a:hover
+input[type=submit]:hover
 {
     background: #1437AD;
     cursor: pointer;
@@ -101,6 +101,7 @@ fieldset
     margin: auto;
     margin-bottom: 2em;
     display: block;
+    background: #f0f0f0;
 }
 
 h1
@@ -109,3 +110,10 @@ h1
     background: #062270;
     
 }
+
+<style type="text/css">  
+a.nounderline:link  
+{  
+ text-decoration:none;  
+}  
+</style>

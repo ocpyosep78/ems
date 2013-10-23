@@ -1,7 +1,4 @@
 <h1>Search Student</h1>
-<div id="login">
-    <a href="registration/login">Logout</a>
-</div>
 
 <fieldset>
     <?php
@@ -9,10 +6,12 @@
         
         echo form_input('searched_record', set_value('', ''), 'placeholder="Enter ID Number"');
         echo form_submit('submit', 'Search');
+        echo "<a href='login'>Logout</a>";
     ?>
 </fieldset>
 
 <fieldset>
+<div id="record_id">
 <?php
     if(isset($_SESSION['message']))
     {
@@ -22,7 +21,6 @@
             {
                 $acct_id = $searched_record[$x]->acct_id;
                 $acct_username = $searched_record[$x]->acct_username;
-                $acct_password = $searched_record[$x]->acct_password;
                 $acct_lName = $searched_record[$x]->acct_lname;
                 $acct_fName = $searched_record[$x]->acct_fname;
                 $acct_mName = $searched_record[$x]->acct_mname;
@@ -42,9 +40,7 @@
                 else
                     $reg_stat = "Unconfirmed";
                 
-                echo "<tr>";
                     echo "Username: ".$acct_username."<br />";
-                    echo "Password: ".$acct_password."<br />";
                     echo "Name: ".$acct_fName." ".$acct_mName." ".$acct_lName."<br />";
                     echo "Email: ".$email_address.   "<br />";
                     echo "Course: ".$course.         "<br />";
@@ -67,5 +63,7 @@
     {
         echo "No Record Found";
     }
+    
 ?>
+</div>
 </fieldset>

@@ -1,9 +1,7 @@
 <h1>Registration Successful</h1>
 
-<div id="successful_message">   
+<div id="message">   
     <?php
-        echo form_open('registration/create_member');
-        
         echo "Your Account has been successfully created, Please proceed to COMELEC assistant for
               the Account Confirmation and Printing of Username and Password <br /><br />";
               
