@@ -27,7 +27,7 @@
                 $course = $searched_record[$x]->course_id;
                 
                 echo "<a href=search_record?id=$acct_id>".$acct_lName.", "
-                .$acct_mName." ".$acct_fName." (".$course.")</a><br />";
+                .$acct_fName." ".$acct_mName." (".$course.")</a><br /><br />";
             }
             echo "<meta http-equiv='refresh' content='20' >";
             unset($_SESSION['message']);
