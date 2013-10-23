@@ -3,9 +3,6 @@
 
 
 <fieldset>
-    
-    <legend>Account Information</legend>
-    
     <?php
         echo form_open('registration/create_member');
         
