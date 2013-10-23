@@ -1,10 +1,13 @@
 <h1>Search Student</h1>
+<div id="login">
+    <a href="registration/login">Logout</a>
+</div>
 
 <fieldset>
     <?php
         echo form_open('registration/search_record');    
         
-        echo form_input('searched_record', set_value('', ''), 'placeholder="Enter ID Number or Last Name"');
+        echo form_input('searched_record', set_value('', ''), 'placeholder="Enter ID Number"');
         echo form_submit('submit', 'Search');
     ?>
 </fieldset>

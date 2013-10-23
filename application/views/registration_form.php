@@ -5,6 +5,7 @@
 </div>
 
 <fieldset>
+    
     <legend>Account Information</legend>
     
     <?php

@@ -115,7 +115,7 @@
 	{
 	    $this->load->model('registration_model');
 	    $this->registration_model->confirm_voter_registration();
-	    $this->load->model('registration_model');
+	    //$this->registration_model->generate_password();
             $record['searched_record'] = $this->registration_model->select_registered_voter();
 	    $_SESSION['message'] = 1;
             
