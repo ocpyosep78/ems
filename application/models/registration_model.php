@@ -3,7 +3,7 @@
     {
         public function select_course()
         {
-            $query = $this->db->query("SELECT course_id, course_name FROM course");
+            $query = $this->db->query("SELECT course_id, course_name FROM course ORDER BY course_name");
             if($query->num_rows != 0)
             {
                 $course = $query->result();  
@@ -19,7 +19,8 @@
             $query = $this->db->query("SELECT a.acct_id, a.acct_username, a.acct_password, a.acct_fname, a.acct_mname, a.acct_lname,
                 a.email_address, (SELECT course_name FROM course WHERE course_id = a.course_id) as course_id, a.acct_status,
                 a.reg_status, a.time_date_log, (SELECT acct_type_name FROM account_type WHERE acct_type_id = a.acct_type_id) as
-                acct_type_id FROM account a WHERE a.acct_username LIKE '".$searched_record."'  OR a.acct_id LIKE '".$id."'");
+                acct_type_id FROM account a WHERE a.acct_username LIKE '".$searched_record."'  OR a.acct_id LIKE '".$id."'
+                ORDER BY a.acct_username");
             if($query->num_rows() != 0)
             {
                 $registered_voter = $query->result();
@@ -35,7 +36,8 @@
             $query = $this->db->query("SELECT a.acct_id, a.acct_username, a.acct_password, a.acct_fname, a.acct_mname, a.acct_lname,
                 a.email_address, (SELECT course_name FROM course WHERE course_id = a.course_id) as course_id, a.acct_status,
                 a.reg_status, a.time_date_log, (SELECT acct_type_name FROM account_type WHERE acct_type_id = a.acct_type_id) as
-                acct_type_id FROM account a WHERE a.acct_id LIKE '".$id."' OR a.acct_lname LIKE '".$searched_record."'");
+                acct_type_id FROM account a WHERE a.acct_id LIKE '".$id."' OR a.acct_lname LIKE '".$searched_record."'
+                ORDER BY a.acct_lname");
             if($query->num_rows() != 0)
             {
                 $registered_voter = $query->result();
@@ -54,7 +56,7 @@
               'acct_lname' => $this->input->post('acct_lname'),
               'email_address' => $this->input->post('email_address'),
               'acct_type_id' => 1,
-              'time_date_log' => date("Y-m-d H:i:s")
+              'time_date_log' => date("Y-m-d H:i:s", time()-14400)
             );
             
             $insert = $this->db->insert('account', $new_member_insert_data);
@@ -100,7 +102,9 @@
         public function print_login_info()
         {
             $acct_id = $this->input->get('id');
-            $query = $this->db->query("SELECT acct_username, acct_password FROM account WHERE acct_id='".$acct_id."'");
+            $query = $this->db->query("SELECT a.acct_username, a.acct_password, a.acct_fName, a.acct_mName, a.acct_lName,
+                                      (SELECT course_name FROM course WHERE course_id = a.course_id) as course_id
+                                       FROM account a WHERE a.acct_id='".$acct_id."'");
             
             if($query->num_rows == 1)
             {

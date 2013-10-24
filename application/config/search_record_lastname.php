@@ -26,8 +26,8 @@
                 $acct_mName = $searched_record[$x]->acct_mname;
                 $course = $searched_record[$x]->course_id;
                 
-                echo "<b><a href=search_record?id=$acct_id>".$acct_lName.", "
-                .$acct_fName." ".$acct_mName."</a></b><br /> ".$course."<br /><br />";
+                echo "<a href=search_record?id=$acct_id>".$acct_lName.", "
+                .$acct_fName." ".$acct_mName." (".$course.")</a><br /><br />";
             }
 
             unset($_SESSION['message']);

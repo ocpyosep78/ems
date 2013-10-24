@@ -3,6 +3,7 @@
 
 
 <fieldset>
+    <div id="register">
     <?php
         echo form_open('registration/create_member');
         
@@ -20,5 +21,6 @@
         
         echo validation_errors('<p class="error">');
     ?>
+    </div>
 </fieldset>
     

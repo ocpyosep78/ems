@@ -1,5 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require('fpdf.php');
+
+require_once('fpdf.php');
 class Pdf extends FPDF
 {
 	// Extend FPDF using this class

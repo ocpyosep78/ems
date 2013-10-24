@@ -49,9 +49,18 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
+
+
 $db['default']['username'] = 'root';
 $db['default']['password'] = '';
 $db['default']['database'] = 'online_voting';
+
+/*
+$db['default']['username'] = 'fpadao_election';
+$db['default']['password'] = 'UicElection2013';
+$db['default']['database'] = 'election';
+*/
+
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

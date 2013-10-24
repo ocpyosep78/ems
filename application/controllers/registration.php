@@ -23,7 +23,26 @@
 		$this->load->library('pdf'); // Load library
 		$this->pdf->fontpath = 'font/'; // Specify font folder
 	}
-        
+	/*
+	public function _remap($method_name){
+	    if($method_name == "login")
+	    {
+		$this->login();
+	    }
+	    elseif($method_name == "validate_credentials")
+	    {
+		$this->validate_credentials();
+	    }
+	    elseif($method_name == "create_member")
+	    {
+		$this->create_member();
+	    }
+	    else
+	    {
+		$this->index();
+	    }
+	}
+        */
         /*------------------------------------------Login-----------------------------------------------------*/
         
         public function login()
@@ -72,12 +91,12 @@
 	    $this->load->library('form_validation');
 	    //field name, error message, validation rules
 	    
-	    $this->form_validation->set_rules('acct_username', 'ID Number', 'trim|required|min_length[4]|is_unique[account.acct_username]');
-	    $this->form_validation->set_rules('acct_password', 'Password', 'trim|required|required');
+	    $this->form_validation->set_rules('acct_username', 'ID Number', 'trim|required|is_unique[account.acct_username]');
+	    $this->form_validation->set_rules('acct_password', 'Password', 'trim|required|required|min_length[4]');
 	    $this->form_validation->set_rules('acct_fname', 'First Name', 'trim|required|required');
 	    $this->form_validation->set_rules('acct_mname', 'Middle Name', 'trim|required|required');
 	    $this->form_validation->set_rules('acct_lname', 'Last Name', 'trim|required|required');
-	    $this->form_validation->set_rules('email_address', 'Email Address', 'trim|required|valid_email');
+	    $this->form_validation->set_rules('email_address', 'Email Address', 'trim|valid_email');
 	    
 	    if($this->form_validation->run() == FALSE)
 	    {
@@ -152,14 +171,16 @@
         
         /*------------------------------------------Generate-PDF----------------------------------------------*/
         
+	
         public function generate_pdf()
 	{
 	    $this->load->model('registration_model');
             $result['result'] = $this->registration_model->print_login_info();
                 
             $this->load->view('includes/header');
-	    $this->load->view('fpdf', $result);
+	    $this->load->view('PDF_view', $result);
 	    $this->load->view('includes/footer');
 	}
+	
         
     }

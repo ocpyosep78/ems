@@ -4,7 +4,7 @@
     <?php
         echo form_open('registration/search_record');    
         
-        echo form_input('searched_record', set_value('', ''), 'placeholder="Enter ID Number"');
+        echo form_input('searched_record', set_value('', ''), 'placeholder="Enter ID Number or Last Name"');
         echo form_submit('submit', 'Search');
         echo "<a href='login'>Logout</a>";
     ?>
@@ -39,24 +39,60 @@
                     $reg_stat = "Confirmed";
                 else
                     $reg_stat = "Unconfirmed";
-                
-                    echo "Username: ".$acct_username."<br />";
-                    echo "Name: ".$acct_fName." ".$acct_mName." ".$acct_lName."<br />";
-                    echo "Email: ".$email_address.   "<br />";
-                    echo "Course: ".$course.         "<br />";
+                    
+                    echo "<table border=1>";
+                    echo "<tr>";
+                    echo "<td>ID Number </td>";
+                    echo "<td>".$acct_username.     "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>Last Name </td>";
+                    echo "<td>".$acct_lName.        "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>First Name </td>";
+                    echo "<td>".$acct_fName.        "</td>";
+                    echo "</td>";
+                    echo "<tr>";
+                    echo "<td>Middle Name </td>";
+                    echo "<td>".$acct_mName.        "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>Course </td>";
+                    echo "<td>".$course.            "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>Email </td>";
+                    echo "<td>".$email_address.     "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>TIme and Date Registered </td>";
+                    echo "<td>".$time_date_log.     "</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>Account Type </td>";
+                    echo "<td>".$acct_type_id.      "</td>";
+                    
                     if($reg_stat == "Confirmed")
                     {
-                        echo "Registration Status: ".$reg_stat. "<br />";
+                        echo "</tr>";
+                        echo "<td>Account Status: </td>";
+                        echo "<td>".$reg_stat."</td>";
+                        echo "<tr>";
+                    echo "</tr>";
                     }
                     else
                     {
-                        echo "Account Status: <a href=confirm_voter_registration?id=$acct_id>Confirm</a><br />";
+                        echo "</tr>";
+                        echo "<td>Account Status </td>";
+                        echo "<td><a href=confirm_voter_registration?id=$acct_id>Confirm</a></td>";
+                        echo "<tr>";
                     }
-                    echo "Time and Date Logged: ".$time_date_log."<br />";
-                    echo "Account Type: ".        $acct_type_id. "<br />";
-                    echo "<a href=generate_pdf?id=$acct_id>Print Username and Password</a><br />";
+                    
+                    echo "<tr><td colspan=2><a href=generate_pdf?id=$acct_id>Print Username and Password</a></td></tr>";
+                    echo "</table>";
             }
-            echo "<meta http-equiv='refresh' content='10' >";
+
             unset($_SESSION['message']);
         }
     }else
