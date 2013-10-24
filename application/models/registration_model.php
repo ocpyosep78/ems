@@ -77,6 +77,7 @@
         public function validate_name()
         {
             $this->db->where('acct_fname', $this->input->post('acct_fname'));
+            $this->db->where('acct_mname', $this->input->post('acct_mname'));
             $this->db->where('acct_lname', $this->input->post('acct_lname'));
             
             $query = $this->db->get('account');
