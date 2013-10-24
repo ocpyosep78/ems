@@ -89,7 +89,7 @@
                         echo "<tr>";
                     }
                     
-                    echo "<tr><td colspan=2><a href=generate_pdf?id=$acct_id>Print Username and Password</a></td></tr>";
+                    echo "<tr><td colspan=2><a href=generate_pdf?id=$acct_id>Print Access Details</a></td></tr>";
                     echo "</table>";
             }
 

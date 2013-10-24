@@ -5,9 +5,9 @@
 <fieldset>
     <div id="register">
     <?php
+        $course["c_desc"] = "Please select course";
         echo form_open('registration/create_member');
-        
-        echo form_dropdown('course_id', $course, '');
+        echo form_dropdown('course_id', $course, 'c_desc');
         echo "<br /><br />";
         echo form_input('acct_username', set_value('acct_username', ''), 'placeholder="ID Number"');
         echo form_input('acct_password', set_value('acct_password', ''), 'placeholder="Password"');
