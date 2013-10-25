@@ -3,6 +3,6 @@
 <div id="message">   
     <?php
         echo "Please proceed to the COMELEC for Account Confirmation.<br /><br />";
-        echo '<a href="registration/index">Back</a>';
+        echo '<a href="../../">Back</a>';
     ?>
 </div>
