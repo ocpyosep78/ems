@@ -91,7 +91,7 @@
 	    $this->load->library('form_validation');
 	    //field name, error message, validation rules
 	    
-	    $this->form_validation->set_rules('acct_username', 'ID Number', 'trim|required|is_unique[account.acct_username]');
+	    $this->form_validation->set_rules('acct_username', 'ID Number', 'trim|required|required[account.acct_username]');
 	    $this->form_validation->set_rules('acct_password', 'Password', 'trim|required|required|min_length[4]');
 	    $this->form_validation->set_rules('acct_fname', 'First Name', 'trim|required|required');
 	    $this->form_validation->set_rules('acct_mname', 'Middle Name', 'trim|required|required');

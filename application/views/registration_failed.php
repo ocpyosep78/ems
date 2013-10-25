@@ -4,6 +4,6 @@
     <?php
         echo "Account already Exist";
               
-        echo '<a href="registration/index">Back</a>';
+        echo '<a href="../../">Back</a>';
     ?>
 </div>
