@@ -4,44 +4,46 @@
         public function index()
         {
             $this->load->model('registration_model');
-	    $course['course'] = $this->registration_model->select_course();
+	    	$course['course'] = $this->registration_model->select_course();
 	    
-	    for($x=0;$x<count($course['course']);$x++)
-	    {
-		$selectedCourse[$course['course'][$x]->course_id] = $course['course'][$x]->course_name;
-	    }
-	    $course['course'] = $selectedCourse;
-            
-            $this->load->view('includes/header');
-	    $this->load->view('registration_form', $course);
-	    $this->load->view('includes/footer');
-	}
+		    for($x=0;$x<count($course['course']);$x++)
+		    {
+			$selectedCourse[$course['course'][$x]->course_id] = $course['course'][$x]->course_name;
+		    }
+		    $course['course'] = $selectedCourse;
+	        
+	        $this->load->helper('date');    
+	        $this->load->view('includes/header');
+		    $this->load->view('registration_form', $course);
+		    $this->load->view('includes/footer');
+		}
         
         function __construct()
-	{
-		parent::__construct();
-		$this->load->library('pdf'); // Load library
-		$this->pdf->fontpath = 'font/'; // Specify font folder
-	}
-	/*
-	public function _remap($method_name){
-	    if($method_name == "login")
-	    {
-		$this->login();
-	    }
-	    elseif($method_name == "validate_credentials")
-	    {
-		$this->validate_credentials();
-	    }
-	    elseif($method_name == "create_member")
-	    {
-		$this->create_member();
-	    }
-	    else
-	    {
-		$this->index();
-	    }
-	}
+		{
+			parent::__construct();
+			$this->load->library('pdf'); 		//Load library
+			$this->pdf->fontpath = 'font/'; 	//Specify font folder
+		}
+		
+		/*
+		public function _remap($method_name){
+		    if($method_name == "login")
+		    {
+			$this->login();
+		    }
+		    elseif($method_name == "validate_credentials")
+		    {
+			$this->validate_credentials();
+		    }
+		    elseif($method_name == "create_member")
+		    {
+			$this->create_member();
+		    }
+		    else
+		    {
+			$this->index();
+		    }
+		}
         */
         /*------------------------------------------Login-----------------------------------------------------*/
         

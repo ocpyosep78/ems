@@ -10,7 +10,7 @@
         echo form_dropdown('course_id', $course, 'c_desc');
         echo "<br /><br />";
         echo form_input('acct_username', set_value('acct_username', ''), 'placeholder="ID Number"');
-        echo form_input('acct_password', set_value('acct_password', ''), 'placeholder="Password"');
+        echo form_password('acct_password', set_value('acct_password', ''), 'placeholder="Password"');
         echo form_input('acct_fname', set_value('acct_fname', ''), 'placeholder="First Name"');
         echo form_input('acct_mname', set_value('acct_mname', ''), 'placeholder="Middle Name"');
         echo form_input('acct_lname', set_value('acct_lname', ''), 'placeholder="Last Name"');

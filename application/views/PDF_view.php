@@ -5,15 +5,14 @@
 												//List of PHP supported timezone is found from this link
 												//Url: http://www.php.net/manual/en/timezones.php
 	$timestamp = time();
-	$format = 'DATE_RFC850';
     for($x=0;$x<count($result);$x++)
 	    {
 			$acct_username = "Username: ".$result[$x]->acct_username;
             $acct_password = "Password: ".$result[$x]->acct_password;
 			$acct_name = "Name: ".$result[$x]->acct_fName." ".$result[$x]->acct_mName." ".$result[$x]->acct_lName;
 			$course = "Course: ".$result[$x]->course_id;
-	        $dateTime_printed = "Date and Time Printed: ".standard_date($format, $timestamp);
-	
+			$dateTime_printed = "Date and Time Printed: ".unix_to_human($timestamp);	
+
 	        $this->pdf->AddPage('L',array(107.95,139.7));
             $this->pdf->SetFont('Times','',14);
 			$this->pdf->MultiCell(0,5, 'University of Immaculate Conception',0,'C');
