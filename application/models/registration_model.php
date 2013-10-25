@@ -47,6 +47,11 @@
         
         public function create_member()
         {
+            $timezone = 'Asia/Manila';
+            date_default_timezone_set($timezone);       //A PHP function used in overiding default timezone from the PHP.ini 
+                                                        //List of PHP supported timezone is found from this link
+                                                        //Url: http://www.php.net/manual/en/timezones.php
+            
             $new_member_insert_data = array(
               'course_id' => $this->input->post('course_id'),
               'acct_username' => $this->input->post('acct_username'),
@@ -56,8 +61,7 @@
               'acct_lname' => $this->input->post('acct_lname'),
               'email_address' => $this->input->post('email_address'),
               'acct_type_id' => 1,
-              'time_date_log' => date("Y-m-d H:i:s", time()-14400)
-            );
+              'time_date_log' => date("Y-m-d H:i:s", time()));
             
             $insert = $this->db->insert('account', $new_member_insert_data);
             return $insert;
