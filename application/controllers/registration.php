@@ -174,10 +174,11 @@
 	
         public function generate_pdf()
 	{
+		$this->load->helper('date');
 	    $this->load->model('registration_model');
-            $result['result'] = $this->registration_model->print_login_info();
+        $result['result'] = $this->registration_model->print_login_info();
                 
-            $this->load->view('includes/header');
+        $this->load->view('includes/header');
 	    $this->load->view('PDF_view', $result);
 	    $this->load->view('includes/footer');
 	}
