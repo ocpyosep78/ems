@@ -53,7 +53,7 @@ $db['default']['hostname'] = 'localhost';
 
 $db['default']['username'] = 'root';
 $db['default']['password'] = '';
-$db['default']['database'] = 'online_voting';
+$db['default']['database'] = 'election';
 
 /*
 $db['default']['username'] = 'fpadao_election';
