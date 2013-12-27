@@ -1,8 +1,13 @@
-SELECT program.prog_id,prog_code,prog_name ,
+SELECT 	program.prog_id,
+		program.prog_code AS Program,
+		program.prog_name,
+		COUNT(election_voter.acct_id) AS Voters
+FROM program
+	INNER JOIN course ON program.prog_id = course.prog_id
+	INNER JOIN account ON course.course_id = account.course_id
+	INNER JOIN election_voter ON account.acct_id = election_voter.acct_id
+	INNER JOIN election ON election_voter.elect_id = election.elect_id
+WHERE election.status = 1
+GROUP BY program.prog_id;
 
-(SELECT count(*) FROM course WHERE program.prog_id=course.prog_id AND account.course_id = course.course_id AND program.prog_id=course.prog_id ) AS Voters
 
-
-FROM election.program,election.course,account
-
-;
