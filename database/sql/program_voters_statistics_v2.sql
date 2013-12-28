@@ -1,16 +1,18 @@
 SELECT 	program.prog_id,
-		program.prog_code AS Program,
+		program.prog_code,
 		program.prog_name,
-		COUNT(election_voter.acct_id) AS Voters
+		COUNT(election_voter.elect_voter_id) AS Voter
 
 FROM program
-	RIGHT OUTER JOIN course ON program.prog_id = course.prog_id
-	RIGHT OUTER JOIN account ON course.course_id = account.course_id
-	RIGHT OUTER JOIN election_voter ON account.acct_id = election_voter.acct_id
-	RIGHT OUTER JOIN election ON election_voter.elect_id = election.elect_id
-
-
-WHERE election.status= 1 
+	LEFT OUTER JOIN course ON program.prog_id = course.prog_id 
+	LEFT OUTER JOIN account ON course.course_id = account.course_id 
+	LEFT OUTER JOIN election_voter ON account.acct_id = election_voter.acct_id  
+		AND election_voter.elect_id =  (SELECT election.elect_id 
+										FROM election.election 
+										WHERE election.status=1)
 GROUP BY program.prog_id;
+
+
+
 
 
