@@ -4,7 +4,7 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE PROCEDURE `voter_statistics` ()
+CREATE PROCEDURE `voter_statistics_per_program` ()
 BEGIN
 
 SELECT 	program.prog_id,
