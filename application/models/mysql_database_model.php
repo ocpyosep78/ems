@@ -1,11 +1,12 @@
 <?php
-	class Position_model extends CI_Model
+	class MySQL_database_model extends CI_Model
 	{
+
 		function __construct()
 	    {
 	        parent::__construct();
-
-	        $config['hostname'] = "localhost";
+				    	
+	    	$config['hostname'] = "localhost";
 			$config['username'] = "root";
 			$config['password'] = "root";
 			$config['database'] = "election";
@@ -18,22 +19,8 @@
 			$config['char_set'] = "utf8";
 			$config['dbcollat'] = "utf8_general_ci";
 
-			$this->load->database($config);
+			$this->load->database($config);	
 	    }
-
-		public function get_list_of_position($division)
-		{
-			$division += 1;
-
-			$sql = 'SELECT pos_id,
-						   pos_name,
-						   order_no 
-					FROM position 
-					WHERE div_id ='. $division .' ORDER BY order_no ASC';
-			
-			$sQuery = $this->db->query($sql);
-			return $sQuery->result_array();
-		}
 	}
 
 ?>
