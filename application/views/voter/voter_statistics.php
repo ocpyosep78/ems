@@ -1,4 +1,7 @@
 <?php
+	
+	$this->load->view('includes/header');
+	
 	echo '<table border=1>';
 	echo '<tr>';
 		echo '<th>Program Code</th>';
@@ -15,4 +18,5 @@
 	}
 	echo '</table border=1>';
 
+	$this->load->view('includes/footer');
 ?>
