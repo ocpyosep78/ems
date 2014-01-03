@@ -1,20 +1,32 @@
-<h1>Election Management System</h1>
+<h1>Voter Statistics</h1>
 <div id="body">
 <?php
-	echo '<table border=1>';
-	echo '<tr>';
-		//echo '<th>Program Code</th>';
-		echo '<th>Program</th>';
-		echo '<th>Total Voters</th>';
-	echo '</tr>';
+	
+	$table = array(	'table'		=>	'<table>',
+					'table_'	=>	'</table>',
+					'tr'		=>	'<tr>',
+					'tr_'		=>	'</tr>',
+					'th'		=>	'<th>',
+					'th_'		=>	'</th>',
+					'td'		=>	'<td>',
+					'td_'		=>	'</td>'
+				);
+
+
+	echo $table['table'];
+	echo $table['tr'];
+		echo $table['th'].'Program'.$table['th_'];
+		echo $table['th'].'Total Voters'.$table['th_'];
+	echo $table['tr_'];
+
 	for($x=0; $x<count($page_view_data);$x++)
 	{
-		echo '<tr>';
-		//echo '<td>'.$page_view_data[$x]['prog_code'].'</td>';
-		echo '<td>'.$page_view_data[$x]['prog_name'].'</td>';
-		echo '<td>'.$page_view_data[$x]['Voter'].'</td>';
-		echo '</tr>';
+		echo $table['tr'];
+		echo $table['td'].$page_view_data[$x]['prog_name'].$table['td_'];
+		echo $table['td'].$page_view_data[$x]['Voter'].$table['td_'];
+		echo $table['tr_'];
 	}
-	echo '</table border=1>';
+
+	echo $table['table_'];
 ?>
 </div>

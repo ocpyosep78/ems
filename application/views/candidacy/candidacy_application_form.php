@@ -2,8 +2,7 @@
 	echo "<h2>Candidacy Application Form</h2>";
 	echo "Please select options below before filing of candidacy.";
 
-	echo form_open('candidacy/select_position');
-	
+	echo form_open('apply_candidacy/select_position');
 	
 	$options = array('SSG Executive Position',
                   	 'Program Representative',

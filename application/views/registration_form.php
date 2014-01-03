@@ -1,6 +1,7 @@
-<h1>Create an Account</h1>
 
-<fieldset>
+    <h1>Create an Account</h1>
+
+        <fieldset>
     <div id="register">
     <?php
         $course[" "] = "Please Select a Course";
@@ -19,4 +20,5 @@
     ?>
     </div>
 </fieldset>
+
     

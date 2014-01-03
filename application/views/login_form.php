@@ -1,10 +1,34 @@
-<div id="login_form">
-  <h1>Login</h1>
-  
-  <?php
-    echo form_open('registration/validate_credentials');
-    echo form_input('acct_username', '', 'placeholder="Username"');
-    echo form_password('acct_password', '', 'placeholder="Password"');
-    echo form_submit('submit', 'Login');
-  ?>
-</div>
+
+	<?php
+		$attributes = array( 'class' 	=> 'login', 
+							 'id' 		=> 'myform',
+							 'method' 	=> 'post'
+						);
+
+		$data["user"] = array(	'name'        => 'username',
+					            'id'          => 'username',
+					            'value'       => '0901300',
+					            // 'maxlength'   => '100',
+					            // 'size'        => '50',
+					            // 'style'       => 'width:50%',
+					            'placeholder'	=> 'ID Number',
+					            'required'	=> ''
+			            );
+
+		$data["pass"] = array(	'name'        => 'password',
+			              		'id'          => 'password',
+					            'value'       => '05060726',
+					            // 'maxlength'   => '100',
+					            // 'size'        => '50',
+					            // 'style'       => 'width:50%',
+					            'placeholder'	=> 'Password',
+					            'required'	=> ''
+			            );
+
+		$this->load->helper('form');
+	    echo form_open('login/check_login_details');
+	    echo form_input($data["user"]);
+	    echo form_password($data["pass"]);
+	    echo form_submit('submit', 'Login');
+	    echo form_close();
+  	?>

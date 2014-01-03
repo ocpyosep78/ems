@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "registration";
+$route['default_controller'] = "voter_statistics";
 $route['404_override'] = '';
 
 /* End of file routes.php */
