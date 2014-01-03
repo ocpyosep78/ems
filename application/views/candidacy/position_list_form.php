@@ -1,3 +1,6 @@
+<h1>Candidacy Application Form</h1>
+<div id="body">
+
 <?php
 	
 	echo 'Please select desired position.<br>';
@@ -20,3 +23,4 @@
 	echo form_close();
 ?>
 
+</div>

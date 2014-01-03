@@ -13,6 +13,7 @@
 	    {
 	    	$sql = "CALL check_login_details('".$username."','".$userpass."')";
 			$sQuery = $this->db->query($sql);
+			$this->db->close();
 				
 			return $sQuery->row_array(1);	
 	    }
@@ -21,6 +22,7 @@
 		{
 			$sql = 'CALL get_voter_statistics()';
 			$sQuery = $this->db->query($sql);
+			$this->db->close();
 				
 			return $sQuery->result_array();
 		}

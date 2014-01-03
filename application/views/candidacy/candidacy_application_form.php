@@ -1,17 +1,23 @@
+<h1>Candidacy Application Form</h1>
+<div id="body">
+
+
 <?php
-	echo "<h2>Candidacy Application Form</h2>";
 	echo "Please select options below before filing of candidacy.";
 
-	echo form_open('apply_candidacy/select_position');
+
 	
-	$options = array('SSG Executive Position',
-                  	 'Program Representative',
-                  	 'Program Level Position'
-                );
 
+	for($x=0;$x<count($page_view_data);$x++)
+	{
+		$options [$page_view_data[$x]['div_id']] = $page_view_data[$x]['div_name'];
+	}
 
+	echo form_open('apply_candidacy/select_position');
 	echo form_dropdown('division', $options);
 	echo form_submit('mysubmit', 'Submit Option!');
 
 	echo form_close();
 ?>
+
+</div>

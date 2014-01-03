@@ -7,7 +7,7 @@
 
 		$data["user"] = array(	'name'        => 'username',
 					            'id'          => 'username',
-					            'value'       => '0901300',
+					            // 'value'       => '1000837',
 					            // 'maxlength'   => '100',
 					            // 'size'        => '50',
 					            // 'style'       => 'width:50%',
@@ -17,7 +17,7 @@
 
 		$data["pass"] = array(	'name'        => 'password',
 			              		'id'          => 'password',
-					            'value'       => '05060726',
+					            // 'value'       => 'chua',
 					            // 'maxlength'   => '100',
 					            // 'size'        => '50',
 					            // 'style'       => 'width:50%',

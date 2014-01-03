@@ -4,36 +4,27 @@
 		function __construct()
 	    {
 	        parent::__construct();
-
-	        $config['hostname'] = "localhost";
-			$config['username'] = "root";
-			$config['password'] = "root";
-			$config['database'] = "election";
-			$config['dbdriver'] = "mysql";
-			$config['dbprefix'] = "";
-			$config['pconnect'] = FALSE;
-			$config['db_debug'] = TRUE;
-			$config['cache_on'] = FALSE;
-			$config['cachedir'] = "";
-			$config['char_set'] = "utf8";
-			$config['dbcollat'] = "utf8_general_ci";
-
-			$this->load->database($config);
+	       	$this->load->model('mysql_database_model');
 	    }
 
-		public function get_list_of_position($division)
+		public function get_list_of_position($div_id)
 		{
-			$division += 1;
-
-			$sql = 'SELECT pos_id,
-						   pos_name,
-						   order_no 
-					FROM position 
-					WHERE div_id ='. $division .' ORDER BY order_no ASC';
-			
+			$sql = 'CALL get_position_list('.$div_id.')';
 			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
 			return $sQuery->result_array();
 		}
+
+		public function get_division()
+		{
+			$sql = 'CALL get_division()';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
 	}
 
 ?>

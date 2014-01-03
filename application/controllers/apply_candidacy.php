@@ -12,7 +12,30 @@ class Apply_candidacy extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			$page_view_content["page_view_dir"] = "candidacy/candidacy_application_form";
+			$acct_id = $this->session->userdata('acct_id');
+			$this->load->model('candidate_model');
+			$candidacy = $this->candidate_model->check_candidacy_application($acct_id);
+
+			if($candidacy!=NULL)
+			{
+				$page_view_content["page_view_data"] = 	$candidacy;
+				$page_view_content["page_view_dir"] = "candidacy/candidacy_application_table";
+			}
+			else{
+				$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
+				
+				if($voter_registration!=NULL)
+				{
+					$this->load->model('position_model');
+					$page_view_content["page_view_data"] = $this->position_model->get_division();
+					$page_view_content["page_view_dir"] = "candidacy/candidacy_application_form";
+				}
+				else
+				{
+					$page_view_content["page_view_dir"] = "candidacy/error_message_1";
+				}
+			}
+
 			$page_view_content["logged_in"] = TRUE;	
 			$this->load->view("includes/template",$page_view_content);		
 		}
