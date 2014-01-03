@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Dec 31, 2013 at 06:18 PM
+-- Generation Time: Jan 02, 2014 at 08:10 PM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -24,6 +24,13 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_login_details`(IN `username` VARCHAR(50), IN `userpass` VARCHAR(50))
+BEGIN
+	SELECT * FROM election.account
+	WHERE acct_username = username 
+	AND acct_password = AES_ENCRYPT(userpass,MD5(19911102));
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_statistics`()
 BEGIN
 
@@ -39,7 +46,8 @@ FROM program
 		AND election_voter.elect_id =  (SELECT election.elect_id 
 										FROM election 
 										WHERE election.status=1)
-GROUP BY program.prog_id;
+GROUP BY program.prog_id
+ORDER BY program.prog_name;
 
 END$$
 
@@ -4520,7 +4528,7 @@ CREATE TABLE IF NOT EXISTS `election_candidate` (
 --
 
 CREATE TABLE IF NOT EXISTS `election_officer` (
-  `elect_officer_id` int(11) NOT NULL,
+  `elect_officer_id` int(11) NOT NULL AUTO_INCREMENT,
   `acct_id` int(11) NOT NULL,
   `elect_id` int(11) NOT NULL,
   `acct_type_id` int(11) NOT NULL,
@@ -4528,7 +4536,7 @@ CREATE TABLE IF NOT EXISTS `election_officer` (
   KEY `fk_election_officer_account1_idx` (`acct_id`),
   KEY `fk_election_officer_election1_idx` (`elect_id`),
   KEY `fk_election_officer_account_type1_idx` (`acct_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -8735,7 +8743,7 @@ INSERT INTO `program` (`prog_id`, `prog_code`, `prog_name`) VALUES
 (7, 'LA', 'Liberal Arts Program'),
 (8, 'Engr', 'Engineering Program'),
 (9, 'Nursing', 'Nursing Program'),
-(10, 'MLS', 'Medical Technology Laboratory and Science Program');
+(10, 'MLS', 'Medical Laboratory and Science Program');
 
 -- --------------------------------------------------------
 
