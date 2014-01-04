@@ -1,6 +1,14 @@
 <?php
     class election extends CI_Controller
     {
+
+        /**
+         * 
+         * Created by Chin Tinn Tan
+         * Date 2013/10/20
+         *
+         */
+
         /*----------------------------------------LOGIN------------------------------------------*/
         public function index()
         {

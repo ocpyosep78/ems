@@ -1,6 +1,13 @@
 <?php
 	class Candidate_model extends CI_Model
 	{
+		/**
+		 * 
+		 * Created by Chin Tinn Tan
+		 * Date 2013/10/20
+		 *
+		 */
+
 		function __construct()
 	    {
 	        parent::__construct();
