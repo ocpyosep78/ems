@@ -6,7 +6,7 @@
 	    {
 	        parent::__construct();
 				    	
-	    	$config['hostname'] = "localhost";
+	    	$config['hostname'] = "192.168.1.100";
 			$config['username'] = "root";
 			$config['password'] = "root";
 			$config['database'] = "election";

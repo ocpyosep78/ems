@@ -12,14 +12,23 @@ class Ssg_applicant_list extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			
+			$application_status = $this->input->post('applicant_status');
 			$this->load->model('chairman_model');
-			$ssg_applicants = $this->chairman_model->get_ssg_applicants();
-			
-			$page_view_content["page_view_data"] = $ssg_applicants;
-			$page_view_content["page_view_dir"] = "candidates/list_of_ssg_applicants";
-			$page_view_content["logged_in"] = TRUE;	
 
+			if($application_status != NULL AND $application_status != 3 AND $application_status != 4)
+			{
+				$ssg_applicants = $this->chairman_model->get_ssg_applicants_by_status($application_status);	
+				$page_view_content["page_view_data"] = $ssg_applicants;
+				$page_view_content["page_view_dir"] = "candidates/list_of_approved_ssg_applicants";
+			}
+			else
+			{
+				$ssg_applicants = $this->chairman_model->get_ssg_applicants();
+				$page_view_content["page_view_data"] = $ssg_applicants;
+				$page_view_content["page_view_dir"] = "candidates/list_of_ssg_applicants";
+			}
+
+			$page_view_content["logged_in"] = TRUE;	
 			$this->load->view("includes/template",$page_view_content);		
 		}
 		else

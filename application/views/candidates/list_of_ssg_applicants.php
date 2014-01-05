@@ -1,17 +1,35 @@
 <h1>List of SSG Applications</h1>
 <div id="body">
 
-
 <?php
+	$options = array(	0	=>	'Pending Applicants',
+                  		1	=>	'Approved Applicants',
+                  		2	=> 	'Rejected Applicants',
+                  		3 	=>	'All Applicants',
+                  		4	=>	'Please select application status'
+                	);
+
+	$attributes = array( 	'class' 	=> 'login', 
+							'id' 		=> 'myform',
+							'method' 	=> 'post'
+					);
+
 	$this->load->helper('url');
+	$this->load->helper('form');
+
+	echo form_open('ssg_applicant_list',$attributes);
+	echo form_dropdown('applicant_status', $options,4);
+	echo form_submit('mysubmit', 'Search');
+	echo form_close();
+
 	// echo '<pre>';
 	// print_r($page_view_data);
 	// echo '</pre>';
 ?>
 
-
 <table>
 	<tr>
+		<th>No</th>
 		<th>Name</th>
 		<th>Position</th>
 		<th>Status</th>
@@ -19,12 +37,16 @@
 	</tr>
 
 	<?php
+		$applicant_ctr = 0;
+
 		for($x=0;$x<count($page_view_data);$x++)
 		{
 			$candidate_name = 	$page_view_data[$x]['acct_fname']." ".
 								$page_view_data[$x]['acct_mname']." ".
 								$page_view_data[$x]['acct_lname'];
 			echo '<tr>';
+
+			echo '<td>'.++$applicant_ctr.'</td>';
 			echo '<td>'.$candidate_name.'</td>';	
 			echo '<td>'.$page_view_data[$x]['pos_name'].'</td>';
 
