@@ -8,7 +8,7 @@
 				    	
 	    	$config['hostname'] = "localhost";
 			$config['username'] = "root";
-			$config['password'] = "";
+			$config['password'] = "root";
 			$config['database'] = "election";
 			$config['dbdriver'] = "mysql";
 			$config['dbprefix'] = "";

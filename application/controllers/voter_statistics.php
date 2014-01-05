@@ -10,24 +10,18 @@ class Voter_statistics extends CI_Controller {
 	 */
 	public function index()
 	{
-
 		if($this->session->userdata('logged_in'))
 		{
-		
+			$this->load->model('voter_model');
 			$page_view_content["page_view_dir"] = "voter/voter_statistics";
-			$page_view_content["logged_in"] = TRUE;			
+			$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
+			$page_view_content["logged_in"] = TRUE;		
+			$this->load->view("includes/template",$page_view_content);	
 		}
 		else
 		{
-			$page_view_content["page_view_dir"] = "welcome_message";
-			$page_view_content["logged_in"] = FALSE;
+			redirect('/login', 'refresh');
 		}
-
-		$this->load->model('voter_model');
-		$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
-		$this->load->view("includes/template",$page_view_content);
-			
-		
 	}
 
 	public function registration_form()

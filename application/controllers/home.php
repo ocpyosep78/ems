@@ -13,11 +13,8 @@ class Home extends CI_Controller {
 
 		if($this->session->userdata('logged_in'))
 		{	
-			$page_view_content["page_view_dir"] = "voter/voter_statistics";
+			$page_view_content["page_view_dir"] = "home/homepage";
 			$page_view_content["logged_in"] = TRUE;	
-
-			$this->load->model('voter_model');
-			$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
 			$this->load->view("includes/template",$page_view_content);		
 		}
 		else

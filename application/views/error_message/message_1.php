@@ -1,4 +1,4 @@
-<h1>Candidacy Application Form</h1>
+<h1>Notice</h1>
 <div id="body">
 
 

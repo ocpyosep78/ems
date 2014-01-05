@@ -3,6 +3,7 @@
 		<li><a href="<?php echo base_url(); ?>index.php/Home">Home</a></li>
 		<li><a href="<?php echo base_url(); ?>index.php/apply_candidacy">Apply for Candidacy</a></li>
 		<li><a href="<?php echo base_url(); ?>index.php/ballot">Ballot</a></li>
+		<li><a href="<?php echo base_url(); ?>index.php/voter_statistics">Voter Statistics</a></li>
 		<li>Profile</li>
 		<li>Election</li>
 		<li>Results</li>

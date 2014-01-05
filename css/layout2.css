@@ -52,6 +52,16 @@
 	   width: 10px;
 	}
 
+	#position_header
+	{
+		background-color: #F2F2F2;
+	}
+
+	#ballot
+	{
+		margin: 0px auto;
+	}
+
 	/*end table properties*/
 
 	#body{
@@ -101,6 +111,27 @@
 		float: left;
 		width: 200px;
 		height: 200px;
+	}
+
+	#container_profile
+	{
+		/*float: left;*/
+		/*position: absolute;*/
+		min-height: 700px;
+		width: 745px;
+		border: 1px solid;
+		margin: 0px;
+	}
+
+	#container_profile_picture, 
+	#container_profile_data
+	{
+		float: left;
+		height: 800px;
+		width: 300px;
+		/*margin: 10px 0px 10px 10px;*/
+		border: 1px solid #D0D0D0;
+		-webkit-box-shadow: 0 0 8px #D0D0D0;
 	}
 
 	#sub_container1{

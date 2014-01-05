@@ -32,7 +32,7 @@ class Apply_candidacy extends CI_Controller {
 				}
 				else
 				{
-					$page_view_content["page_view_dir"] = "candidacy/error_message_1";
+					$page_view_content["page_view_dir"] = "error_message/message_1";
 				}
 			}
 
