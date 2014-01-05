@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2014 at 10:47 AM
+-- Generation Time: Jan 05, 2014 at 12:50 PM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -30,10 +30,11 @@ BEGIN
 	(
 	`acct_id`,
 	`pos_id`,
-	`elect_id`
+	`elect_id`,
+	`date_time_log`
 	)
 	VALUES
-	(account_id,position_id,election_id);
+	(account_id,position_id,election_id,NOW());
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `check_candidacy_application`(IN account_id INT)
@@ -67,7 +68,7 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `check_voter_registration`(IN account_id INT)
 BEGIN
-	SELECT 	elect_voter_id,
+	SELECT 	election_voter.elect_voter_id,
 		acct_lname AS lname, 
 		acct_fname AS fname, 
 		acct_mname AS mname
@@ -77,21 +78,117 @@ BEGIN
 	INNER JOIN account ON election_voter.acct_id = account.acct_id
 	INNER JOIN election ON election_voter.elect_id = election.elect_id
 
-	WHERE election_voter.acct_id = account_id
-	AND election_candidate.elect_cand_id IS NULL
+
+	AND account.acct_id = account_id
 	AND election.status = 1;
 -- Return value if voter is registered under the current election
 END$$
 
+CREATE DEFINER=`root`@`%` PROCEDURE `get_current_election`()
+BEGIN
+	SELECT elect_id FROM election.election WHERE status=1;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_division`()
 BEGIN
-SELECT * FROM division;
+	SELECT * FROM division;
+END$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `get_party`()
+BEGIN
+
+SELECT party_id, party_name
+
+FROM party;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_position_list`(IN division INT)
 BEGIN
 	SELECT pos_id, pos_name FROM position
 	WHERE div_id = division;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicants`()
+BEGIN
+	SELECT 	elect_cand_id,
+		UPPER(acct_fname) AS acct_fname,
+		UPPER(acct_lname) AS acct_lname,
+		UPPER(acct_mname) AS acct_mname,
+		pos_name,
+		election_candidate.status
+
+	FROM account
+
+	INNER JOIN election_candidate ON account.acct_id = election_candidate.acct_id
+	INNER JOIN election ON election_candidate.elect_id = election.elect_id
+	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id
+	RIGHT OUTER JOIN division ON position.div_id = division.div_id
+
+	WHERE division.div_id = 1;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicants_by_status`(IN election_candidate_status INT)
+BEGIN
+SELECT 	elect_cand_id,
+		UPPER(acct_fname) AS acct_fname,
+		UPPER(acct_lname) AS acct_lname,
+		UPPER(acct_mname) AS acct_mname,
+		pos_name,
+		party.party_name,
+		election_candidate.status
+
+	FROM account
+
+	INNER JOIN election_candidate ON account.acct_id = election_candidate.acct_id
+	INNER JOIN election ON election_candidate.elect_id = election.elect_id
+	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id
+	RIGHT OUTER JOIN division ON position.div_id = division.div_id
+	RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
+	
+	WHERE division.div_id = 1 AND election_candidate.status = election_candidate_status
+	ORDER BY position.order_no, account.acct_lname ASC;
+
+END$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `get_ssg_applicants_without_party`()
+BEGIN
+	SELECT 	elect_cand_id, 
+			UPPER(acct_lname) AS acct_lname, 
+			UPPER(acct_fname) AS acct_fname, 
+			UPPER(acct_mname) AS acct_mname, 
+			pos_name
+
+	FROM election_candidate
+	INNER JOIN election ON election_candidate.elect_id = election.elect_id
+	INNER JOIN position ON election_candidate.pos_id = position.pos_id
+	INNER JOIN account ON election_candidate.acct_id = account.acct_id
+
+	WHERE party_id IS NULL
+	AND election.status = 1
+	AND position.div_id = 1;
+END$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `get_ssg_applicant_name_position`(IN candidate_id INT)
+BEGIN
+
+SELECT  elect_cand_id AS candidate_id,
+		UPPER(acct_lname) AS acct_lname, 
+		UPPER(acct_fname) AS acct_fname, 
+		UPPER(acct_mname) AS acct_mname,
+		pos_name, 
+		div_name
+
+FROM account
+INNER JOIN election_candidate ON account.acct_id = election_candidate.acct_id
+INNER JOIN position ON election_candidate.pos_id = position.pos_id
+INNER JOIN election ON election_candidate.elect_id = election.elect_id
+INNER JOIN division ON position.div_id = position.div_id
+
+WHERE election.status = 1
+AND elect_cand_id = candidate_id
+
+GROUP BY account.acct_id;
+
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_candidate_list`()
@@ -146,6 +243,23 @@ ORDER BY program.prog_name;
 
 END$$
 
+CREATE DEFINER=`root`@`%` PROCEDURE `new_procedure`()
+BEGIN
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ssg_applicant_statistics_by_status`()
+BEGIN
+SELECT 	election_candidate.status,
+		COUNT(election_candidate.status) AS TOTAL
+ 
+FROM election_candidate
+	LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id
+
+WHERE election.status = 1
+GROUP BY election_candidate.status;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ssg_exec_election_result`()
 BEGIN
 
@@ -174,6 +288,20 @@ WHERE position.div_id = 1
 GROUP BY election_candidate.elect_cand_id, position.pos_id
 ORDER BY position.order_no, account.acct_lname ASC;
 
+END$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `update_candidate_party`(IN part_id INT, IN candidate_id INT)
+BEGIN
+	UPDATE election_candidate
+	SET party_id = part_id
+	WHERE elect_cand_id = candidate_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_ssg_applicant_status`(IN candidate_id INT, IN new_status INT)
+BEGIN
+	UPDATE election_candidate
+	SET status = new_status
+	WHERE elect_cand_id = candidate_id;
 END$$
 
 DELIMITER ;
@@ -4592,9 +4720,9 @@ CREATE TABLE IF NOT EXISTS `election` (
 --
 
 INSERT INTO `election` (`elect_id`, `school_year`, `start_date`, `end_date`, `status`) VALUES
-(1, 'SY 2014-2015', '2014-02-26 07:30:00', '2014-02-26 17:30:00', 1),
-(2, 'SY 2015-2016', NULL, NULL, 0),
-(3, 'SY 2016-2017', NULL, NULL, 0);
+(1, 'SY 2013-2014', '2014-02-26 07:30:00', '2014-02-26 17:30:00', 1),
+(2, 'SY 2014-2015', NULL, NULL, 0),
+(3, 'SY 2015-2016', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -4615,32 +4743,33 @@ CREATE TABLE IF NOT EXISTS `election_candidate` (
   KEY `fk_candidate_position1_idx` (`pos_id`),
   KEY `fk_candidate_party1_idx` (`party_id`),
   KEY `fk_election_candidate_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=64 ;
 
 --
 -- Dumping data for table `election_candidate`
 --
 
 INSERT INTO `election_candidate` (`elect_cand_id`, `acct_id`, `pos_id`, `party_id`, `elect_id`, `date_time_log`, `status`) VALUES
-(38, 11, 1, 2, 1, NULL, 1),
-(39, 14, 2, 1, 1, NULL, 1),
-(40, 17, 2, 2, 1, NULL, 1),
-(41, 18, 3, 1, 1, NULL, 1),
-(42, 20, 3, 2, 1, NULL, 1),
-(43, 22, 4, 1, 1, NULL, 1),
-(44, 23, 4, 2, 1, NULL, 1),
-(45, 24, 5, 1, 1, NULL, 1),
-(46, 25, 5, 2, 1, NULL, 1),
-(47, 27, 6, 1, 1, NULL, 1),
-(48, 28, 7, 2, 1, NULL, 1),
-(49, 29, 7, 1, 1, NULL, 1),
-(50, 30, 8, 1, 1, NULL, 1),
-(51, 31, 8, 2, 1, NULL, 1),
-(52, 33, 9, 1, 1, NULL, 1),
-(53, 35, 9, 2, 1, NULL, 1),
+(38, 11, 1, 1, 1, NULL, 1),
+(39, 14, 2, 3, 1, NULL, 1),
+(40, 17, 2, NULL, 1, NULL, 0),
+(41, 18, 3, NULL, 1, NULL, 2),
+(42, 20, 3, NULL, 1, NULL, 2),
+(43, 22, 4, 1, 1, NULL, 2),
+(44, 23, 4, 2, 1, NULL, 2),
+(45, 24, 5, 1, 1, NULL, 0),
+(46, 25, 5, 2, 1, NULL, 0),
+(47, 27, 6, 1, 1, NULL, 0),
+(48, 28, 7, 2, 1, NULL, 0),
+(49, 29, 7, 1, 1, NULL, 0),
+(50, 30, 8, 1, 1, NULL, 0),
+(51, 31, 8, 2, 1, NULL, 0),
+(52, 33, 9, 1, 1, NULL, 0),
+(53, 35, 9, 2, 1, NULL, 0),
 (54, 40, 1, 3, 1, NULL, 1),
 (55, 41, 1, 3, 1, NULL, 1),
-(56, 60, 1, 3, 1, '2013-10-25 09:02:41', 1);
+(56, 60, 1, 3, 1, NULL, 0),
+(63, 61, 1, 3, 1, '2014-01-05 19:46:50', 1);
 
 -- --------------------------------------------------------
 
