@@ -7,7 +7,7 @@
 
 	$this->load->helper('form');
 
-	echo form_open('candidacy/select_position');
+	echo form_open('apply_candidacy/submit_application');
 
 	for($x=0;$x<count($page_view_data);$x++)
 	{

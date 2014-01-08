@@ -61,9 +61,22 @@
 			return $sQuery->result_array();
 		}
 
-		public function add_candidacy_application($acct_id,$pos_id,$elect_id)
+		public function get_current_election()
 		{
+			$sql = 'CALL get_current_election()';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->row_array(1);
+		}
 
+		public function add_candidacy_application($acct_id,$pos_id)
+		{
+			$current_election= $this->get_current_election();
+
+			$sql = 'CALL add_candidacy_application('.$acct_id.','.$pos_id.','.$current_election['elect_id'].')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
 		}
 	}
 

@@ -43,9 +43,9 @@
 
 		for($x=0;$x<count($page_view_data);$x++)
 		{
-			$candidate_name = 	$page_view_data[$x]['acct_fname']." ".
-								$page_view_data[$x]['acct_mname']." ".
-								$page_view_data[$x]['acct_lname'];
+			$candidate_name = 	$page_view_data[$x]['acct_lname'].", ".
+								$page_view_data[$x]['acct_fname']." ".
+								$page_view_data[$x]['acct_mname'];
 			echo '<tr>';
 			echo '<td>'.++$applicant_ctr.'</td>';
 			echo '<td>'.$candidate_name.'</td>';	
