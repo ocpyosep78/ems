@@ -23,5 +23,11 @@
 	    	$this->db->close();
 	    }
 
+	    public function add_party($pt_name)
+	    {
+	    	$sql = 'CALL add_party('.$pt_name.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+	    }
 	 }
 ?>
