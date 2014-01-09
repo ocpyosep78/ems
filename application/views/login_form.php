@@ -31,4 +31,5 @@
 	    echo form_password($data["pass"]);
 	    echo form_submit('submit', 'Login');
 	    echo form_close();
+	    echo "Forgot password?";
   	?>

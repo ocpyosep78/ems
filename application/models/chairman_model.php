@@ -31,5 +31,23 @@
 				
 			return $sQuery->result_array();
 	    }
+
+	    public function get_ssg_applicants_without_party()
+	    {
+	    	$sql = 'CALL get_ssg_applicants_without_party()';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+
+	    	return $sQuery->result_array();
+	    }
+
+	    public function get_ssg_applicant_name_position($candidate_id)
+	    {
+	    	$sql = 'CALL get_ssg_applicant_name_position('.$candidate_id.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+
+	    	return $sQuery->result_array();
+	    }
 	 }
 ?>

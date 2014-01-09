@@ -47,7 +47,6 @@ class Apply_candidacy extends CI_Controller {
 
 	public function select_position()
 	{
-
 		if($this->session->userdata('logged_in'))
 		{	
 			$division = $this->input->post('division');
@@ -59,6 +58,27 @@ class Apply_candidacy extends CI_Controller {
 			$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($division);
 
 			$this->load->view("includes/template",$page_view_content);		
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}	
+	}
+
+	public function submit_application()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$account_id = $this->session->userdata('acct_id');
+			$position = $this->input->post('position');
+			
+			if($account_id != FALSE AND $position != FALSE)
+			{
+				$this->load->model('candidate_model');
+				$this->candidate_model->add_candidacy_application($account_id,$position);
+			}
+			
+			redirect('/apply_candidacy', 'refresh');
 		}
 		else
 		{
