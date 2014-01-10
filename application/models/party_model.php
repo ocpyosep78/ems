@@ -25,7 +25,21 @@
 
 	    public function add_party($pt_name)
 	    {
-	    	$sql = 'CALL add_party('.$pt_name.')';
+	    	$sql = "CALL add_party('".$pt_name."')";
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+	    }
+
+	    public function delete_party($pt_id)
+	    {
+	    	$sql = 'CALL delete_party('.$pt_id.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+	    }
+
+	    public function update_party($pt_id, $pt_name)
+	    {
+			$sql = "CALL update_party('".$pt_id."','".$pt_name."')";
 	    	$sQuery = $this->db->query($sql);
 	    	$this->db->close();
 	    }

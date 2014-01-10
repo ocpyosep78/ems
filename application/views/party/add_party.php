@@ -4,14 +4,20 @@
 	<table>
 		<tr>
 			<th>Party List</th>
+			<th>Options</th>
 		</tr>
 		<?php
 			for($x=0;$x<count($page_view_data);$x++)
 			{
+				$party_id = $page_view_data[$x]['party_id'];
 				$party_name = 	$page_view_data[$x]['party_name'];
 
 				echo '<tr>';
 				echo '<td>'.$party_name.'</td>';
+				echo '<td>';
+				echo "<a href=add_party/edit_party/".$party_id."/".$party_name.">Edit</a> &nbsp";
+				echo "<a href=add_party/delete_party/".$party_id.">Delete</a>";
+				echo '</td>';
 				echo '</tr>';
 			}
 		?>
