@@ -7,7 +7,7 @@
 		<li><a href="<?php echo base_url(); ?>index.php/ssg_applicant_list">Applicant List</a></li> 
 		<li><a href="<?php echo base_url(); ?>index.php/set_applicant_party">Set Applicant Party</a></li>
 		<li><a href="<?php echo base_url(); ?>index.php/add_party">Add Party</a></li>
-		<li>Results</li>
+		<li><a href="<?php echo base_url(); ?>index.php/results">Results</a></li>
 </div>
 
 <div id="sub_container1">
