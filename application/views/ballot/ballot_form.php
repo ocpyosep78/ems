@@ -15,7 +15,7 @@
 
 	$this->load->helper('form');
 
-	echo form_open('email/send');
+	echo form_open('ballot/submit_vote');
 	echo '<table id="ballot">';
 	echo $tb['tr'];
 	echo '<th colspan=3>SSG Executive Position</th>';
@@ -44,11 +44,16 @@
 				if($page_view_data[$y]['pos_id'] == $position_ssg[$x]['pos_id'])
 				{	
 					$candidate_ctr += 1;
+					$acct_id = $acct_id;
+					$candidate_id = $page_view_data[$y]['elect_cand_id'];
+					$radio_name = $position_ssg[$x]['pos_id'];
+
 					$candidate = $page_view_data[$y]['acct_fname']." ".$page_view_data[$y]['acct_lname'];
 					$party = $page_view_data[$y]['party_name'];
 
 					echo $tb['tr'];
-					echo '<td>'.form_radio().$tb['td_'];
+					echo '<td>'.form_radio($radio_name, $candidate_id, '', '').$tb['td_'];
+					echo form_hidden('acct_id',$acct_id);
 					echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
 					echo $tb['td'];
 					echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
@@ -67,7 +72,7 @@
 	if($page_view_data != NULL)
 	{
 		echo $tb['tr'];
-		echo '<td colspan=3>'.form_button('name','Vote').'</td>';
+		echo '<td colspan=3>'.form_submit('name','Vote').'</td>';
 		echo $tb['tr_'];
 	}
 
