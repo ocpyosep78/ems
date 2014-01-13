@@ -15,5 +15,14 @@
 
 	    	return $sQuery->result_array();
 	    }
+
+	    public function get_program_result($voter_prog_id)
+	    {
+	    	$sql = 'CALL get_program_result('.$voter_prog_id.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+
+	    	return $sQuery->result_array();
+	    }
 	 }
 ?>
