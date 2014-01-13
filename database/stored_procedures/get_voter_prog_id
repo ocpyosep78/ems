@@ -4,12 +4,11 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_prog_id`(IN acct_id INT, IN course INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_prog_id`(IN course INT)
 BEGIN
 	SELECT 
-	course.prog_id
-	FROM election.account, election.course
+	prog_id
+	FROM election.course
 	WHERE 
-	account.acct_id = acct_id
-	AND course.course_id = course;
+	course_id = course;
 END

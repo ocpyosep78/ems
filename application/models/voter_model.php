@@ -27,14 +27,24 @@
 			return $sQuery->result_array();
 		}
 
-		public function get_voter_prog_id($course)
+		public function get_voter_prog_id($acct_id)
 		{
-			$sql = 'CALL get_voter_prog_id('.$course.')';
+			$sql = 'CALL get_voter_prog_id('.$acct_id.')';
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 				
 			return $sQuery->result_array();
 		}
+
+		public function get_election_voter_id($acct_id)
+		{
+			$sql = 'CALL get_election_voter_id('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
 	}
 
 ?>

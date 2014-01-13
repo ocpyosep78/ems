@@ -19,7 +19,7 @@ class Ballot extends CI_Controller {
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
 
 			$this->load->model('voter_model');
-			$voter_program_id = $this->voter_model->get_voter_prog_id($course);
+			$voter_program_id = $this->voter_model->get_voter_prog_id($acct_id);
 			
 			if($voter_registration!=NULL)
 			{
@@ -49,12 +49,40 @@ class Ballot extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			$acct_id = $this->input->post('acct_id');
-			$cand_id = $this->input->post('candidate_id');
-			$voter_prog_id = $this->input->post('voter_prog_id');
+			$acct_id = $this->session->userdata('acct_id');
 
-			$this->load->model('ballot_model');
-			$results = $this->ballot_model->submit_vote($cand_id, $acct_id, $voter_prog_id);
+			$this->load->model('voter_model');
+			$voter_prog_id = $this->voter_model->get_voter_prog_id($acct_id);
+			$voter_id = $this->voter_model->get_election_voter_id($acct_id); 
+
+			$this->load->model('candidate_model');
+			$position_id = $this->candidate_model->get_position_list(1);
+
+
+			for($x=0;$x<count($position_id);$x++)
+			{
+				$pos_id = $position_id[$x]['pos_id'];
+				$elect_cand_id = $this->input->post($pos_id);
+
+				if($elect_cand_id)
+				{
+					$this->load->model('ballot_model');
+					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+				}
+			}
+
+			$position_id = $this->candidate_model->get_position_list(2);
+			for($x=0;$x<count($position_id);$x++)
+			{
+				$pos_id = $position_id[$x]['pos_id'];
+				$elect_cand_id = $this->input->post($pos_id);
+
+				if($elect_cand_id)
+				{
+					$this->load->model('ballot_model');
+					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+				}
+			}
 
 			$page_view_content["page_view_dir"] = "ballot/successful_vote";
 			$page_view_content["logged_in"] = TRUE;
