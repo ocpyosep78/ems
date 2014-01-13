@@ -45,7 +45,6 @@
 				{
 						
 					$candidate_ctr += 1;
-					$acct_id = $acct_id;
 					$candidate_id = $page_view_data[$y]['elect_cand_id'];
 					$radio_name = $position_ssg[$x]['pos_id'];
 					$candidate = $page_view_data[$y]['acct_fname']." ".$page_view_data[$y]['acct_lname'];
@@ -90,27 +89,34 @@
 		
 			$candidate_ctr = 0;
 
-			for($i=0;$i<count($program_candidates);$i++)
-			{
+				for($i=0;$i<count($program_candidates);$i++)
+				{
 
-				if($program_candidates[$i]['pos_id'] == $position_program[$z]['pos_id'])
-				{	
-					$candidate_ctr += 1;
-					$acct_id = $acct_id;
-					$candidate_id = $program_candidates[$i]['elect_cand_id'];
-					$radio_name = $position_program[$z]['pos_id'];
-					$candidate = $program_candidates[$i]['acct_fname']." ".$program_candidates[$i]['acct_lname'];
-					$party = $program_candidates[$i]['party_name'];
+					if($program_candidates[$i]['pos_id'] == $position_program[$z]['pos_id'])
+					{	
+						$candidate_ctr += 1;
+						$candidate_id = $program_candidates[$i]['elect_cand_id'];
+						$radio_name = $position_program[$z]['pos_id'];
+						$candidate = $program_candidates[$i]['acct_fname']." ".$program_candidates[$i]['acct_lname'];
+						$party = $program_candidates[$i]['party_name'];
 
-					echo $tb['tr'];
-					echo '<td>'.form_radio($radio_name, $candidate_id, '', '').$tb['td_'];
-					echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
-					echo $tb['td'];
-					echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
-					echo $tb['td_'];
-					echo $tb['tr_'];
+						echo $tb['tr'];
+						if($position_program[$z]['pos_id'] == 18)
+						{
+							echo '<td>'.form_checkbox($radio_name, $candidate_id, '', '').$tb['td_'];
+						}
+						else
+						{
+							echo '<td>'.form_radio($radio_name, $candidate_id, '', '').$tb['td_'];
+						}
+						echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
+						echo $tb['td'];
+						echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
+						echo $tb['td_'];
+						echo $tb['tr_'];
+					}
 				}
-			}
+			
 
 			if($candidate_ctr == 0)
 			{

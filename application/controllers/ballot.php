@@ -17,9 +17,6 @@ class Ballot extends CI_Controller {
 
 			$this->load->model('candidate_model');
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
-
-			$this->load->model('voter_model');
-			$voter_program_id = $this->voter_model->get_voter_prog_id($acct_id);
 			
 			if($voter_registration!=NULL)
 			{
@@ -28,7 +25,6 @@ class Ballot extends CI_Controller {
 				$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($course);
 				$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
 				$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
-				$page_view_content["voter_prog_id"] = $voter_program_id;
 				$page_view_content["acct_id"] = $acct_id;
 			}
 			else
