@@ -26,6 +26,15 @@
 				
 			return $sQuery->result_array();
 		}
+
+		public function get_voter_prog_id($course)
+		{
+			$sql = 'CALL get_voter_prog_id('.$course.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
 	}
 
 ?>

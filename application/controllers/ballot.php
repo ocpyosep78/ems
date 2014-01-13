@@ -17,6 +17,9 @@ class Ballot extends CI_Controller {
 
 			$this->load->model('candidate_model');
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
+
+			$this->load->model('voter_model');
+			$voter_program_id = $this->voter_model->get_voter_prog_id($course);
 			
 			if($voter_registration!=NULL)
 			{
@@ -25,6 +28,7 @@ class Ballot extends CI_Controller {
 				$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($course);
 				$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
 				$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
+				$page_view_content["voter_prog_id"] = $voter_program_id;
 				$page_view_content["acct_id"] = $acct_id;
 			}
 			else
@@ -46,10 +50,11 @@ class Ballot extends CI_Controller {
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->input->post('acct_id');
-			$candidate_id = $this->input->post('vote');
+			$cand_id = $this->input->post('candidate_id');
+			$voter_prog_id = $this->input->post('voter_prog_id');
 
 			$this->load->model('ballot_model');
-			$results = $this->ballot_model->submit_vote($acct_id, $candidate_id);
+			$results = $this->ballot_model->submit_vote($cand_id, $acct_id, $voter_prog_id);
 
 			$page_view_content["page_view_dir"] = "ballot/successful_vote";
 			$page_view_content["logged_in"] = TRUE;

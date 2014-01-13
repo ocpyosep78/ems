@@ -1,0 +1,15 @@
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_prog_id`(IN acct_id INT, IN course INT)
+BEGIN
+	SELECT 
+	course.prog_id
+	FROM election.account, election.course
+	WHERE 
+	account.acct_id = acct_id
+	AND course.course_id = course;
+END

@@ -45,6 +45,7 @@
 				{	
 					$candidate_ctr += 1;
 					$acct_id = $acct_id;
+					$voter_program_id = $voter_prog_id;
 					$candidate_id = $page_view_data[$y]['elect_cand_id'];
 					$radio_name = $position_ssg[$x]['pos_id'];
 
@@ -52,8 +53,9 @@
 					$party = $page_view_data[$y]['party_name'];
 
 					echo $tb['tr'];
-					echo '<td>'.form_radio('vote', $candidate_id, '', '').$tb['td_'];
+					echo '<td>'.form_radio('candidate_id', $candidate_id, '', '').$tb['td_'];
 					echo form_hidden('acct_id',$acct_id);
+					echo form_hidden('voter_program_id',$voter_program_id);
 					echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
 					echo $tb['td'];
 					echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
@@ -97,6 +99,7 @@
 				{	
 					$candidate_ctr += 1;
 					$acct_id = $acct_id;
+					$voter_program_id = $voter_prog_id;
 					$candidate_id = $program_candidates[$i]['elect_cand_id'];
 					$radio_name = $position_program[$z]['pos_id'];
 
@@ -104,8 +107,9 @@
 					$party = $program_candidates[$i]['party_name'];
 
 					echo $tb['tr'];
-					echo '<td>'.form_radio('vote', $candidate_id, '', '').$tb['td_'];
+					echo '<td>'.form_radio('candidate_id', $candidate_id, '', '').$tb['td_'];
 					echo form_hidden('acct_id',$acct_id);
+					echo form_hidden('voter_prog_id',$voter_program_id);
 					echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
 					echo $tb['td'];
 					echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
