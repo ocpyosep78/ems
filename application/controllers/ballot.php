@@ -13,6 +13,7 @@ class Ballot extends CI_Controller {
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$course = $this->session->userdata('course_id');
 
 			$this->load->model('candidate_model');
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
@@ -21,7 +22,7 @@ class Ballot extends CI_Controller {
 			{
 				$page_view_content["page_view_dir"] = "ballot/ballot_form";			
 				$page_view_content["page_view_data"] = $this->candidate_model->get_ssg_candidate_list();
-				$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list();
+				$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($course);
 				$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
 				$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
 				$page_view_content["acct_id"] = $acct_id;

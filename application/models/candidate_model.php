@@ -52,9 +52,9 @@
 			return $sQuery->result_array();
 		}
 
-		public function get_program_candidate_list()
+		public function get_program_candidate_list($course)
 		{
-			$sql = 'CALL get_program_candidate_list()';
+			$sql = 'CALL get_program_candidate_list('.$course.')';
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 				
