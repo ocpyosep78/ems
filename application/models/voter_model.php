@@ -53,6 +53,15 @@
 				
 			return $sQuery->result_array();
 		}
+
+		public function get_voted_candidates_by_voter($acct_id)
+		{
+			$sql = 'CALL get_voted_candidates_by_voter('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
 	}
 
 ?>

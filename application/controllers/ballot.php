@@ -32,6 +32,7 @@ class Ballot extends CI_Controller {
 						if($check_voter[$i]['elect_voter_id'] == $voter_id[0]['elect_voter_id'])
 						{
 							$page_view_content["page_view_dir"] = "ballot/show_ballot";
+							$page_view_content["page_view_data"] = $this->voter_model->get_voted_candidates_by_voter($voter_id[0]['elect_voter_id']);
 						}
 					}
 				}
@@ -42,7 +43,6 @@ class Ballot extends CI_Controller {
 					$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($course);
 					$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
 					$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
-					$page_view_content["acct_id"] = $acct_id;
 				}
 			}
 			else

@@ -69,7 +69,7 @@
 	}
 	
 	echo $tb['tr'];
-	echo '<th colspan=3>Program Position</th>';
+	echo '<th colspan=3>Program Level Position</th>';
 	echo $tb['tr_'];
 
 	for($z=0;$z<count($position_program);$z++)
