@@ -12,6 +12,7 @@ BEGIN
 			program.prog_name,
 			account.acct_lname,
 			account.acct_fname,
+			account.acct_mname,
 			COUNT(candidate_votes.cand_vot_id) AS votes
 
 	FROM election_candidate
