@@ -45,6 +45,14 @@
 			return $sQuery->result_array();
 		}
 
+		public function check_voter_if_voted($acct_id)
+		{
+			$sql = 'CALL check_voter_if_voted('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
 	}
 
 ?>
