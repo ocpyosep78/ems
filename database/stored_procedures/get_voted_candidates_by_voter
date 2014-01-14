@@ -10,7 +10,8 @@ BEGIN
 		UPPER(acct_lname) AS acct_lname, 
 		UPPER(acct_fname) AS acct_fname, 
 		UPPER(acct_mname) AS acct_mname,
-		pos_name, 
+		pos_name,
+		party.party_name,
 		div_name
 
 	FROM account
@@ -20,6 +21,7 @@ BEGIN
 		INNER JOIN position ON election_candidate.pos_id = position.pos_id
 		INNER JOIN division ON position.div_id = division.div_id
 		INNER JOIN election ON election_voter.elect_id = election.elect_id
+		RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
 
 	WHERE election.status = 1
 	AND election_voter.elect_voter_id = voter_id;

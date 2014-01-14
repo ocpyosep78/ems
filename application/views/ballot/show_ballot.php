@@ -31,11 +31,12 @@
 			$candidate_name = 	$page_view_data[$x]['acct_lname'].", ".
 								$page_view_data[$x]['acct_fname']." ".
 								$page_view_data[$x]['acct_mname'];
+			$party = $page_view_data[$x]['party_name'];
 
 			echo $tb['tr'];
 			echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
 			echo $tb['td'];
-			echo 'Name: <b>'.$candidate_name.'</b>';
+			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
 			echo $tb['td_'];
 			echo $tb['tr_'];			
 		}
@@ -45,22 +46,22 @@
 	echo '<th colspan=3>Program Level Position</th>';
 	echo $tb['tr_'];
 
-	for($x=0;$x<count($page_view_data);$x++)
+	for($y=0;$y<count($page_view_data);$y++)
 	{
-		if($page_view_data[$x]['div_name'] == 'Program Level Position')
+		if($page_view_data[$y]['div_name'] == 'Program Level Position')
 		{
 			echo $tb['tr'];
-			echo '<td colspan=3 id="position_header"><b>'.$page_view_data[$x]['pos_name'].'</b></td>';
+			echo '<td colspan=3 id="position_header"><b>'.$page_view_data[$y]['pos_name'].'</b></td>';
 			echo $tb['tr_'];
 
-			$candidate_name = 	$page_view_data[$x]['acct_lname'].", ".
-								$page_view_data[$x]['acct_fname']." ".
-								$page_view_data[$x]['acct_mname'];
+			$candidate_name = 	$page_view_data[$y]['acct_lname'].", ".
+								$page_view_data[$y]['acct_fname']." ".
+								$page_view_data[$y]['acct_mname'];
 
 			echo $tb['tr'];
 			echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
 			echo $tb['td'];
-			echo 'Name: <b>'.$candidate_name.'</b>';
+			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
 			echo $tb['td_'];
 			echo $tb['tr_'];			
 		}
