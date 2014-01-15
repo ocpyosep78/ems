@@ -52,7 +52,7 @@
 
 					echo $tb['tr'];
 					echo '<td>'.form_radio($radio_name, $candidate_id, '', '').$tb['td_'];
-					echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
+					echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$page_view_data[$y]['acct_username'].'.jpg">'.$tb['td_'];
 					echo $tb['td'];
 					echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
 					echo $tb['td_'];
@@ -109,7 +109,7 @@
 						{
 							echo '<td>'.form_radio($radio_name, $candidate_id, '', '').$tb['td_'];
 						}
-						echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
+						echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$program_candidates[$i]['acct_username'].'.jpg">'.$tb['td_'];
 						echo $tb['td'];
 						echo 'Name: <b>'.$candidate.'</b><br>Party: '.$party;
 						echo $tb['td_'];

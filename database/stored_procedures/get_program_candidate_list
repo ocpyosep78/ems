@@ -4,13 +4,15 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_candidate_list`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_candidate_list`(IN course INT)
 BEGIN
 
 	SELECT 	position.pos_id,
 			position.pos_name,
 			UPPER(account.acct_lname) AS acct_lname,
 			UPPER(account.acct_fname) AS acct_fname,
+			account.course_id,
+			account.acct_username,
 			party.party_name,
 			election_candidate.elect_cand_id,
 			COUNT(candidate_votes.cand_vot_id) AS votes
@@ -30,7 +32,7 @@ BEGIN
 	LEFT OUTER JOIN division ON position.div_id = division.div_id
 	RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
 
-	WHERE position.div_id = 2
+	WHERE position.div_id = 2 AND account.course_id = course
 
 	GROUP BY election_candidate.elect_cand_id, position.pos_id
 	ORDER BY position.order_no, account.acct_lname ASC;

@@ -34,7 +34,7 @@
 			$party = $page_view_data[$x]['party_name'];
 
 			echo $tb['tr'];
-			echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
+			echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$page_view_data[$x]['acct_username'].'.jpg">'.$tb['td_'];
 			echo $tb['td'];
 			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
 			echo $tb['td_'];
@@ -59,7 +59,7 @@
 								$page_view_data[$y]['acct_mname'];
 
 			echo $tb['tr'];
-			echo '<td>'.'<img src="../css/images/default.jpg" height="75" width="75">'.$tb['td_'];
+			echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$page_view_data[$y]['acct_username'].'.jpg">'.$tb['td_'];
 			echo $tb['td'];
 			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
 			echo $tb['td_'];

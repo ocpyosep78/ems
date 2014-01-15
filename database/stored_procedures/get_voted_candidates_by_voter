@@ -10,6 +10,7 @@ BEGIN
 		UPPER(acct_lname) AS acct_lname, 
 		UPPER(acct_fname) AS acct_fname, 
 		UPPER(acct_mname) AS acct_mname,
+		account.acct_username,
 		pos_name,
 		party.party_name,
 		div_name

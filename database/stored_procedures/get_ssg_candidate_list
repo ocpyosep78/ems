@@ -9,6 +9,8 @@ BEGIN
 
 	SELECT 	position.pos_id,
 			position.pos_name,
+			account.acct_username,
+			election_candidate.elect_cand_id,
 			UPPER(account.acct_lname) AS acct_lname,
 			UPPER(account.acct_fname) AS acct_fname,
 			party.party_name,
