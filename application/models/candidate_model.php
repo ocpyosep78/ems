@@ -52,6 +52,15 @@
 			return $sQuery->result_array();
 		}
 
+		public function get_program_candidate_list($program_id)
+		{
+			$sql = 'CALL get_program_candidate_list('.$program_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
 		public function get_position_list($div_id)
 		{
 			$sql = 'CALL get_position_list('.$div_id.')';

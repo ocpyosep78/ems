@@ -4,10 +4,10 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_party`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_party`(IN pt_id INT, IN pt_name VARCHAR(45))
 BEGIN
-
-SELECT party_id, party_name
-
-FROM party;
+	UPDATE `party`
+	SET
+	`party_name` = pt_name
+	WHERE `party_id` = pt_id;
 END

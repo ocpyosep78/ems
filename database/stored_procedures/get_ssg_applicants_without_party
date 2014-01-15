@@ -18,6 +18,5 @@ BEGIN
 	INNER JOIN account ON election_candidate.acct_id = account.acct_id
 
 	WHERE party_id IS NULL
-	AND election.status = 1
-	AND position.div_id = 1;
+	AND election.status = 1;
 END

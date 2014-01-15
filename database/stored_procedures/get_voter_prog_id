@@ -4,10 +4,11 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_party`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_prog_id`(IN course INT)
 BEGIN
-
-SELECT party_id, party_name
-
-FROM party;
+	SELECT 
+	prog_id
+	FROM election.course
+	WHERE 
+	course_id = course;
 END

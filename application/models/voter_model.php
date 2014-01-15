@@ -26,6 +26,42 @@
 				
 			return $sQuery->result_array();
 		}
+
+		public function get_voter_prog_id($acct_id)
+		{
+			$sql = 'CALL get_voter_prog_id('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
+		public function get_election_voter_id($acct_id)
+		{
+			$sql = 'CALL get_election_voter_id('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
+		public function check_voter_if_voted($acct_id)
+		{
+			$sql = 'CALL check_voter_if_voted('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
+		public function get_voted_candidates_by_voter($acct_id)
+		{
+			$sql = 'CALL get_voted_candidates_by_voter('.$acct_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
 	}
 
 ?>

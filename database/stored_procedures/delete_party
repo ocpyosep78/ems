@@ -4,10 +4,8 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_party`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_party`(IN pt_id INT)
 BEGIN
-
-SELECT party_id, party_name
-
-FROM party;
+	DELETE FROM `party`
+	WHERE `party_id` = pt_id;
 END

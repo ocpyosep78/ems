@@ -4,10 +4,9 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_party`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_voter_if_voted`(IN voter_id INT)
 BEGIN
-
-SELECT party_id, party_name
-
-FROM party;
+	SELECT elect_voter_id 
+	FROM election.candidate_votes 
+	WHERE elect_voter_id = voter_id;
 END
