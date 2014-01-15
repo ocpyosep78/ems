@@ -3,16 +3,16 @@ SELECT 	position.pos_id,
 		account.acct_lname,
 		account.acct_fname,
 		election_candidate.elect_cand_id,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 1) AS ITE,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 2) AS Aba,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 3) AS Educ,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 4) AS PharmChem,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 5) AS NdHrm,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 6) AS Music,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 7) AS La,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 8) AS Engr,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 9) AS Nursing,
-		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 10) AS Mls
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 1) AS ite,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 2) AS aba,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 3) AS educ,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 4) AS pharmchem,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 5) AS ndhrm,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 6) AS music,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 7) AS la,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 8) AS engr,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 9) AS nursing,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 10) AS mls
 
 
 FROM election_candidate
