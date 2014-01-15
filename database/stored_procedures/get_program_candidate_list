@@ -4,7 +4,7 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_candidate_list`(IN course INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_candidate_list`(IN program_id INT)
 BEGIN
 
 	SELECT 	position.pos_id,
@@ -21,7 +21,8 @@ BEGIN
 
 	LEFT OUTER JOIN candidate_votes ON election_candidate.elect_cand_id = candidate_votes.elect_cand_id 
 					
-	RIGHT OUTER JOIN account ON election_candidate.acct_id = account.acct_id					
+	RIGHT OUTER JOIN account ON election_candidate.acct_id = account.acct_id
+	INNER JOIN course ON account.course_id = course.course_id
 	LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id
 	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id 
 			AND position.div_id = 2 
@@ -32,7 +33,7 @@ BEGIN
 	LEFT OUTER JOIN division ON position.div_id = division.div_id
 	RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
 
-	WHERE position.div_id = 2 AND account.course_id = course
+	WHERE position.div_id = 2 AND course.prog_id = program_id
 
 	GROUP BY election_candidate.elect_cand_id, position.pos_id
 	ORDER BY position.order_no, account.acct_lname ASC;

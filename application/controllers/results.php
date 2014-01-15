@@ -18,7 +18,7 @@ class Results extends CI_Controller
 			$page_view_content["page_view_dir"] = "results/view_results";
 			$page_view_content["logged_in"] = TRUE;
 			$page_view_content["page_view_data"] = $results;
-			$this->load->view("includes/template",$page_view_content);	
+			$this->load->view("includes/template",$page_view_content);
 		}
 		else
 		{
