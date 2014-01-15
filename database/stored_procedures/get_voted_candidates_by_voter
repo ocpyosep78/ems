@@ -24,5 +24,6 @@ BEGIN
 		RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
 
 	WHERE election.status = 1
-	AND election_voter.elect_voter_id = voter_id;
+	AND election_voter.elect_voter_id = voter_id
+	ORDER BY position.order_no;
 END
