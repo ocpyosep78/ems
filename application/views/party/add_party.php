@@ -1,4 +1,4 @@
-<h1>Add Party</h1>
+<div id="content_header">Add Party</div>
 <div id="body">
 
 	<table>

@@ -1,4 +1,4 @@
-<h1>Candidacy Application Form</h1>
+<div id="content_header">Candidacy Application Form</div>
 <div id="body">
 
 <?php
@@ -30,6 +30,20 @@
 	echo $table['td'].$page_view_data['log'].$table['td_'];
 	echo $table['tr_'];
 
+	if($page_view_data['party_name'] == NULL)
+	{
+		$party = 'Not Available';
+	}
+
+	else
+	{
+		$party = $page_view_data['party_name'];
+	}
+
+	echo $table['tr'];
+	echo $table['td'].'Party '.$table['td_'];
+	echo $table['td'].$party.$table['td_'];
+	echo $table['tr_'];
 
 	if($page_view_data['status'] == 0)
 	{

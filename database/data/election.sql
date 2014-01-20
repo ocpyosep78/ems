@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 07, 2014 at 10:21 PM
+-- Generation Time: Jan 19, 2014 at 08:55 PM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -24,7 +24,7 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_candidacy_application`(IN `account_id` INT, IN `position_id` INT, IN `election_id` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_candidacy_application`(IN account_id INT,IN position_id INT, IN election_id INT)
 BEGIN
 	INSERT INTO `election_candidate`
 	(
@@ -37,21 +37,31 @@ BEGIN
 	(account_id,position_id,election_id,NOW());
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_party`(IN `pt_name` VARCHAR(45))
+BEGIN
+	INSERT INTO `party`
+	(`party_name`)
+	VALUES
+	(pt_name);
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `check_candidacy_application`(IN account_id INT)
 BEGIN
 	SELECT 	div_name AS division, 
-		pos_name AS position,
-		acct_lname AS lname, 
-		acct_fname AS fname, 
-		acct_mname AS mname,
-		election_candidate.status AS status, 
-		election_candidate.date_time_log AS log
+			pos_name AS position,
+			party_name,
+			acct_lname AS lname, 
+			acct_fname AS fname, 
+			acct_mname AS mname,
+			election_candidate.status AS status, 
+			election_candidate.date_time_log AS log
 	FROM election_voter
 	LEFT OUTER JOIN election_candidate ON election_voter.acct_id = election_candidate.acct_id
 	INNER JOIN account ON election_voter.acct_id = account.acct_id
 	INNER JOIN election ON election_voter.elect_id = election.elect_id
 	INNER JOIN position ON election_candidate.pos_id = position.pos_id
 	INNER JOIN division ON position.div_id = division.div_id
+	LEFT OUTER JOIN party ON election_candidate.party_id = party.party_id
 
 	WHERE election_voter.acct_id = account_id
 	AND election_candidate.elect_cand_id IS NOT NULL
@@ -59,11 +69,39 @@ BEGIN
 -- Return value if candidacy is filed
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_if_election_officer`(IN accountID INT)
+BEGIN
+	SELECT 	election_officer.elect_officer_id,
+			election_officer.acct_type_id
+	FROM election_officer
+	INNER JOIN election ON election_officer.elect_id = election.elect_id AND election.status = 1
+	WHERE election_officer.acct_id = accountID;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `check_login_details`(IN `username` VARCHAR(50), IN `userpass` VARCHAR(50))
 BEGIN
-	SELECT * FROM election.account
+	SELECT 	acct_id,
+			acct_username,
+			acct_password,
+			UPPER(acct_lname) AS acct_lname,
+			UPPER(acct_fname) AS acct_fname,
+			UPPER(acct_mname) AS acct_mname,
+			email_address,
+			profile_pic,
+			course_id,
+			acct_status,
+			reg_status,
+			time_date_log 
+	FROM account
 	WHERE acct_username = username 
 	AND acct_password = AES_ENCRYPT(userpass,MD5(19911102));
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_voter_if_voted`(IN voter_id INT)
+BEGIN
+	SELECT elect_voter_id 
+	FROM election.candidate_votes 
+	WHERE elect_voter_id = voter_id;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `check_voter_registration`(IN account_id INT)
@@ -84,6 +122,31 @@ BEGIN
 -- Return value if voter is registered under the current election
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `course_voters_statistics`()
+BEGIN
+
+SELECT 	course.course_id,
+		course.course_name,
+		COUNT(election_voter.elect_voter_id) AS Voters
+
+FROM course
+
+
+INNER JOIN account ON course.course_id = account.course_id
+INNER JOIN election_voter ON account.acct_id = election_voter.acct_id
+			AND election_voter.elect_id =  (SELECT election.elect_id 
+										FROM election.election 
+										WHERE election.status=1)
+GROUP BY course.course_id 
+;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_party`(IN pt_id INT)
+BEGIN
+	DELETE FROM `party`
+	WHERE `party_id` = pt_id;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_current_election`()
 BEGIN
 	SELECT elect_id FROM election.election WHERE status=1;
@@ -94,12 +157,23 @@ BEGIN
 	SELECT * FROM division;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_election_voter_id`(IN account_id INT)
+BEGIN
+	SELECT election_voter.elect_voter_id
+
+	FROM account
+
+	INNER JOIN election_voter ON account.acct_id = election_voter.acct_id
+	INNER JOIN election ON election_voter.elect_id = election.elect_id AND election.status = 1
+
+	WHERE account.acct_id = account_id;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_party`()
 BEGIN
-
-SELECT party_id, party_name
-
-FROM party;
+	SELECT party_id, party_name
+	FROM party
+	ORDER BY party_name ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_position_list`(IN division INT)
@@ -108,26 +182,153 @@ BEGIN
 	WHERE div_id = division;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_candidate_list`(IN `program_id` INT)
+BEGIN
+
+	SELECT 	position.pos_id,
+			position.pos_name,
+			UPPER(account.acct_lname) AS acct_lname,
+			UPPER(account.acct_fname) AS acct_fname,
+			account.course_id,
+			account.acct_username,
+			party.party_name,
+			election_candidate.elect_cand_id,
+			COUNT(candidate_votes.cand_vot_id) AS votes
+
+	FROM election_candidate
+
+	LEFT OUTER JOIN candidate_votes ON election_candidate.elect_cand_id = candidate_votes.elect_cand_id 
+					
+	RIGHT OUTER JOIN account ON election_candidate.acct_id = account.acct_id					
+	INNER JOIN course ON account.course_id = course.course_id
+	LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id
+	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id 
+			AND position.div_id = 2 
+			AND election_candidate.status = 1
+			AND election_candidate.elect_id = (	SELECT election.elect_id 
+												FROM election 
+												WHERE election.status = 1)
+	LEFT OUTER JOIN division ON position.div_id = division.div_id
+	RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
+
+	WHERE position.div_id = 2 AND course.prog_id = program_id
+
+	GROUP BY election_candidate.elect_cand_id, position.pos_id
+	ORDER BY position.order_no, account.acct_lname ASC;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_result`(IN progID INT)
+BEGIN
+
+	SELECT 	position.pos_id,
+			position.pos_name,
+			program.prog_name,
+			UPPER(account.acct_lname) AS acct_lname,
+			UPPER(account.acct_fname) AS acct_fname,
+			UPPER(account.acct_mname) AS acct_mname,
+			COUNT(candidate_votes.cand_vot_id) AS votes
+
+	FROM election_candidate
+
+	LEFT OUTER JOIN candidate_votes ON election_candidate.elect_cand_id = candidate_votes.elect_cand_id 
+	RIGHT OUTER JOIN account ON election_candidate.acct_id = account.acct_id
+	LEFT OUTER JOIN course ON account.course_id = course.course_id 
+	LEFT OUTER JOIN program ON course.prog_id = program.prog_id 
+	LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id
+	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id 
+
+			AND position.div_id = 2 
+			AND election_candidate.status = 1
+			AND election_candidate.elect_id = (	SELECT election.elect_id 
+												FROM election 
+												WHERE election.status = 1)
+			AND program.prog_id = progID
+	LEFT OUTER JOIN division ON position.div_id = division.div_id
+
+	WHERE position.div_id = 2
+
+	GROUP BY election_candidate.elect_cand_id, position.pos_id
+	ORDER BY position.order_no, account.acct_lname ASC;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_result`()
+BEGIN
+	SELECT 	position.pos_id,
+		position.pos_name,
+		UPPER(account.acct_lname) AS acct_lname,
+		UPPER(account.acct_fname) AS acct_fname,
+		UPPER(account.acct_mname) AS acct_mname,
+		election_candidate.elect_cand_id,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 1) AS ITE,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 2) AS ABA,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 3) AS Educ,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 4) AS PharmChem,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 5) AS NDHM,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 6) AS Music,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 7) AS LA,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 8) AS Engr,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 9) AS Nursing,
+		SUM(candidate_votes.cand_vot_id AND candidate_votes.voter_prog_id = 10) AS MLS
+
+
+	FROM election_candidate
+
+	LEFT OUTER JOIN candidate_votes ON election_candidate.elect_cand_id = candidate_votes.elect_cand_id 
+	RIGHT OUTER JOIN account ON election_candidate.acct_id = account.acct_id					
+	LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id
+	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id 
+			AND position.div_id = 1 
+			AND election_candidate.status = 1
+			AND election_candidate.elect_id = (	SELECT election.elect_id 
+												FROM election 
+												WHERE election.status = 1)
+	LEFT OUTER JOIN division ON position.div_id = division.div_id
+
+	WHERE position.div_id = 1 AND election_candidate.party_id IS NOT NULL
+
+	GROUP BY election_candidate.elect_cand_id, position.pos_id
+	ORDER BY position.order_no, account.acct_lname ASC;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicants`()
 BEGIN
 	SELECT 	elect_cand_id,
-		UPPER(acct_fname) AS acct_fname,
-		UPPER(acct_lname) AS acct_lname,
-		UPPER(acct_mname) AS acct_mname,
-		pos_name,
-		election_candidate.status
+			account.acct_username,
+			election_candidate.acct_id,
+			UPPER(acct_fname) AS acct_fname,
+			UPPER(acct_lname) AS acct_lname,
+			UPPER(acct_mname) AS acct_mname,
+			course.course_name,
+			pos_name,
+			party.party_name,
+			election_candidate.status,
+			election_candidate.date_time_log,
+			(SELECT COUNT(acct_id) 
+				FROM election_candidate 
+				WHERE election_candidate.acct_id = account.acct_id) AS applicant_counter,
+			(SELECT COUNT(*) 
+				FROM election_candidate t1 
+				WHERE election_candidate.acct_id = t1.acct_id 
+				AND t1.elect_cand_id <= election_candidate.elect_cand_id) AS sequence
+
 
 	FROM account
 
 	INNER JOIN election_candidate ON account.acct_id = election_candidate.acct_id
-	INNER JOIN election ON election_candidate.elect_id = election.elect_id
+	INNER JOIN election ON election_candidate.elect_id = election.elect_id AND election.status = 1
 	RIGHT OUTER JOIN position ON election_candidate.pos_id = position.pos_id
 	RIGHT OUTER JOIN division ON position.div_id = division.div_id
+	LEFT OUTER JOIN party ON election_candidate.party_id = party.party_id
+	INNER JOIN course ON account.course_id = course.course_id
 
-	WHERE division.div_id = 1;
+	ORDER BY 	position.order_no, 
+				account.acct_lname,
+				election_candidate.elect_cand_id ASC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicants_by_status`(IN election_candidate_status INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicants_by_status`(IN `election_candidate_status` INT)
 BEGIN
 SELECT 	elect_cand_id,
 		UPPER(acct_fname) AS acct_fname,
@@ -145,7 +346,7 @@ SELECT 	elect_cand_id,
 	RIGHT OUTER JOIN division ON position.div_id = division.div_id
 	RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
 	
-	WHERE division.div_id = 1 AND election_candidate.status = election_candidate_status
+	WHERE election_candidate.status = election_candidate_status
 	ORDER BY position.order_no, account.acct_lname ASC;
 
 END$$
@@ -164,11 +365,10 @@ BEGIN
 	INNER JOIN account ON election_candidate.acct_id = account.acct_id
 
 	WHERE party_id IS NULL
-	AND election.status = 1
-	AND position.div_id = 1;
+	AND election.status = 1;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicant_name_position`(IN `candidate_id` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ssg_applicant_name_position`(IN candidate_id INT)
 BEGIN
 
 SELECT  elect_cand_id AS candidate_id,
@@ -196,6 +396,8 @@ BEGIN
 
 	SELECT 	position.pos_id,
 			position.pos_name,
+			account.acct_username,
+			election_candidate.elect_cand_id,
 			UPPER(account.acct_lname) AS acct_lname,
 			UPPER(account.acct_fname) AS acct_fname,
 			party.party_name,
@@ -223,6 +425,41 @@ BEGIN
 
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voted_candidates_by_voter`(IN voter_id INT)
+BEGIN
+	SELECT 
+		UPPER(acct_lname) AS acct_lname, 
+		UPPER(acct_fname) AS acct_fname, 
+		UPPER(acct_mname) AS acct_mname,
+		account.acct_username,
+		pos_name,
+		party.party_name,
+		div_name
+
+	FROM account
+		INNER JOIN election_candidate ON account.acct_id = election_candidate.acct_id
+		INNER JOIN candidate_votes ON election_candidate.elect_cand_id = candidate_votes.elect_cand_id
+		INNER JOIN election_voter ON candidate_votes.elect_voter_id = election_voter.elect_voter_id
+		INNER JOIN position ON election_candidate.pos_id = position.pos_id
+		INNER JOIN division ON position.div_id = division.div_id
+		INNER JOIN election ON election_voter.elect_id = election.elect_id
+		RIGHT OUTER JOIN party ON election_candidate.party_id = party.party_id
+
+	WHERE election.status = 1
+	AND election_voter.elect_voter_id = voter_id
+	ORDER BY position.order_no;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_prog_id`(IN acct_id INT)
+BEGIN
+	SELECT 
+	prog_id
+	FROM election.course, election.account
+	WHERE 
+	account.acct_id = acct_id
+	AND course.course_id = account.course_id;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_voter_statistics`()
 BEGIN
 
@@ -241,6 +478,24 @@ FROM program
 GROUP BY program.prog_id
 ORDER BY program.prog_name;
 
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_vote`(IN cand_id INT, IN acct_id INT, IN voter_prog_id INT)
+BEGIN
+	INSERT INTO `candidate_votes`
+	(
+	`elect_cand_id`,
+	`elect_voter_id`,
+	`date_time_log`,
+	`voter_prog_id`
+	)
+	VALUES
+	(
+	cand_id,
+	acct_id,
+	NOW(),
+	voter_prog_id
+	);
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ssg_applicant_statistics_by_status`()
@@ -285,11 +540,19 @@ ORDER BY position.order_no, account.acct_lname ASC;
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_candidate_party`(IN `part_id` INT, IN `candidate_id` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_candidate_party`(IN part_id INT, IN candidate_id INT)
 BEGIN
 	UPDATE election_candidate
 	SET party_id = part_id
 	WHERE elect_cand_id = candidate_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_party`(IN pt_id INT, IN pt_name VARCHAR(45))
+BEGIN
+	UPDATE `party`
+	SET
+	`party_name` = pt_name
+	WHERE `party_id` = pt_id;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `update_ssg_applicant_status`(IN candidate_id INT, IN new_status INT)
@@ -297,6 +560,25 @@ BEGIN
 	UPDATE election_candidate
 	SET status = new_status
 	WHERE elect_cand_id = candidate_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `voter_statistics_per_program`()
+BEGIN
+
+SELECT 	program.prog_id,
+		program.prog_code,
+		program.prog_name,
+		COUNT(election_voter.elect_voter_id) AS Voter
+
+FROM program
+	LEFT OUTER JOIN course ON program.prog_id = course.prog_id 
+	LEFT OUTER JOIN account ON course.course_id = account.course_id 
+	LEFT OUTER JOIN election_voter ON account.acct_id = election_voter.acct_id  
+		AND election_voter.elect_id =  (SELECT election.elect_id 
+										FROM election.election 
+										WHERE election.status=1)
+GROUP BY program.prog_id;
+
 END$$
 
 DELIMITER ;
@@ -323,7 +605,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   PRIMARY KEY (`acct_id`),
   UNIQUE KEY `acct_username_UNIQUE` (`acct_username`),
   KEY `fk_voter_course1_idx` (`course_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4819 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4820 ;
 
 --
 -- Dumping data for table `account`
@@ -4583,7 +4865,8 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4815, '1000108', 0x56d6cf66f30fa3e17877a657c7e0c963, 'Odasco', 'Dan David', 'Asedillo', 'danvhan47@gmail.com', NULL, 11, 0, 1, '2013-10-30 17:04:50'),
 (4816, '1100527', 0x599423b6a29a6ebfba1ca89262f15636, 'Dilodilo', 'Karl Angelo', 'Caro', 'karl_angelSI@yahoo.com', NULL, 1, 0, 1, '2013-10-30 17:05:58'),
 (4817, '1300893', 0x4065d2eb51901b2b0727d07103564f72, 'siton', 'krizzle mae', 'tahil', 'krizzle_2912@yahoo.com', NULL, 9, 0, 0, '2013-10-30 17:10:26'),
-(4818, '1301608', 0xf02f74e960c9f549daf5fb925a25f44c, 'carracedo', 'ma. angelica', 'obero', 'angelicacarracedo@yahoo.com', NULL, 14, 0, 1, '2013-10-30 17:13:34');
+(4818, '1301608', 0xf02f74e960c9f549daf5fb925a25f44c, 'carracedo', 'ma. angelica', 'obero', 'angelicacarracedo@yahoo.com', NULL, 14, 0, 1, '2013-10-30 17:13:34'),
+(4819, '1102089', 0xc2934c576c4ac28ec28dc2b4c3a53828c3b3c2b0c292c29e5d, 'Tan', 'Chin Tinn Lourence', 'Son', 'chintinntan1391@gmail.com', NULL, 1, 0, 1, '2014-01-11 17:33:19');
 
 -- --------------------------------------------------------
 
@@ -4618,11 +4901,13 @@ CREATE TABLE IF NOT EXISTS `candidate_votes` (
   `elect_cand_id` int(11) NOT NULL,
   `elect_voter_id` int(11) NOT NULL,
   `status` int(11) DEFAULT NULL,
-  `date_time_log` varchar(45) DEFAULT NULL,
+  `date_time_log` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `voter_prog_id` int(11) NOT NULL,
   PRIMARY KEY (`cand_vot_id`),
   KEY `fk_candidate_votes_election_candidate1_idx` (`elect_cand_id`),
-  KEY `fk_candidate_votes_election_voter1_idx` (`elect_voter_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  KEY `fk_candidate_votes_election_voter1_idx` (`elect_voter_id`),
+  KEY `fk_candidate_votes_program1_idx` (`voter_prog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -4738,33 +5023,226 @@ CREATE TABLE IF NOT EXISTS `election_candidate` (
   KEY `fk_candidate_position1_idx` (`pos_id`),
   KEY `fk_candidate_party1_idx` (`party_id`),
   KEY `fk_election_candidate_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=64 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=214 ;
 
 --
 -- Dumping data for table `election_candidate`
 --
 
 INSERT INTO `election_candidate` (`elect_cand_id`, `acct_id`, `pos_id`, `party_id`, `elect_id`, `date_time_log`, `status`) VALUES
-(38, 11, 1, 1, 1, NULL, 1),
-(39, 14, 2, 3, 1, NULL, 1),
-(40, 17, 2, NULL, 1, NULL, 0),
-(41, 18, 3, NULL, 1, NULL, 2),
-(42, 20, 3, NULL, 1, NULL, 2),
-(43, 22, 4, 1, 1, NULL, 2),
-(44, 23, 4, 2, 1, NULL, 2),
-(45, 24, 5, 1, 1, NULL, 0),
-(46, 25, 5, 2, 1, NULL, 0),
-(47, 27, 6, 1, 1, NULL, 0),
-(48, 28, 7, 2, 1, NULL, 0),
-(49, 29, 7, 1, 1, NULL, 0),
-(50, 30, 8, 1, 1, NULL, 0),
-(51, 31, 8, 2, 1, NULL, 0),
-(52, 33, 9, 1, 1, NULL, 0),
-(53, 35, 9, 2, 1, NULL, 0),
-(54, 40, 1, 3, 1, NULL, 1),
-(55, 41, 1, 3, 1, NULL, 1),
-(56, 60, 1, 3, 1, NULL, 0),
-(63, 61, 1, 3, 1, '2014-01-05 19:46:50', 1);
+(1, 556, 10, 3, 1, '2014-01-15 15:18:52', 1),
+(2, 1082, 11, 3, 1, '2014-01-15 15:18:55', 1),
+(3, 125, 10, 3, 1, '2014-01-15 15:19:37', 1),
+(4, 147, 10, 3, 1, '2014-01-15 15:19:55', 1),
+(5, 23, 10, 3, 1, '2014-01-15 15:19:57', 1),
+(6, 1058, 10, 3, 1, '2014-01-15 15:20:31', 1),
+(7, 149, 10, 3, 1, '2014-01-15 15:20:32', 1),
+(8, 31, 10, 3, 1, '2014-01-15 15:20:44', 1),
+(9, 1088, 11, 3, 1, '2014-01-15 15:20:50', 1),
+(10, 51, 11, 3, 1, '2014-01-15 15:21:40', 1),
+(11, 188, 9, 3, 1, '2014-01-15 15:21:53', 1),
+(12, 53, 11, 3, 1, '2014-01-15 15:22:04', 1),
+(13, 156, 11, 3, 1, '2014-01-15 15:22:12', 1),
+(14, 2765, 13, 3, 1, '2014-01-15 15:22:25', 1),
+(15, 337, 4, 3, 1, '2014-01-15 15:22:37', 0),
+(16, 409, 12, 3, 1, '2014-01-15 15:22:46', 1),
+(17, 161, 10, 3, 1, '2014-01-15 15:22:47', 0),
+(18, 2056, 12, 3, 1, '2014-01-15 15:22:56', 1),
+(19, 2708, 12, 3, 1, '2014-01-15 15:23:35', 1),
+(20, 162, 11, 3, 1, '2014-01-15 15:23:52', 1),
+(21, 411, 12, 3, 1, '2014-01-15 15:23:56', 1),
+(22, 72, 12, 3, 1, '2014-01-15 15:23:58', 1),
+(23, 74, 12, 3, 1, '2014-01-15 15:24:25', 1),
+(24, 89, 10, 3, 1, '2014-01-15 15:24:25', 1),
+(25, 417, 13, 3, 1, '2014-01-15 15:24:27', 1),
+(26, 163, 11, 3, 1, '2014-01-15 15:24:45', 1),
+(27, 418, 13, 3, 1, '2014-01-15 15:24:53', 1),
+(28, 79, 13, 3, 1, '2014-01-15 15:24:58', 1),
+(29, 2922, 14, 3, 1, '2014-01-15 15:25:02', 1),
+(30, 83, 13, 3, 1, '2014-01-15 15:25:20', 1),
+(31, 421, 14, 3, 1, '2014-01-15 15:25:21', 1),
+(32, 269, 6, 3, 1, '2014-01-15 15:25:25', 1),
+(33, 3679, 13, 3, 1, '2014-01-15 15:25:42', 1),
+(34, 84, 14, 3, 1, '2014-01-15 15:25:54', 1),
+(35, 344, 4, 3, 1, '2014-01-15 15:25:59', 0),
+(36, 87, 14, 3, 1, '2014-01-15 15:26:28', 1),
+(37, 129, 10, 3, 1, '2014-01-15 15:26:44', 1),
+(38, 93, 15, 3, 1, '2014-01-15 15:26:48', 1),
+(39, 347, 11, 3, 1, '2014-01-15 15:27:13', 1),
+(40, 341, 6, 3, 1, '2014-01-15 15:27:18', 1),
+(41, 134, 11, 3, 1, '2014-01-15 15:27:27', 1),
+(42, 2986, 15, 3, 1, '2014-01-15 15:27:31', 1),
+(43, 94, 15, 3, 1, '2014-01-15 15:27:36', 1),
+(44, 505, 14, 3, 1, '2014-01-15 15:27:38', 1),
+(45, 3792, 14, 3, 1, '2014-01-15 15:27:47', 1),
+(46, 3107, 16, 3, 1, '2014-01-15 15:28:17', 1),
+(47, 788, 15, 3, 1, '2014-01-15 15:28:31', 1),
+(48, 108, 16, 3, 1, '2014-01-15 15:28:44', 1),
+(49, 990, 15, 3, 1, '2014-01-15 15:28:54', 1),
+(50, 207, 9, 3, 1, '2014-01-15 15:29:05', 1),
+(51, 110, 16, 3, 1, '2014-01-15 15:29:06', 1),
+(52, 280, 12, 3, 1, '2014-01-15 15:29:16', 1),
+(53, 1040, 16, 3, 1, '2014-01-15 15:29:28', 1),
+(54, 367, 11, 3, 1, '2014-01-15 15:29:43', 1),
+(55, 114, 17, 3, 1, '2014-01-15 15:29:57', 1),
+(56, 1155, 16, 3, 1, '2014-01-15 15:30:03', 1),
+(57, 2855, 15, 3, 1, '2014-01-15 15:30:08', 1),
+(58, 289, 3, 3, 1, '2014-01-15 15:30:14', 0),
+(59, 115, 17, 3, 1, '2014-01-15 15:30:30', 1),
+(60, 1266, 17, 5, 1, '2014-01-15 15:30:40', 1),
+(61, 135, 11, 3, 1, '2014-01-15 15:30:46', 1),
+(62, 3321, 17, 3, 1, '2014-01-15 15:30:53', 1),
+(63, 329, 3, 3, 1, '2014-01-15 15:30:53', 0),
+(64, 116, 18, 3, 1, '2014-01-15 15:30:55', 1),
+(65, 3108, 16, 3, 1, '2014-01-15 15:31:01', 1),
+(66, 349, 12, 3, 1, '2014-01-15 15:31:08', 1),
+(67, 1291, 17, 3, 1, '2014-01-15 15:31:11', 1),
+(68, 388, 10, 3, 1, '2014-01-15 15:31:11', 1),
+(69, 367, 11, 3, 1, '2014-01-15 15:31:18', 0),
+(70, 3500, 17, 3, 1, '2014-01-15 15:31:19', 1),
+(71, 119, 18, 3, 1, '2014-01-15 15:31:22', 1),
+(72, 120, 18, 3, 1, '2014-01-15 15:31:42', 1),
+(73, 121, 18, 3, 1, '2014-01-15 15:32:00', 1),
+(74, 1103, 10, 3, 1, '2014-01-15 15:32:00', 1),
+(75, 1318, 18, 3, 1, '2014-01-15 15:32:38', 1),
+(76, 360, 13, 3, 1, '2014-01-15 15:32:49', 1),
+(77, 142, 18, 3, 1, '2014-01-15 15:32:57', 1),
+(78, 3606, 18, 3, 1, '2014-01-15 15:33:01', 1),
+(79, 404, 11, 3, 1, '2014-01-15 15:33:03', 1),
+(80, 396, 1, 3, 1, '2014-01-15 15:33:04', 0),
+(81, 1323, 18, 3, 1, '2014-01-15 15:33:10', 1),
+(82, 1104, 10, 3, 1, '2014-01-15 15:33:10', 1),
+(83, 150, 18, 3, 1, '2014-01-15 15:33:11', 1),
+(84, 402, 13, 3, 1, '2014-01-15 15:33:35', 1),
+(85, 397, 2, 3, 1, '2014-01-15 15:33:39', 0),
+(86, 1344, 18, 3, 1, '2014-01-15 15:33:46', 1),
+(87, 1107, 11, 3, 1, '2014-01-15 15:34:06', 1),
+(88, 55, 5, 3, 1, '2014-01-15 15:34:14', 1),
+(89, 3791, 18, 3, 1, '2014-01-15 15:34:23', 1),
+(90, 462, 14, 3, 1, '2014-01-15 15:34:23', 1),
+(91, 1109, 11, 3, 1, '2014-01-15 15:34:37', 1),
+(92, 406, 2, 3, 1, '2014-01-15 15:34:43', 0),
+(93, 463, 14, 3, 1, '2014-01-15 15:34:58', 1),
+(94, 508, 10, 3, 1, '2014-01-15 15:35:13', 1),
+(95, 460, 3, 3, 1, '2014-01-15 15:35:21', 0),
+(96, 464, 3, 3, 1, '2014-01-15 15:35:50', 0),
+(97, 593, 10, 3, 1, '2014-01-15 15:35:57', 0),
+(98, 3729, 18, 3, 1, '2014-01-15 15:36:02', 1),
+(99, 159, 12, 3, 1, '2014-01-15 15:36:11', 1),
+(100, 3793, 18, 3, 1, '2014-01-15 15:36:36', 1),
+(101, 615, 12, 3, 1, '2014-01-15 15:36:40', 1),
+(102, 812, 14, 3, 1, '2014-01-15 15:36:44', 1),
+(103, 3827, 18, 3, 1, '2014-01-15 15:36:56', 1),
+(104, 763, 12, 3, 1, '2014-01-15 15:37:18', 1),
+(105, 474, 4, 3, 1, '2014-01-15 15:37:19', 0),
+(106, 504, 4, 3, 1, '2014-01-15 15:38:00', 0),
+(107, 199, 12, 3, 1, '2014-01-15 15:38:03', 1),
+(108, 877, 15, 3, 1, '2014-01-15 15:38:07', 1),
+(109, 897, 14, 3, 1, '2014-01-15 15:38:08', 1),
+(110, 1387, 9, 3, 1, '2014-01-15 15:38:29', 1),
+(111, 902, 14, 3, 1, '2014-01-15 15:38:36', 1),
+(112, 507, 5, 3, 1, '2014-01-15 15:38:49', 1),
+(113, 2767, 18, 3, 1, '2014-01-15 15:38:50', 1),
+(114, 1113, 12, 3, 1, '2014-01-15 15:38:57', 1),
+(115, 1183, 15, 3, 1, '2014-01-15 15:39:12', 1),
+(116, 155, 18, 3, 1, '2014-01-15 15:39:12', 1),
+(117, 519, 5, 3, 1, '2014-01-15 15:39:18', 1),
+(118, 1173, 12, 3, 1, '2014-01-15 15:39:27', 1),
+(119, 200, 13, 3, 1, '2014-01-15 15:39:27', 1),
+(120, 949, 15, 3, 1, '2014-01-15 15:39:35', 1),
+(121, 1312, 15, 3, 1, '2014-01-15 15:39:49', 1),
+(122, 1388, 9, 3, 1, '2014-01-15 15:40:00', 1),
+(123, 523, 6, 3, 1, '2014-01-15 15:40:05', 1),
+(124, 1174, 13, 3, 1, '2014-01-15 15:40:16', 1),
+(125, 525, 6, 3, 1, '2014-01-15 15:40:25', 1),
+(126, 803, 16, 3, 1, '2014-01-15 15:40:26', 1),
+(127, 1698, 16, 3, 1, '2014-01-15 15:40:37', 1),
+(128, 1196, 13, 3, 1, '2014-01-15 15:40:54', 1),
+(129, 244, 13, 3, 1, '2014-01-15 15:41:12', 1),
+(130, 1954, 16, 3, 1, '2014-01-15 15:41:14', 1),
+(131, 434, 10, 3, 1, '2014-01-15 15:41:17', 1),
+(132, 711, 10, 3, 1, '2014-01-15 15:41:44', 1),
+(133, 3533, 1, 3, 1, '2014-01-15 15:41:57', 0),
+(134, 1490, 11, 3, 1, '2014-01-15 15:42:03', 1),
+(135, 495, 18, 3, 1, '2014-01-15 15:42:14', 1),
+(136, 1957, 17, 3, 1, '2014-01-15 15:42:21', 1),
+(137, 3854, 11, 3, 1, '2014-01-15 15:42:25', 1),
+(138, 1202, 14, 3, 1, '2014-01-15 15:42:26', 1),
+(139, 989, 16, 3, 1, '2014-01-15 15:42:34', 1),
+(140, 3857, 12, 3, 1, '2014-01-15 15:42:48', 1),
+(141, 497, 18, 3, 1, '2014-01-15 15:42:56', 1),
+(142, 1996, 17, 3, 1, '2014-01-15 15:43:07', 1),
+(143, 540, 16, 3, 1, '2014-01-15 15:43:12', 1),
+(144, 3902, 12, 3, 1, '2014-01-15 15:43:13', 1),
+(145, 1084, 17, 3, 1, '2014-01-15 15:43:14', 1),
+(146, 1207, 14, 3, 1, '2014-01-15 15:43:21', 1),
+(147, 3903, 13, 3, 1, '2014-01-15 15:43:45', 1),
+(148, 563, 16, 3, 1, '2014-01-15 15:43:51', 1),
+(149, 1212, 15, 3, 1, '2014-01-15 15:43:51', 1),
+(150, 1241, 17, 3, 1, '2014-01-15 15:43:57', 1),
+(151, 2005, 18, 3, 1, '2014-01-15 15:44:02', 1),
+(152, 4776, 13, 3, 1, '2014-01-15 15:44:17', 1),
+(153, 1217, 15, 3, 1, '2014-01-15 15:44:25', 1),
+(154, 131, 18, 3, 1, '2014-01-15 15:44:39', 1),
+(155, 2052, 18, 3, 1, '2014-01-15 15:44:39', 1),
+(156, 1305, 18, 3, 1, '2014-01-15 15:44:44', 1),
+(157, 569, 17, 3, 1, '2014-01-15 15:44:44', 1),
+(158, 1218, 16, 3, 1, '2014-01-15 15:44:48', 1),
+(159, 4809, 14, 3, 1, '2014-01-15 15:44:57', 1),
+(160, 302, 14, 3, 1, '2014-01-15 15:45:04', 1),
+(161, 2089, 18, 3, 1, '2014-01-15 15:45:04', 1),
+(162, 601, 17, 3, 1, '2014-01-15 15:45:15', 1),
+(163, 1308, 16, 3, 1, '2014-01-15 15:45:18', 1),
+(164, 2091, 18, 3, 1, '2014-01-15 15:45:40', 1),
+(165, 201, 18, 3, 1, '2014-01-15 15:45:51', 1),
+(166, 2164, 18, 3, 1, '2014-01-15 15:46:07', 1),
+(167, 816, 18, 3, 1, '2014-01-15 15:46:12', 1),
+(168, 377, 14, 3, 1, '2014-01-15 15:46:13', 1),
+(169, 378, 15, 3, 1, '2014-01-15 15:46:58', 1),
+(170, 2178, 18, 3, 1, '2014-01-15 15:47:04', 1),
+(171, 1309, 17, 3, 1, '2014-01-15 15:47:10', 1),
+(172, 208, 7, 3, 1, '2014-01-15 15:47:13', 1),
+(173, 1310, 17, 3, 1, '2014-01-15 15:47:41', 1),
+(174, 271, 7, 3, 1, '2014-01-15 15:48:02', 1),
+(175, 1325, 18, 3, 1, '2014-01-15 15:48:04', 1),
+(176, 1342, 18, 3, 1, '2014-01-15 15:48:25', 1),
+(177, 1343, 18, 3, 1, '2014-01-15 15:48:49', 1),
+(178, 1355, 18, 3, 1, '2014-01-15 15:49:28', 1),
+(179, 398, 15, 3, 1, '2014-01-15 15:49:36', 1),
+(180, 1366, 18, 3, 1, '2014-01-15 15:49:59', 1),
+(181, 427, 16, 3, 1, '2014-01-15 15:50:43', 1),
+(182, 454, 16, 3, 1, '2014-01-15 15:51:53', 1),
+(183, 235, 10, 3, 1, '2014-01-15 15:51:54', 1),
+(184, 270, 10, 3, 1, '2014-01-15 15:52:17', 1),
+(185, 273, 11, 3, 1, '2014-01-15 15:52:48', 1),
+(186, 457, 17, 3, 1, '2014-01-15 15:53:08', 1),
+(187, 274, 11, 3, 1, '2014-01-15 15:53:26', 1),
+(188, 288, 12, 3, 1, '2014-01-15 15:53:51', 1),
+(189, 478, 17, 3, 1, '2014-01-15 15:53:55', 1),
+(190, 294, 12, 3, 1, '2014-01-15 15:54:10', 1),
+(191, 296, 13, 3, 1, '2014-01-15 15:54:40', 1),
+(192, 476, 13, 3, 1, '2014-01-15 15:55:06', 1),
+(193, 481, 17, 3, 1, '2014-01-15 15:55:10', 0),
+(194, 541, 14, 3, 1, '2014-01-15 15:55:26', 1),
+(195, 488, 18, 3, 1, '2014-01-15 15:55:36', 0),
+(196, 779, 14, 3, 1, '2014-01-15 15:55:49', 1),
+(197, 818, 15, 3, 1, '2014-01-15 15:56:13', 1),
+(198, 532, 18, 3, 1, '2014-01-15 15:56:19', 1),
+(199, 819, 15, 3, 1, '2014-01-15 15:56:35', 1),
+(200, 539, 18, 3, 1, '2014-01-15 15:56:53', 1),
+(201, 829, 16, 3, 1, '2014-01-15 15:57:09', 1),
+(202, 577, 2, 3, 1, '2014-01-15 15:57:39', 0),
+(203, 832, 16, 3, 1, '2014-01-15 15:57:59', 1),
+(204, 579, 2, 3, 1, '2014-01-15 15:58:07', 0),
+(205, 959, 17, 3, 1, '2014-01-15 15:58:25', 1),
+(206, 1029, 17, 3, 1, '2014-01-15 15:58:51', 1),
+(207, 1407, 18, 3, 1, '2014-01-15 15:59:06', 1),
+(208, 1411, 18, 3, 1, '2014-01-15 15:59:21', 1),
+(209, 1412, 18, 3, 1, '2014-01-15 15:59:41', 1),
+(210, 1413, 18, 3, 1, '2014-01-15 16:00:47', 1),
+(211, 1415, 18, 3, 1, '2014-01-15 16:01:04', 1),
+(212, 616, 8, 3, 1, '2014-01-15 17:47:05', 1),
+(213, 619, 8, 3, 1, '2014-01-15 17:48:01', 0);
 
 -- --------------------------------------------------------
 
@@ -4782,7 +5260,14 @@ CREATE TABLE IF NOT EXISTS `election_officer` (
   KEY `fk_election_officer_account1_idx` (`acct_id`),
   KEY `fk_election_officer_election1_idx` (`elect_id`),
   KEY `fk_election_officer_account_type1_idx` (`acct_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `election_officer`
+--
+
+INSERT INTO `election_officer` (`elect_officer_id`, `acct_id`, `elect_id`, `acct_type_id`, `date_time_log`) VALUES
+(1, 1102, 1, 4, '2014-01-16 12:54:00');
 
 -- --------------------------------------------------------
 
@@ -8924,16 +9409,16 @@ CREATE TABLE IF NOT EXISTS `party` (
   `party_name` varchar(45) DEFAULT NULL,
   `school_year` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`party_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `party`
 --
 
 INSERT INTO `party` (`party_id`, `party_name`, `school_year`) VALUES
-(1, 'Ambak', NULL),
-(2, 'Lupad', NULL),
-(3, 'Independent', NULL);
+(3, 'Independent', NULL),
+(4, 'Change Party', NULL),
+(5, 'Sigaw UICian Party', NULL);
 
 -- --------------------------------------------------------
 
@@ -9077,7 +9562,8 @@ ALTER TABLE `account`
 --
 ALTER TABLE `candidate_votes`
   ADD CONSTRAINT `fk_candidate_votes_election_candidate1` FOREIGN KEY (`elect_cand_id`) REFERENCES `election_candidate` (`elect_cand_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_candidate_votes_election_voter1` FOREIGN KEY (`elect_voter_id`) REFERENCES `election_voter` (`elect_voter_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_candidate_votes_election_voter1` FOREIGN KEY (`elect_voter_id`) REFERENCES `election_voter` (`elect_voter_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_candidate_votes_program1` FOREIGN KEY (`voter_prog_id`) REFERENCES `program` (`prog_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `course`

@@ -12,7 +12,22 @@ class Ballot extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
+			/*
+			 * This code segment will check if the user is an 
+			 * election officer
+			 */
 			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+			if($is_election_officer != null)
+			{
+				$page_view_content["is_election_officer"] = TRUE;
+			}
+			/*
+			 * Election officer checker ends here
+			 */
+
 			$course = $this->session->userdata('course_id');
 
 			$this->load->model('candidate_model');
@@ -64,15 +79,29 @@ class Ballot extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			$acct_id = $this->session->userdata('acct_id');
 
+			/*
+			 * This code segment will check if the user is an 
+			 * election officer
+			 */
+			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+			if($is_election_officer != null)
+			{
+				$page_view_content["is_election_officer"] = TRUE;
+			}
+			/*
+			 * Election officer checker ends here
+			 */
+			
 			$this->load->model('voter_model');
 			$voter_prog_id = $this->voter_model->get_voter_prog_id($acct_id);
 			$voter_id = $this->voter_model->get_election_voter_id($acct_id); 
 
 			$this->load->model('candidate_model');
 			$position_id = $this->candidate_model->get_position_list(1);
-
 
 			for($x=0;$x<count($position_id);$x++)
 			{

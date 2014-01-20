@@ -1,4 +1,4 @@
-<h1>Program Election Result</h1>
+<div id="content_header">Program Election Result</div>
 <div id="body">
 
 	<table>

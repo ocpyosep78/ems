@@ -1,4 +1,4 @@
-<h1>Candidacy Application Form</h1>
+<div id="content_header">Candidacy Application Form</div>
 <div id="body">
 
 <?php

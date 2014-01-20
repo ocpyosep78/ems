@@ -1,4 +1,4 @@
-<h1>SSG Election Result</h1>
+<div id="content_header">SSG Election Result</div>
 <div id="body">
 
 	<table>

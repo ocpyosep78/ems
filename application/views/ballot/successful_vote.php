@@ -1,4 +1,4 @@
-<h1>Vote Successful</h1>
+<div id="content_header">Online Voting</div>
 <div id="body">
 	<?php
 		

@@ -1,4 +1,4 @@
-<h1>Set Party</h1>
+<div id="content_header">Set Applicant Party</div>
 <div id="body">
 
 	<table>

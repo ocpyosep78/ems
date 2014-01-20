@@ -8,9 +8,11 @@
 </head>
 <body>
 <div id="main_container">
-	<div id="main_container_banner">
-
-		<div id="banner">Election Dashboard</div>
+	<div id="header">
+		<div id="banner">
+			<div id="banner_content">ELECTION DASHBOARD</div>
+			<div id="banner_description">Commission on Elections and Appointments, University of the Immaculate Conception</div>
+		</div>
 		
 		<div id="login_form_container">  
 		<?php
@@ -19,14 +21,13 @@
 				$fname = $this->session->userdata('acct_fname');
 				$lname = $this->session->userdata('acct_lname');
 				echo $fname." ".$lname;
-				echo " ".'[<a href="./logout">Logout</a>]';
+				echo " ".'[<a href="'.base_url().'index.php/logout">Logout</a>]';
 			}
 			else
 			{
-				$this->load->view('login_form');	
+				// $this->load->view('login_form');	
 			}
 		?>
 		</div>
-	
 	</div>
     
