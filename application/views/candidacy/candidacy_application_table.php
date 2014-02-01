@@ -70,9 +70,8 @@
 
 	echo $table['table_'];
 
-	// echo '<br><br><br>';
-	echo '<p>Please download the following forms and fill in the required details before <br> 
-			submitting to the office of Commission on Elections and Appointments (CEA).</p>';
+	echo '<p>Please download the forms provided below and fill in all the required details. Submit the accomplished 
+		  <br>forms to the office of Commission on Elections and Appointments (CEA) on or before February 5 2014.</p>';
 	echo '<ul>';
 	echo '<li><a href="'.base_url().'index.php/download_candidacy_form">Application Letter</a></li>';
 	echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_coc">Certificate of Candidacy</a></li>';

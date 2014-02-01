@@ -20,6 +20,8 @@
 		<input type="text" name="username" value="" id="username" placeholder="ID Number" required="">
 		<input type="password" name="password" value="" id="password" placeholder="Password" required="">
 		<input type="submit" name="submit" value="Login">
-		</form>		
+		</form>	
+		<br>
+		<a href="<?php echo base_url('index.php/create_account') ?>">Create account</a>	
 	</div>
 

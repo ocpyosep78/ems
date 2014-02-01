@@ -15,7 +15,9 @@
 
 	$this->load->helper('form');
 
-	echo form_open('ballot/submit_vote');
+	$form_attributes = array('name'	=> 'candidates');
+
+	echo form_open('ballot/submit_vote',$form_attributes);
 	echo '<table id="ballot">';
 	echo $tb['tr'];
 	echo '<th colspan=3>SSG Executive Position</th>';

@@ -30,9 +30,20 @@ class Home extends CI_Controller {
 			 * Election officer checker ends here
 			 */
 
-			$page_view_content["page_view_dir"] = "home/homepage";
+			$this->load->model('candidate_model');
+			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
+
+			if($voter_registration!=NULL)
+			{
+				$page_view_content["page_view_dir"] = "home/homepage";
+			}
+			else
+			{
+				$page_view_content["page_view_dir"] = "error_message/message_1";
+			}	
+			
 			$page_view_content["logged_in"] = TRUE;	
-			$this->load->view("includes/template",$page_view_content);		
+			$this->load->view("includes/template",$page_view_content);	
 		}
 		else
 		{

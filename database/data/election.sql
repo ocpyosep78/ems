@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 19, 2014 at 08:55 PM
+-- Generation Time: Jan 31, 2014 at 07:15 PM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -24,6 +24,38 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_account`(IN USERNAME VARCHAR(45),
+								IN ACCT_PASSWORD BLOB,
+								IN LASTNAME VARCHAR(45),
+								IN FIRSTNAME VARCHAR(45),
+								IN MIDDLENAME VARCHAR(45),
+								IN EMAIL_ADDRESS VARCHAR(45),
+								IN COURSE_ID INT)
+BEGIN
+	INSERT INTO account
+	(
+		acct_username,
+		acct_password,
+		acct_lname,
+		acct_fname,
+		acct_mname,
+		email_address,
+		course_id,
+		time_date_log
+	)
+	VALUES
+	(
+		USERNAME,
+		AES_ENCRYPT(ACCT_PASSWORD,MD5(19911102)),
+		LASTNAME,
+		FIRSTNAME,
+		MIDDLENAME,
+		EMAIL_ADDRESS,
+		COURSE_ID,
+		NOW()
+	);
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `add_candidacy_application`(IN account_id INT,IN position_id INT, IN election_id INT)
 BEGIN
 	INSERT INTO `election_candidate`
@@ -124,27 +156,30 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `course_voters_statistics`()
 BEGIN
-
-SELECT 	course.course_id,
-		course.course_name,
-		COUNT(election_voter.elect_voter_id) AS Voters
-
-FROM course
-
-
-INNER JOIN account ON course.course_id = account.course_id
-INNER JOIN election_voter ON account.acct_id = election_voter.acct_id
-			AND election_voter.elect_id =  (SELECT election.elect_id 
-										FROM election.election 
-										WHERE election.status=1)
-GROUP BY course.course_id 
-;
+	SELECT 	course.course_id,
+			course.course_name,
+			COUNT(election_voter.elect_voter_id) AS Voters
+	FROM course
+	INNER JOIN account ON course.course_id = account.course_id
+	INNER JOIN election_voter ON account.acct_id = election_voter.acct_id
+				AND election_voter.elect_id =  (SELECT election.elect_id 
+											FROM election.election 
+											WHERE election.status=1)
+	GROUP BY course.course_id
+	ORDER BY course.prog_id, course.course_name ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_party`(IN pt_id INT)
 BEGIN
 	DELETE FROM `party`
 	WHERE `party_id` = pt_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_course_list`(IN programID INT)
+BEGIN
+	SELECT * FROM election.course
+	WHERE prog_id = programID
+	ORDER BY course.course_name ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_current_election`()
@@ -216,6 +251,12 @@ BEGIN
 	GROUP BY election_candidate.elect_cand_id, position.pos_id
 	ORDER BY position.order_no, account.acct_lname ASC;
 
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_list`()
+BEGIN
+	SELECT * FROM election.program
+	ORDER BY prog_name ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_program_result`(IN progID INT)
@@ -605,7 +646,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   PRIMARY KEY (`acct_id`),
   UNIQUE KEY `acct_username_UNIQUE` (`acct_username`),
   KEY `fk_voter_course1_idx` (`course_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4820 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4824 ;
 
 --
 -- Dumping data for table `account`
@@ -4866,7 +4907,8 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4816, '1100527', 0x599423b6a29a6ebfba1ca89262f15636, 'Dilodilo', 'Karl Angelo', 'Caro', 'karl_angelSI@yahoo.com', NULL, 1, 0, 1, '2013-10-30 17:05:58'),
 (4817, '1300893', 0x4065d2eb51901b2b0727d07103564f72, 'siton', 'krizzle mae', 'tahil', 'krizzle_2912@yahoo.com', NULL, 9, 0, 0, '2013-10-30 17:10:26'),
 (4818, '1301608', 0xf02f74e960c9f549daf5fb925a25f44c, 'carracedo', 'ma. angelica', 'obero', 'angelicacarracedo@yahoo.com', NULL, 14, 0, 1, '2013-10-30 17:13:34'),
-(4819, '1102089', 0xc2934c576c4ac28ec28dc2b4c3a53828c3b3c2b0c292c29e5d, 'Tan', 'Chin Tinn Lourence', 'Son', 'chintinntan1391@gmail.com', NULL, 1, 0, 1, '2014-01-11 17:33:19');
+(4819, '1102089', 0xc2934c576c4ac28ec28dc2b4c3a53828c3b3c2b0c292c29e5d, 'Tan', 'Chin Tinn Lourence', 'Son', 'chintinntan1391@gmail.com', NULL, 1, 0, 1, '2014-01-11 17:33:19'),
+(4823, '0200941', 0xe6e7ad58b26bfccaec2dbf6cfd71e3cf, 'Padao', 'Francis Rey', 'F', 'fpadao@uic.edu.ph', NULL, 2, 0, 0, '2014-01-30 23:15:38');
 
 -- --------------------------------------------------------
 
@@ -4907,7 +4949,26 @@ CREATE TABLE IF NOT EXISTS `candidate_votes` (
   KEY `fk_candidate_votes_election_candidate1_idx` (`elect_cand_id`),
   KEY `fk_candidate_votes_election_voter1_idx` (`elect_voter_id`),
   KEY `fk_candidate_votes_program1_idx` (`voter_prog_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+
+--
+-- Dumping data for table `candidate_votes`
+--
+
+INSERT INTO `candidate_votes` (`cand_vot_id`, `elect_cand_id`, `elect_voter_id`, `status`, `date_time_log`, `voter_prog_id`) VALUES
+(1, 117, 2965, NULL, '2014-01-22 20:51:14', 1),
+(2, 123, 2965, NULL, '2014-01-22 20:51:14', 1),
+(3, 174, 2965, NULL, '2014-01-22 20:51:14', 1),
+(4, 50, 2965, NULL, '2014-01-22 20:51:14', 1),
+(5, 24, 2965, NULL, '2014-01-22 20:51:14', 1),
+(6, 41, 2965, NULL, '2014-01-22 20:51:14', 1),
+(7, 107, 2965, NULL, '2014-01-22 20:51:14', 1),
+(8, 119, 2965, NULL, '2014-01-22 20:51:14', 1),
+(9, 160, 2965, NULL, '2014-01-22 20:51:14', 1),
+(10, 179, 2965, NULL, '2014-01-22 20:51:14', 1),
+(11, 182, 2965, NULL, '2014-01-22 20:51:14', 1),
+(12, 189, 2965, NULL, '2014-01-22 20:51:14', 1),
+(13, 200, 2965, NULL, '2014-01-22 20:51:14', 1);
 
 -- --------------------------------------------------------
 
@@ -5023,7 +5084,7 @@ CREATE TABLE IF NOT EXISTS `election_candidate` (
   KEY `fk_candidate_position1_idx` (`pos_id`),
   KEY `fk_candidate_party1_idx` (`party_id`),
   KEY `fk_election_candidate_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=214 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=216 ;
 
 --
 -- Dumping data for table `election_candidate`
@@ -5242,7 +5303,9 @@ INSERT INTO `election_candidate` (`elect_cand_id`, `acct_id`, `pos_id`, `party_i
 (210, 1413, 18, 3, 1, '2014-01-15 16:00:47', 1),
 (211, 1415, 18, 3, 1, '2014-01-15 16:01:04', 1),
 (212, 616, 8, 3, 1, '2014-01-15 17:47:05', 1),
-(213, 619, 8, 3, 1, '2014-01-15 17:48:01', 0);
+(213, 619, 8, 3, 1, '2014-01-15 17:48:01', 0),
+(214, 3664, 1, NULL, 1, '2014-01-22 20:48:04', 2),
+(215, 60, 1, NULL, 1, '2014-01-29 15:47:08', 0);
 
 -- --------------------------------------------------------
 

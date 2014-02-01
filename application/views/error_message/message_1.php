@@ -1,4 +1,4 @@
-<h1>Notice</h1>
+<div id="content_header">Notice</div>
 <div id="body">
 
 

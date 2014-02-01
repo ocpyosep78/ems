@@ -1,4 +1,4 @@
-<div id="content_header">Welcome</div>
+<div id="content_header">Message from the Chairman</div>
 
 <div id="body">
 	<!-- <div id="container_profile"> -->
@@ -10,23 +10,37 @@
 		</div> -->
 
 	<!-- </div> -->
-	Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod 
-	tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, 
-	quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo 
-	consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie 
-	consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto 
-	odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait 
-	nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet 
-	doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est 
-	usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores l
-	egere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur 
-	mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus 
-	parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta 
-	decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.
+	<p>Welcome to the Commission on Election and Appointment</p>
+	<p>
+	The Commission on Election and Appointment (CEA) website is seen as a valuable tool in 
+	publicly disseminating up-to-date information on election-related developments concerning 
+	the internal school elections.In keeping with the fast-changing pace of our time, the 
+	Commission on Election and Appointment (CEA) continue in developing and enhancing the 
+	accessibility and usability of its website having in mind the significance of sustaining the 
+	right of the Student to information and access to public records. Needless to say, such right 
+	goes hand in hand with CEA goal of improving the University of the Immaculate Conception 
+	electoral processes towards strengthening its democratic ideals and aspirations.
+	</p>
+	<p>
+	Through its website, the Commission on Election and Appointment (CEA) does not only seek 
+	to inform the public but also to encourage them to be proactive. By way of example, the list 
+	of SSG and Program Candidate ineligible to run for the February 26, 2014 SSG and Program Election 
+	by reason of the next term aspiring leaders are posted in the website for everyone's scrutiny.
+	</p>
+	<p>Finally, I wish to convey to the public that the Commission on Election and Appointment (CEA) 
+	is doing its best to give the highest measure of standards in providing their needed information 
+	in the belief that a well-informed electorate makes a well-thought-of decision as to who shall 
+	be elected leaders of our School.
+	</p>
+	<br>
+	<p>
+	<b>EFRAIM M. OLIVA</b><br>
+	UIC-CEA Chairperson
+	</p>
 
-	<ul>
-		<li>Option 1</li>
-		<li>Option 2</li>
-		<li>Option 3</li>
-	</ul>
+	<div id="counter">
+			<!--
+			<script>display()</script>
+			-->
+	</div>
 </div>
