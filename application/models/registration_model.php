@@ -1,6 +1,12 @@
 <?php
     class Registration_model extends CI_Model
     {
+        function __construct()
+        {
+            parent::__construct();
+            $this->load->model('mysql_database_model');
+        }
+        
         public function select_course()
         {
             $query = $this->db->query("SELECT course_id, course_name FROM course ORDER BY course_name");

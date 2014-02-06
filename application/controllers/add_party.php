@@ -12,13 +12,26 @@ class Add_party extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			$this->load->model('party_model');
-			$party = $this->party_model->get_party();
+			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
 
-			$page_view_content["page_view_dir"] = "party/add_party";
-			$page_view_content["logged_in"] = TRUE;
-			$page_view_content["page_view_data"] = $party;
-			$this->load->view("includes/template",$page_view_content);	
+			if($is_election_officer != null)
+			{
+				$this->load->model('party_model');
+				$party = $this->party_model->get_party();
+
+				$page_view_content["page_view_dir"] = "party/add_party";
+				$page_view_content["is_election_officer"] = TRUE;
+				$page_view_content["logged_in"] = TRUE;
+				$page_view_content["page_view_data"] = $party;
+				$this->load->view("includes/template",$page_view_content);	
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}
 		}
 		else
 		{

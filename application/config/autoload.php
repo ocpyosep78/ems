@@ -10,7 +10,7 @@
 | the database is not connected to automatically since no assumption
 | is made regarding whether you intend to use it.  This file lets
 | you globally define which systems you would like loaded with every
-| request.
+| request.`
 |
 | -------------------------------------------------------------------
 | Instructions
@@ -64,7 +64,7 @@ $autoload['libraries'] = array('session');
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url', 'form');
+$autoload['helper'] = array('url', 'form', 'file', 'download');
 
 
 /*

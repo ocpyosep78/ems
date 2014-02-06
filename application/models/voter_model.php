@@ -62,6 +62,22 @@
 				
 			return $sQuery->result_array();
 		}
+
+		public function add_account($account)
+		{
+			$sql = "CALL add_account('".$account['username']."',
+									 '".$account['password']."',
+									 '".$account['lastname']."',
+									 '".$account['firstname']."',
+									 '".$account['middlename']."',
+									 '".$account['email_address']."',
+									 ".$account['course_id'].')';
+
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
 	}
 
 ?>

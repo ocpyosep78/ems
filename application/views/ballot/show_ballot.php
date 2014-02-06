@@ -1,4 +1,4 @@
-<h1>Ballot</h1>
+<div id="content_header">BALLOT</div>
 <div id="body">
 
 <?php
@@ -34,7 +34,7 @@
 			$party = $page_view_data[$x]['party_name'];
 
 			echo $tb['tr'];
-			echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$page_view_data[$x]['acct_username'].'.jpg">'.$tb['td_'];
+			echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$page_view_data[$x]['acct_username'].'.jpg" width=100>'.$tb['td_'];
 			echo $tb['td'];
 			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
 			echo $tb['td_'];

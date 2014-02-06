@@ -12,7 +12,22 @@ class Apply_candidacy extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
+			/*
+			 * This code segment will check if the user is an 
+			 * election officer
+			 */
 			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+			if($is_election_officer != null)
+			{
+				$page_view_content["is_election_officer"] = TRUE;
+			}
+			/*
+			 * Election officer checker ends here
+			 */
+			
 			$this->load->model('candidate_model');
 			$candidacy = $this->candidate_model->check_candidacy_application($acct_id);
 
@@ -49,15 +64,38 @@ class Apply_candidacy extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
+			/*
+			 * This code segment will check if the user is an 
+			 * election officer
+			 */
+			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+			if($is_election_officer != null)
+			{
+				$page_view_content["is_election_officer"] = TRUE;
+			}
+			/*
+			 * Election officer checker ends here
+			 */
+			
 			$division = $this->input->post('division');
 			
-			$this->load->model('position_model');
+			if($division)
+			{
+				$this->load->model('position_model');
 
-			$page_view_content["page_view_dir"] = "candidacy/position_list_form";
-			$page_view_content["logged_in"] = TRUE;	
-			$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($division);
+				$page_view_content["page_view_dir"] = "candidacy/position_list_form";
+				$page_view_content["logged_in"] = TRUE;	
+				$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($division);
 
-			$this->load->view("includes/template",$page_view_content);		
+				$this->load->view("includes/template",$page_view_content);		
+			}
+			else
+			{
+				redirect('/apply_candidacy', 'refresh');
+			}
 		}
 		else
 		{
