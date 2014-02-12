@@ -1,48 +1,45 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Home extends CI_Controller {
-
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
+class Home extends CI_Controller 
+{
 	public function index()
 	{
-
 		if($this->session->userdata('logged_in'))
 		{	
-
-			/*
-			 * This code segment will check if the user is an 
-			 * election officer
-			 */
 			$acct_id = $this->session->userdata('acct_id');
-			$page_view_content["is_election_officer"] = FALSE;
+			$student_id = $this->session->userdata('student_id');
+
 			$this->load->model('election_officer_model');
+			$this->load->model('candidate_model');
+			$this->load->model('voter_model');
+			$this->load->model('timer_model');
+
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
+			$account = $this->voter_model->get_account_profile($student_id);
+			$election_countdown = $this->timer_model->get_election_countdown();
+
+			$page_view_content["logged_in"] = TRUE;	
+			$page_view_content["is_election_officer"] = FALSE;
+			$page_view_content["is_registered_voter"] = FALSE;
+			$page_view_content["page_view_data"] =  $account;
+			$page_view_content["election_countdown"] = $election_countdown;
+			$page_view_content["page_view_dir"] = "home/profile";
+
 			if($is_election_officer != null)
 			{
 				$page_view_content["is_election_officer"] = TRUE;
 			}
-			/*
-			 * Election officer checker ends here
-			 */
-
-			$this->load->model('candidate_model');
-			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
-
+			
 			if($voter_registration!=NULL)
 			{
-				$page_view_content["page_view_dir"] = "home/homepage";
+				$page_view_content['is_registered_voter'] = TRUE;
 			}
 			else
 			{
 				$page_view_content["page_view_dir"] = "error_message/message_1";
 			}	
 			
-			$page_view_content["logged_in"] = TRUE;	
 			$this->load->view("includes/template",$page_view_content);	
 		}
 		else

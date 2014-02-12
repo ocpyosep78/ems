@@ -1,13 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/* Date Created 2014/01/03 */
 
-class Ssg_applicant_list extends CI_Controller {
-
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
+class Ssg_applicant_list extends CI_Controller 
+{
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))

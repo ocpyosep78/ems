@@ -78,6 +78,34 @@
 				
 			return $sQuery->result_array();
 		}
+
+		public function get_account_profile($student_id)
+		{
+			$sql = 'CALL get_account_profile('.$student_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->row_array(1);
+		}
+
+		public function add_election_voter($account_id)
+		{
+			$sql = 'CALL add_election_voter('.$account_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
+
+		public function get_account_username($account_id)
+		{
+			$sql = "CALL get_account_username('".$account_id."')";
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
+
 	}
 
 ?>

@@ -33,7 +33,8 @@
 	// echo form_submit('mysubmit', 'Search');
 	// echo form_close();
 
-	echo '<div>Division: Student Supreme Government - Executive Board</div>';
+	//echo '<div>Division: Student Supreme Government - Executive Board</div>';
+	echo '<div>.</div>';
 
 	for($x=0;$x<count($page_view_data);$x++)
 	{

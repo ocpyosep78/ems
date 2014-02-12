@@ -47,9 +47,10 @@ class Create_account extends CI_Controller {
 	public function register_account()
 	{
 		$this->load->library('form_validation');
+		$this->form_validation->set_rules('course', 'Course', 'required');
 	    $this->form_validation->set_rules('username', 'ID Number', 'trim|required|numeric|is_unique[account.acct_username]|min_length[7]|max_length[7]');
 	    $this->form_validation->set_rules('acct_password', 'Password', 'trim|required|min_length[4]');
-	    $this->form_validation->set_rules('first_name', 'First Name', 'trim|required|');
+	    $this->form_validation->set_rules('first_name', 'First Name', 'trim|required');
 	    $this->form_validation->set_rules('middle_name', 'Middle Name', 'trim|required');
 	    $this->form_validation->set_rules('last_name', 'Last Name', 'trim|required');
 	    $this->form_validation->set_rules('email_address', 'Email Address', 'trim|required|valid_email|is_unique[account.email_address]');

@@ -1,5 +1,4 @@
 <?php 
-	
 	/**
 	* Template page view
 	* Created by Francis Rey Padao
@@ -17,10 +16,9 @@
 
 	if($logged_in)
 	{
-		$this->load->view('includes/left_nav',$is_election_officer);		
+		$this->load->view('includes/nav',$is_election_officer);		
 	}
-
+	
 	$this->load->view($page_view_dir, $page_view_data);	
 	$this->load->view('includes/footer'); 
-
 ?>

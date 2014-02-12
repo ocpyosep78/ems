@@ -1,24 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Login extends CI_Controller {
-
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
-	
+class Login extends CI_Controller 
+{	
 	public function index()
-	{
-
-		
+	{		
 		if($this->session->userdata('logged_in'))
 		{
 			redirect('/home', 'refresh');
 		}
 		else
 		{
+			$page_view_content['access_is_invalid'] = $this->session->flashdata('access_is_invalid');
 			$page_view_content["page_view_dir"] = "welcome_message";
 			$page_view_content["logged_in"] = FALSE;
 			$this->load->view("includes/template",$page_view_content);
@@ -43,6 +35,7 @@ class Login extends CI_Controller {
 							   'acct_lname'	=> $list['acct_lname'],
 							   'acct_fname'	=> $list['acct_fname'],
 							   'course_id'	=> $list['course_id'],
+							   'student_id'	=> $list['acct_username'],
 							   'logged_in'	=>	TRUE
 				               );
 
@@ -51,6 +44,7 @@ class Login extends CI_Controller {
 			}
 			else
 			{
+				$this->session->set_flashdata('access_is_invalid', TRUE);
 				redirect('/login', 'refresh');
 			}
 		}
@@ -60,6 +54,3 @@ class Login extends CI_Controller {
 		}
 	}
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */
