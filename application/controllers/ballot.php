@@ -121,8 +121,22 @@ class Ballot extends CI_Controller {
 				$pos_id = $position_id[$x]['pos_id'];
 				$elect_cand_id = $this->input->post($pos_id);
 
-				if($elect_cand_id)
+				if($elect_cand_id != NULL)
 				{
+					$this->load->model('ballot_model');
+					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+				}
+			}
+			
+			if($elect_cand_id == NULL)
+			{
+				$program_rep = $this->input->post('program_rep');
+				for($x=0;$x<count($program_rep);$x++)
+				{
+					$elect_cand_id = $program_rep[$x];
+					// echo '<pre>';
+					// echo print_r($elect_cand_id);
+					// echo '</pre>';
 					$this->load->model('ballot_model');
 					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
 				}
