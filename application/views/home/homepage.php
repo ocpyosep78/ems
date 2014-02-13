@@ -39,8 +39,8 @@
 	</p>
 
 	<div id="counter">
-			<!--
-			<script>display()</script>
-			-->
+			
+			 <script>display()</script>
+			
 	</div>
 </div>

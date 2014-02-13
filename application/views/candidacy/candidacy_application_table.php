@@ -1,49 +1,19 @@
-<div id="content_header">Candidacy Application Form</div>
-<div id="body">
+<div id="container_1">Candidacy Application</div>
+<div id="container_2">
 
 <?php
-	
-	$table = array(		'table'		=>	'<table>',
-						'table_'	=>	'</table>',
-						'tr'		=>	'<tr>',
-						'tr_'		=>	'</tr>',
-						'th'		=>	'<th>',
-						'th_'		=>	'</th>',
-						'td'		=>	'<td>',
-						'td_'		=>	'</td>'
-					);
 
-	echo $table['table'];
-
-	echo $table['tr'];
-	echo $table['td'].'Position Applied '.$table['td_'];
-	echo $table['td'].$page_view_data['position'].$table['td_'];
-	echo $table['tr_'];
-
-	echo $table['tr'];
-	echo $table['td'].'Division '.$table['td_'];
-	echo $table['td'].$page_view_data['division'].$table['td_'];
-	echo $table['tr_'];
-
-	echo $table['tr'];
-	echo $table['td'].'Date of Application '.$table['td_'];
-	echo $table['td'].$page_view_data['log'].$table['td_'];
-	echo $table['tr_'];
+	$url = 'http://www3.uic.edu.ph/images/100x102/'.$page_view_data['acct_username'].'.jpg';
+	$name = $page_view_data['fname'].' '.$page_view_data['mname'].' '.$page_view_data['lname'];
 
 	if($page_view_data['party_name'] == NULL)
 	{
 		$party = 'Not Available';
 	}
-
 	else
 	{
 		$party = $page_view_data['party_name'];
 	}
-
-	echo $table['tr'];
-	echo $table['td'].'Party '.$table['td_'];
-	echo $table['td'].$party.$table['td_'];
-	echo $table['tr_'];
 
 	if($page_view_data['status'] == 0)
 	{
@@ -62,22 +32,54 @@
 		$status = 'See UIC COMELEC';
 	}
 
-	echo $table['tr'];
-	echo $table['td'].'Status '.$table['td_'];
-	echo $table['td'].$status.$table['td_'];
-	echo $table['tr_'];
+	echo '<div id="container_3">';
+	echo '<div id="container_5"><img src="'.$url.'" width=180></div>';
+	echo '<div id="container_6">';
+	echo '<ul>';
+
+	echo '<li><a href="'.base_url('index.php/home').'">My Profile</a></li>';
+	if(!$is_election_officer)
+	{
+		echo '<li><a href="'.base_url('index.php/apply_candidacy').'">Apply Candidacy</a></li>';
+	}
+	// echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+	echo '</ul>';
+	echo '</div>';
+	echo '</div>';
+
+	echo '<div id="container_4">';
+	echo '<div id="container_7">Name</div>';
+	echo '<div id="container_8"><b>'.$name.'</b></div>';
+	echo '<div id="container_7">Position Applied</div>';
+	echo '<div id="container_8">'.$page_view_data['position'].'</div>';
+	echo '<div id="container_7">Division</div>';
+	echo '<div id="container_8">'.$page_view_data['division'].'</div>';
+	echo '<div id="container_7">Date Applied</div>';
+	echo '<div id="container_8">'.$page_view_data['log'].'</div>';
+	echo '<div id="container_7">Party</div>';
+	echo '<div id="container_8">'.$party.'</div>';
+	echo '<div id="container_7">Status</div>';
+	echo '<div id="container_8">'.$status.'</div>';
 	
 
-	echo $table['table_'];
 
-	echo '<p>Please download the forms provided below and fill in all the required details. Submit the accomplished 
-		  <br>forms to the office of Commission on Elections and Appointments (CEA) on or before February 5 2014.</p>';
-	echo '<ul>';
-	echo '<li><a href="'.base_url().'index.php/download_candidacy_form">Application Letter</a></li>';
-	echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_coc">Certificate of Candidacy</a></li>';
-	echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_osad_cert">OSAD Certification</a></li>';
-	echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_dean_cert">Dean Certification</a></li>';
-	echo '</ul>';
+	if($page_view_data['status'] != 2)
+	{
+		echo '<div id="container_14">';
+		echo 'Please download the forms provided below and fill in all the required details. Submit the accomplished 
+			  forms to the office of Commission on Elections and Appointments (CEA) on or before February 5 2014.';
+		echo '<ul>';
+		echo '<li><a href="'.base_url().'index.php/download_candidacy_form">Application Letter</a></li>';
+		echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_coc">Certificate of Candidacy</a></li>';
+		echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_osad_cert">OSAD Certification</a></li>';
+		echo '<li><a href="'.base_url().'index.php/download_candidacy_form/download_dean_cert">Dean Certification</a></li>';
+		echo '</ul>';
+		echo '</div>';
+	}
+	echo '</div>';
+	// echo '<pre>';
+	// print_r($page_view_data);
+	// echo '</pre>';
 ?>
 
 </div>

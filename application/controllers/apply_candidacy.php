@@ -1,44 +1,37 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Apply_candidacy extends CI_Controller {
-
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
+class Apply_candidacy extends CI_Controller 
+{
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			/*
-			 * This code segment will check if the user is an 
-			 * election officer
-			 */
 			$acct_id = $this->session->userdata('acct_id');
-			$page_view_content["is_election_officer"] = FALSE;
+			$student_id = $this->session->userdata('student_id');
+
+			$this->load->model('candidate_model');
 			$this->load->model('election_officer_model');
+			
+			$candidacy = $this->candidate_model->check_candidacy_application($acct_id);
+			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$page_view_content["logged_in"] = TRUE;	
+			$page_view_content["student_id"] = $student_id;
+			$page_view_content["is_election_officer"] = FALSE;
+
 			if($is_election_officer != null)
 			{
 				$page_view_content["is_election_officer"] = TRUE;
 			}
-			/*
-			 * Election officer checker ends here
-			 */
 			
-			$this->load->model('candidate_model');
-			$candidacy = $this->candidate_model->check_candidacy_application($acct_id);
-
 			if($candidacy!=NULL)
 			{
 				$page_view_content["page_view_data"] = 	$candidacy;
 				$page_view_content["page_view_dir"] = "candidacy/candidacy_application_table";
 			}
-			else{
-				$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
-				
+			else
+			{
 				if($voter_registration!=NULL)
 				{
 					$this->load->model('position_model');
@@ -51,7 +44,6 @@ class Apply_candidacy extends CI_Controller {
 				}
 			}
 
-			$page_view_content["logged_in"] = TRUE;	
 			$this->load->view("includes/template",$page_view_content);		
 		}
 		else
@@ -64,32 +56,27 @@ class Apply_candidacy extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			/*
-			 * This code segment will check if the user is an 
-			 * election officer
-			 */
+			$division = $this->input->post('division');
 			$acct_id = $this->session->userdata('acct_id');
-			$page_view_content["is_election_officer"] = FALSE;
+			$student_id = $this->session->userdata('student_id');
+
+			$this->load->model('position_model');
 			$this->load->model('election_officer_model');
+			
+			$page_view_content["is_election_officer"] = FALSE;
+			$page_view_content["student_id"] = $student_id;
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
 			if($is_election_officer != null)
 			{
 				$page_view_content["is_election_officer"] = TRUE;
 			}
-			/*
-			 * Election officer checker ends here
-			 */
-			
-			$division = $this->input->post('division');
 			
 			if($division)
 			{
-				$this->load->model('position_model');
-
-				$page_view_content["page_view_dir"] = "candidacy/position_list_form";
 				$page_view_content["logged_in"] = TRUE;	
+				$page_view_content["page_view_dir"] = "candidacy/position_list_form";
 				$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($division);
-
 				$this->load->view("includes/template",$page_view_content);		
 			}
 			else

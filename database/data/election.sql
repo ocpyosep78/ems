@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Jan 31, 2014 at 07:15 PM
+-- Generation Time: Feb 12, 2014 at 07:57 AM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -69,6 +69,12 @@ BEGIN
 	(account_id,position_id,election_id,NOW());
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_election_voter`(IN account_id INT)
+BEGIN
+	INSERT INTO election_voter(acct_id,elect_id,date_time_log)
+	VALUES(account_id,(SELECT elect_id FROM election.election WHERE status=1),NOW());
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `add_party`(IN `pt_name` VARCHAR(45))
 BEGIN
 	INSERT INTO `party`
@@ -82,11 +88,12 @@ BEGIN
 	SELECT 	div_name AS division, 
 			pos_name AS position,
 			party_name,
-			acct_lname AS lname, 
-			acct_fname AS fname, 
-			acct_mname AS mname,
+			upper(acct_lname) AS lname, 
+			upper(acct_fname) AS fname, 
+			upper(acct_mname) AS mname,
+			acct_username,
 			election_candidate.status AS status, 
-			election_candidate.date_time_log AS log
+			date_format(election_candidate.date_time_log,'%b %d %Y %r')as log
 	FROM election_voter
 	LEFT OUTER JOIN election_candidate ON election_voter.acct_id = election_candidate.acct_id
 	INNER JOIN account ON election_voter.acct_id = account.acct_id
@@ -154,6 +161,53 @@ BEGIN
 -- Return value if voter is registered under the current election
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_program_applicants_by_status`()
+BEGIN
+	SELECT 	program.prog_id,
+			program.prog_name,
+			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 0 ) AS Pending,
+			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 1 ) AS Approved,
+			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 2 ) AS Rejected,
+			SUM(election_candidate.pos_id AND division.div_id = 2) AS Total
+
+	FROM election.program
+
+			
+	LEFT OUTER JOIN course ON program.prog_id = course.prog_id
+	LEFT OUTER JOIN account ON course.course_id = account.course_id
+	LEFT OUTER JOIN election_candidate ON account.acct_id = election_candidate.acct_id
+	LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id
+	LEFT OUTER JOIN position ON election_candidate.pos_id = position.pos_id
+	LEFT OUTER JOIN division ON position.div_id = division.div_id
+
+	GROUP BY program.prog_name
+	ORDER BY prog_name ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_program_applicants_by_status_and_position`(IN programID INT)
+BEGIN
+	SELECT 
+	position.pos_id,
+	position.pos_name,
+	SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 0 AND program.prog_id = programID) AS Pending,
+	SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 2 AND program.prog_id = programID) AS Rejected,
+	SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 1 AND program.prog_id = programID) AS Approved,
+	SUM(election_candidate.pos_id AND division.div_id = 2 AND program.prog_id = programID) AS Total
+
+	FROM position
+
+	LEFT OUTER JOIN election_candidate ON position.pos_id = election_candidate.pos_id
+	RIGHT OUTER JOIN division ON position.div_id = division.div_id
+	INNER JOIN election ON election_candidate.elect_id = election.elect_id AND election.status = 1
+	LEFT OUTER JOIN account ON election_candidate.acct_id = account.acct_id
+	LEFT OUTER JOIN course ON account.course_id = course.course_id
+	LEFT OUTER JOIN program ON course.prog_id = program.prog_id 
+
+	WHERE position.div_id = 2
+	GROUP BY position.pos_name
+	ORDER BY order_no ASC;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `course_voters_statistics`()
 BEGIN
 	SELECT 	course.course_id,
@@ -175,6 +229,29 @@ BEGIN
 	WHERE `party_id` = pt_id;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_account_profile`(IN student_id INT)
+BEGIN
+	SELECT 	account.acct_id,
+			account.acct_username,
+			upper(account.acct_lname) as acct_lname,
+			upper(account.acct_fname) as acct_fname,
+			upper(account.acct_mname) as acct_mname,
+			account.email_address,
+			date_format(account.time_date_log,'%b %d %Y %r')as date_created,
+			course.course_name,
+			program.prog_name
+			
+	FROM account
+	INNER JOIN course ON account.course_id = course.course_id
+	INNER JOIN program ON course.prog_id = program.prog_id
+	WHERE acct_username = student_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_account_username`(IN account_id INT)
+BEGIN
+	SELECT acct_username FROM account WHERE acct_id=account_id;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_course_list`(IN programID INT)
 BEGIN
 	SELECT * FROM election.course
@@ -190,6 +267,18 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_division`()
 BEGIN
 	SELECT * FROM division;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_election_countdown`()
+BEGIN
+	SELECT 	
+			TIMESTAMPDIFF(DAY,NOW(), start_date) day,
+			HOUR(timediff(start_date,ADDDATE(NOW(),TIMESTAMPDIFF(DAY,NOW(), start_date)))) as hour,
+			MINUTE(timediff(start_date,NOW())) as minute,
+			SECOND(timediff(start_date,NOW())) as second,
+			UNIX_TIMESTAMP(start_date)-UNIX_TIMESTAMP(NOW()) time_status
+	FROM election.election
+	WHERE status=1;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_election_voter_id`(IN account_id INT)
@@ -646,7 +735,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   PRIMARY KEY (`acct_id`),
   UNIQUE KEY `acct_username_UNIQUE` (`acct_username`),
   KEY `fk_voter_course1_idx` (`course_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4824 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4846 ;
 
 --
 -- Dumping data for table `account`
@@ -1922,7 +2011,7 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (1578, '1201613', 0xbab64accaf5da54bb266bb2d964c7f5d, 'Feliscuzo', 'Czerny Rigor', 'Bello', 'czerny_work@yahoo.com', NULL, 14, 0, 1, '2013-10-26 10:16:32'),
 (1580, '1200430', 0x2b24dbc2260a0d61f7faa674949f5f3f, 'Nabiong', 'Rhea Ann', 'Nepomuceno', 'rnabiong@yahoo.com', NULL, 11, 0, 1, '2013-10-26 10:17:12'),
 (1581, '1100783', 0xa0071bc9a90c386895156037651ca929, 'Liguid', 'Engelica', 'Baclay', 'liguid_engelica@yahoo.com', NULL, 16, 0, 1, '2013-10-26 10:17:16'),
-(1582, '1200057`', 0x20b152ed1f7919848ea88e38c33d2271, 'Buenavides', 'Rannie Jay', 'Cadungon', 'rannie04321@gmail.com', NULL, 14, 0, 1, '2013-10-26 10:17:18'),
+(1582, '1200057', 0x20b152ed1f7919848ea88e38c33d2271, 'Buenavides', 'Rannie Jay', 'Cadungon', 'rannie04321@gmail.com', NULL, 14, 0, 1, '2013-10-26 10:17:18'),
 (1583, '1200706', 0x934a73a350bd624aeaeeead87c7083df, 'Centina', 'Giann May', 'Villareal', 'may@yahoo.com', NULL, 11, 0, 0, '2013-10-26 10:17:21'),
 (1584, '1200159', 0xe0b13c525cac4f97c6b3e9d6ed103845, 'antigo', 'steffi dyan', 'bangero', 'steffiantigo@yahoo.com', NULL, 11, 0, 1, '2013-10-26 10:17:42'),
 (1585, '1100081', 0x5ec2fbbe29df4d6a53dc94433a830e65, 'Andrada', 'Jaye Camille', 'Cabusas', 'camz_217@yahoo.com', NULL, 16, 0, 1, '2013-10-26 10:18:00'),
@@ -4908,7 +4997,32 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4817, '1300893', 0x4065d2eb51901b2b0727d07103564f72, 'siton', 'krizzle mae', 'tahil', 'krizzle_2912@yahoo.com', NULL, 9, 0, 0, '2013-10-30 17:10:26'),
 (4818, '1301608', 0xf02f74e960c9f549daf5fb925a25f44c, 'carracedo', 'ma. angelica', 'obero', 'angelicacarracedo@yahoo.com', NULL, 14, 0, 1, '2013-10-30 17:13:34'),
 (4819, '1102089', 0xc2934c576c4ac28ec28dc2b4c3a53828c3b3c2b0c292c29e5d, 'Tan', 'Chin Tinn Lourence', 'Son', 'chintinntan1391@gmail.com', NULL, 1, 0, 1, '2014-01-11 17:33:19'),
-(4823, '0200941', 0xe6e7ad58b26bfccaec2dbf6cfd71e3cf, 'Padao', 'Francis Rey', 'F', 'fpadao@uic.edu.ph', NULL, 2, 0, 0, '2014-01-30 23:15:38');
+(4820, '0200941', 0xe6e7ad58b26bfccaec2dbf6cfd71e3cf, 'Padao', 'Francis Rey', 'F', 'fpadao@uic.edu.ph', NULL, 2, 0, 0, '2014-02-03 12:07:26'),
+(4821, '1201041', 0x6505eeb644f7acab3c307e665bd493dc, 'cabiles', 'xavier', 'catapang', 'partx_partidoz13@yahoo.com', NULL, 25, 0, 0, '2014-02-05 13:31:40'),
+(4822, '1300342', 0xa19fe7f8b64154e60d1a9db3632c0b65, 'Villar', 'Rod Bryant', 'Batobalonos', 'villar_rod@yahoo.com', NULL, 24, 0, 0, '2014-02-05 14:23:20'),
+(4823, '1300677', 0x40d52ea599313a1a649276e3e128dad3, 'Laud', 'Kristian Noel', 'Amigo', 'kbrawn@gmail.com', NULL, 24, 0, 0, '2014-02-05 14:24:32'),
+(4824, '1201034', 0x464b0513a3937c8a80712f34c7cdf150, 'Guillen', 'Prince Jeal', 'Mametiz', 'jeal.prince@gmail.com', NULL, 1, 0, 0, '2014-02-05 16:50:20'),
+(4825, '1201081', 0x164e77f082532304642c75d48d61fac5, 'Villarino', 'Jenno Fred', 'Mahilum', 'jennofred@gmail.com', NULL, 2, 0, 0, '2014-02-05 20:20:30'),
+(4826, '0801038', 0x44d345f9c6bb3834fbcf53f4915086d1, 'Benablo', 'Ceasar Ian', 'Pitoy', 'ceasarian.benablo@gmail.com', NULL, 2, 0, 0, '2014-02-07 18:14:04'),
+(4827, '1400123', 0xa120f2b90040aef277f12551039d11fe, 'Sy', 'Troy Patrick', 'Lim', 'troypatrciklim@gmail.com', NULL, 24, 0, 0, '2014-02-08 12:09:23'),
+(4828, '1400015', 0x52242e9658cbe8bb7f3ac7a0607c8426, 'asdfasdf', 'asfasfasf', 'sdfasdfasd', 'asfasdfadf@gmail.com', NULL, 4, 0, 0, '2014-02-10 13:45:31'),
+(4829, '1201315', 0x5623910b0bea773aaf3f5592e90ed635, 'Lumang II', 'Charlie', 'Geveso', 'bingkays_charlie@yahoo.com', NULL, 1, 0, 0, '2014-02-10 14:21:19'),
+(4830, '1100213', 0x6bab089b88ec4b11c6a3df430da10924, 'Tajantajan', 'Wyrlo Ashley', 'Flores', 'demoneyez.ash@gmail.com', NULL, 20, 0, 0, '2014-02-10 15:34:01'),
+(4831, '1000478', 0xc2ba70c045a2dcf357a4879a24599d81, 'Badilles', 'Paul Jones', 'Flores', 'athrun_marcko@gmail.com', NULL, 22, 0, 0, '2014-02-11 15:32:32'),
+(4832, '1000475', 0x4069901e03d008d8b95c6633388acf74, 'tomale', 'geanna krisantiene', 'pan', 'geanna_tomale@yahoo.com', NULL, 11, 0, 0, '2014-02-12 09:36:11'),
+(4833, '1200537', 0xa55fd82005ae470ddce348966f8c9477, 'Ayco', 'Rexonna', 'Banajera', 'aiko_rex@yahoo.com', NULL, 11, 0, 0, '2014-02-12 09:45:38'),
+(4834, '1200990', 0xce2873f3403d0e7cd34b98c001063452, 'repalam', 'eijay ina', 'fuentes', 'eijayinarepalam@yahoo.com', NULL, 12, 0, 0, '2014-02-12 10:08:57'),
+(4835, '1201103', 0x3c78eea512dea28e239cc1776a472db5, 'Cabatingan', 'Jules Isidore', 'Jimenea', 'cjyum_07@yahoo.com', NULL, 12, 0, 0, '2014-02-12 10:15:33'),
+(4836, '1201650', 0x8e3b3bd5fd765ab13cfdf9fa224f425b, 'Sapar', 'Stefi Jerone', 'Yu', 'stefisapar@gmail.com', NULL, 28, 0, 0, '2014-02-12 10:38:36'),
+(4837, '1000560', 0x92df4cd6a4d8d527e48817666b1c25a4, 'jayoma', 'rodnie', 'acebes', 'rodnie.jayoma@facebook.com', NULL, 14, 0, 0, '2014-02-12 10:49:50'),
+(4838, '1200915', 0xee4dd99c139e2c96d27ddb828333140e, 'coresis', 'krystyl almarie', 'alcantara', 'ckrystyl@ymail.com', NULL, 14, 0, 0, '2014-02-12 11:32:55'),
+(4839, '1101499', 0xbe8c3ea481467b1138d0d84a58bd3d76, 'Pantalan', 'Sheena Mariam', 'Sangcopan', 'sheenapantalan@yahoo.com', NULL, 23, 0, 0, '2014-02-12 11:33:17'),
+(4840, '1000920', 0x0182c9b5e042bdfeeece02cc2e67ffa1, 'PARAGOSO', 'LORETO MIGUEL', 'UY', 'lm_paragoso@yahoo.com', NULL, 29, 0, 0, '2014-02-12 12:00:53'),
+(4841, '1001014', 0x479b153dafc654fc5333ae0ee6661990, 'Prochina', 'Shanice Hanna Lea', 'Fuertes', 'lea.prochina04@gmail.com', NULL, 29, 0, 0, '2014-02-12 12:03:02'),
+(4842, '1000942', 0xc1d023cbc79c8b9e3296e630ea71e073, 'Mondejar', 'January Faith Real', 'Davis', 'bear_23_28@yahoo.com', NULL, 23, 0, 0, '2014-02-12 12:11:26'),
+(4843, '1100019', 0x9839f3d1de08c7d193ded21b6d46646a, 'divinagracia', 'xyresdel', 'mistoso', 'xdivinagracia@yahoo.com', NULL, 12, 0, 0, '2014-02-12 12:25:17'),
+(4844, '1200449', 0x6e0b9d28555b53c920898faba7aa5236, 'Daquipil', 'Arvin Chester', 'Baugbog', 'lancemigueldaquipil@yahoo.com', NULL, 11, 0, 0, '2014-02-12 12:54:56'),
+(4845, '0900353', 0x0e963eb9c73f07e5091ab7c24c1821e7, 'jaranilla', 'alea', 'amella', 'alrouze@gmail.com', NULL, 11, 0, 0, '2014-02-12 13:12:11');
 
 -- --------------------------------------------------------
 
@@ -4949,26 +5063,7 @@ CREATE TABLE IF NOT EXISTS `candidate_votes` (
   KEY `fk_candidate_votes_election_candidate1_idx` (`elect_cand_id`),
   KEY `fk_candidate_votes_election_voter1_idx` (`elect_voter_id`),
   KEY `fk_candidate_votes_program1_idx` (`voter_prog_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
-
---
--- Dumping data for table `candidate_votes`
---
-
-INSERT INTO `candidate_votes` (`cand_vot_id`, `elect_cand_id`, `elect_voter_id`, `status`, `date_time_log`, `voter_prog_id`) VALUES
-(1, 117, 2965, NULL, '2014-01-22 20:51:14', 1),
-(2, 123, 2965, NULL, '2014-01-22 20:51:14', 1),
-(3, 174, 2965, NULL, '2014-01-22 20:51:14', 1),
-(4, 50, 2965, NULL, '2014-01-22 20:51:14', 1),
-(5, 24, 2965, NULL, '2014-01-22 20:51:14', 1),
-(6, 41, 2965, NULL, '2014-01-22 20:51:14', 1),
-(7, 107, 2965, NULL, '2014-01-22 20:51:14', 1),
-(8, 119, 2965, NULL, '2014-01-22 20:51:14', 1),
-(9, 160, 2965, NULL, '2014-01-22 20:51:14', 1),
-(10, 179, 2965, NULL, '2014-01-22 20:51:14', 1),
-(11, 182, 2965, NULL, '2014-01-22 20:51:14', 1),
-(12, 189, 2965, NULL, '2014-01-22 20:51:14', 1),
-(13, 200, 2965, NULL, '2014-01-22 20:51:14', 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -5084,228 +5179,75 @@ CREATE TABLE IF NOT EXISTS `election_candidate` (
   KEY `fk_candidate_position1_idx` (`pos_id`),
   KEY `fk_candidate_party1_idx` (`party_id`),
   KEY `fk_election_candidate_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=216 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=65 ;
 
 --
 -- Dumping data for table `election_candidate`
 --
 
 INSERT INTO `election_candidate` (`elect_cand_id`, `acct_id`, `pos_id`, `party_id`, `elect_id`, `date_time_log`, `status`) VALUES
-(1, 556, 10, 3, 1, '2014-01-15 15:18:52', 1),
-(2, 1082, 11, 3, 1, '2014-01-15 15:18:55', 1),
-(3, 125, 10, 3, 1, '2014-01-15 15:19:37', 1),
-(4, 147, 10, 3, 1, '2014-01-15 15:19:55', 1),
-(5, 23, 10, 3, 1, '2014-01-15 15:19:57', 1),
-(6, 1058, 10, 3, 1, '2014-01-15 15:20:31', 1),
-(7, 149, 10, 3, 1, '2014-01-15 15:20:32', 1),
-(8, 31, 10, 3, 1, '2014-01-15 15:20:44', 1),
-(9, 1088, 11, 3, 1, '2014-01-15 15:20:50', 1),
-(10, 51, 11, 3, 1, '2014-01-15 15:21:40', 1),
-(11, 188, 9, 3, 1, '2014-01-15 15:21:53', 1),
-(12, 53, 11, 3, 1, '2014-01-15 15:22:04', 1),
-(13, 156, 11, 3, 1, '2014-01-15 15:22:12', 1),
-(14, 2765, 13, 3, 1, '2014-01-15 15:22:25', 1),
-(15, 337, 4, 3, 1, '2014-01-15 15:22:37', 0),
-(16, 409, 12, 3, 1, '2014-01-15 15:22:46', 1),
-(17, 161, 10, 3, 1, '2014-01-15 15:22:47', 0),
-(18, 2056, 12, 3, 1, '2014-01-15 15:22:56', 1),
-(19, 2708, 12, 3, 1, '2014-01-15 15:23:35', 1),
-(20, 162, 11, 3, 1, '2014-01-15 15:23:52', 1),
-(21, 411, 12, 3, 1, '2014-01-15 15:23:56', 1),
-(22, 72, 12, 3, 1, '2014-01-15 15:23:58', 1),
-(23, 74, 12, 3, 1, '2014-01-15 15:24:25', 1),
-(24, 89, 10, 3, 1, '2014-01-15 15:24:25', 1),
-(25, 417, 13, 3, 1, '2014-01-15 15:24:27', 1),
-(26, 163, 11, 3, 1, '2014-01-15 15:24:45', 1),
-(27, 418, 13, 3, 1, '2014-01-15 15:24:53', 1),
-(28, 79, 13, 3, 1, '2014-01-15 15:24:58', 1),
-(29, 2922, 14, 3, 1, '2014-01-15 15:25:02', 1),
-(30, 83, 13, 3, 1, '2014-01-15 15:25:20', 1),
-(31, 421, 14, 3, 1, '2014-01-15 15:25:21', 1),
-(32, 269, 6, 3, 1, '2014-01-15 15:25:25', 1),
-(33, 3679, 13, 3, 1, '2014-01-15 15:25:42', 1),
-(34, 84, 14, 3, 1, '2014-01-15 15:25:54', 1),
-(35, 344, 4, 3, 1, '2014-01-15 15:25:59', 0),
-(36, 87, 14, 3, 1, '2014-01-15 15:26:28', 1),
-(37, 129, 10, 3, 1, '2014-01-15 15:26:44', 1),
-(38, 93, 15, 3, 1, '2014-01-15 15:26:48', 1),
-(39, 347, 11, 3, 1, '2014-01-15 15:27:13', 1),
-(40, 341, 6, 3, 1, '2014-01-15 15:27:18', 1),
-(41, 134, 11, 3, 1, '2014-01-15 15:27:27', 1),
-(42, 2986, 15, 3, 1, '2014-01-15 15:27:31', 1),
-(43, 94, 15, 3, 1, '2014-01-15 15:27:36', 1),
-(44, 505, 14, 3, 1, '2014-01-15 15:27:38', 1),
-(45, 3792, 14, 3, 1, '2014-01-15 15:27:47', 1),
-(46, 3107, 16, 3, 1, '2014-01-15 15:28:17', 1),
-(47, 788, 15, 3, 1, '2014-01-15 15:28:31', 1),
-(48, 108, 16, 3, 1, '2014-01-15 15:28:44', 1),
-(49, 990, 15, 3, 1, '2014-01-15 15:28:54', 1),
-(50, 207, 9, 3, 1, '2014-01-15 15:29:05', 1),
-(51, 110, 16, 3, 1, '2014-01-15 15:29:06', 1),
-(52, 280, 12, 3, 1, '2014-01-15 15:29:16', 1),
-(53, 1040, 16, 3, 1, '2014-01-15 15:29:28', 1),
-(54, 367, 11, 3, 1, '2014-01-15 15:29:43', 1),
-(55, 114, 17, 3, 1, '2014-01-15 15:29:57', 1),
-(56, 1155, 16, 3, 1, '2014-01-15 15:30:03', 1),
-(57, 2855, 15, 3, 1, '2014-01-15 15:30:08', 1),
-(58, 289, 3, 3, 1, '2014-01-15 15:30:14', 0),
-(59, 115, 17, 3, 1, '2014-01-15 15:30:30', 1),
-(60, 1266, 17, 5, 1, '2014-01-15 15:30:40', 1),
-(61, 135, 11, 3, 1, '2014-01-15 15:30:46', 1),
-(62, 3321, 17, 3, 1, '2014-01-15 15:30:53', 1),
-(63, 329, 3, 3, 1, '2014-01-15 15:30:53', 0),
-(64, 116, 18, 3, 1, '2014-01-15 15:30:55', 1),
-(65, 3108, 16, 3, 1, '2014-01-15 15:31:01', 1),
-(66, 349, 12, 3, 1, '2014-01-15 15:31:08', 1),
-(67, 1291, 17, 3, 1, '2014-01-15 15:31:11', 1),
-(68, 388, 10, 3, 1, '2014-01-15 15:31:11', 1),
-(69, 367, 11, 3, 1, '2014-01-15 15:31:18', 0),
-(70, 3500, 17, 3, 1, '2014-01-15 15:31:19', 1),
-(71, 119, 18, 3, 1, '2014-01-15 15:31:22', 1),
-(72, 120, 18, 3, 1, '2014-01-15 15:31:42', 1),
-(73, 121, 18, 3, 1, '2014-01-15 15:32:00', 1),
-(74, 1103, 10, 3, 1, '2014-01-15 15:32:00', 1),
-(75, 1318, 18, 3, 1, '2014-01-15 15:32:38', 1),
-(76, 360, 13, 3, 1, '2014-01-15 15:32:49', 1),
-(77, 142, 18, 3, 1, '2014-01-15 15:32:57', 1),
-(78, 3606, 18, 3, 1, '2014-01-15 15:33:01', 1),
-(79, 404, 11, 3, 1, '2014-01-15 15:33:03', 1),
-(80, 396, 1, 3, 1, '2014-01-15 15:33:04', 0),
-(81, 1323, 18, 3, 1, '2014-01-15 15:33:10', 1),
-(82, 1104, 10, 3, 1, '2014-01-15 15:33:10', 1),
-(83, 150, 18, 3, 1, '2014-01-15 15:33:11', 1),
-(84, 402, 13, 3, 1, '2014-01-15 15:33:35', 1),
-(85, 397, 2, 3, 1, '2014-01-15 15:33:39', 0),
-(86, 1344, 18, 3, 1, '2014-01-15 15:33:46', 1),
-(87, 1107, 11, 3, 1, '2014-01-15 15:34:06', 1),
-(88, 55, 5, 3, 1, '2014-01-15 15:34:14', 1),
-(89, 3791, 18, 3, 1, '2014-01-15 15:34:23', 1),
-(90, 462, 14, 3, 1, '2014-01-15 15:34:23', 1),
-(91, 1109, 11, 3, 1, '2014-01-15 15:34:37', 1),
-(92, 406, 2, 3, 1, '2014-01-15 15:34:43', 0),
-(93, 463, 14, 3, 1, '2014-01-15 15:34:58', 1),
-(94, 508, 10, 3, 1, '2014-01-15 15:35:13', 1),
-(95, 460, 3, 3, 1, '2014-01-15 15:35:21', 0),
-(96, 464, 3, 3, 1, '2014-01-15 15:35:50', 0),
-(97, 593, 10, 3, 1, '2014-01-15 15:35:57', 0),
-(98, 3729, 18, 3, 1, '2014-01-15 15:36:02', 1),
-(99, 159, 12, 3, 1, '2014-01-15 15:36:11', 1),
-(100, 3793, 18, 3, 1, '2014-01-15 15:36:36', 1),
-(101, 615, 12, 3, 1, '2014-01-15 15:36:40', 1),
-(102, 812, 14, 3, 1, '2014-01-15 15:36:44', 1),
-(103, 3827, 18, 3, 1, '2014-01-15 15:36:56', 1),
-(104, 763, 12, 3, 1, '2014-01-15 15:37:18', 1),
-(105, 474, 4, 3, 1, '2014-01-15 15:37:19', 0),
-(106, 504, 4, 3, 1, '2014-01-15 15:38:00', 0),
-(107, 199, 12, 3, 1, '2014-01-15 15:38:03', 1),
-(108, 877, 15, 3, 1, '2014-01-15 15:38:07', 1),
-(109, 897, 14, 3, 1, '2014-01-15 15:38:08', 1),
-(110, 1387, 9, 3, 1, '2014-01-15 15:38:29', 1),
-(111, 902, 14, 3, 1, '2014-01-15 15:38:36', 1),
-(112, 507, 5, 3, 1, '2014-01-15 15:38:49', 1),
-(113, 2767, 18, 3, 1, '2014-01-15 15:38:50', 1),
-(114, 1113, 12, 3, 1, '2014-01-15 15:38:57', 1),
-(115, 1183, 15, 3, 1, '2014-01-15 15:39:12', 1),
-(116, 155, 18, 3, 1, '2014-01-15 15:39:12', 1),
-(117, 519, 5, 3, 1, '2014-01-15 15:39:18', 1),
-(118, 1173, 12, 3, 1, '2014-01-15 15:39:27', 1),
-(119, 200, 13, 3, 1, '2014-01-15 15:39:27', 1),
-(120, 949, 15, 3, 1, '2014-01-15 15:39:35', 1),
-(121, 1312, 15, 3, 1, '2014-01-15 15:39:49', 1),
-(122, 1388, 9, 3, 1, '2014-01-15 15:40:00', 1),
-(123, 523, 6, 3, 1, '2014-01-15 15:40:05', 1),
-(124, 1174, 13, 3, 1, '2014-01-15 15:40:16', 1),
-(125, 525, 6, 3, 1, '2014-01-15 15:40:25', 1),
-(126, 803, 16, 3, 1, '2014-01-15 15:40:26', 1),
-(127, 1698, 16, 3, 1, '2014-01-15 15:40:37', 1),
-(128, 1196, 13, 3, 1, '2014-01-15 15:40:54', 1),
-(129, 244, 13, 3, 1, '2014-01-15 15:41:12', 1),
-(130, 1954, 16, 3, 1, '2014-01-15 15:41:14', 1),
-(131, 434, 10, 3, 1, '2014-01-15 15:41:17', 1),
-(132, 711, 10, 3, 1, '2014-01-15 15:41:44', 1),
-(133, 3533, 1, 3, 1, '2014-01-15 15:41:57', 0),
-(134, 1490, 11, 3, 1, '2014-01-15 15:42:03', 1),
-(135, 495, 18, 3, 1, '2014-01-15 15:42:14', 1),
-(136, 1957, 17, 3, 1, '2014-01-15 15:42:21', 1),
-(137, 3854, 11, 3, 1, '2014-01-15 15:42:25', 1),
-(138, 1202, 14, 3, 1, '2014-01-15 15:42:26', 1),
-(139, 989, 16, 3, 1, '2014-01-15 15:42:34', 1),
-(140, 3857, 12, 3, 1, '2014-01-15 15:42:48', 1),
-(141, 497, 18, 3, 1, '2014-01-15 15:42:56', 1),
-(142, 1996, 17, 3, 1, '2014-01-15 15:43:07', 1),
-(143, 540, 16, 3, 1, '2014-01-15 15:43:12', 1),
-(144, 3902, 12, 3, 1, '2014-01-15 15:43:13', 1),
-(145, 1084, 17, 3, 1, '2014-01-15 15:43:14', 1),
-(146, 1207, 14, 3, 1, '2014-01-15 15:43:21', 1),
-(147, 3903, 13, 3, 1, '2014-01-15 15:43:45', 1),
-(148, 563, 16, 3, 1, '2014-01-15 15:43:51', 1),
-(149, 1212, 15, 3, 1, '2014-01-15 15:43:51', 1),
-(150, 1241, 17, 3, 1, '2014-01-15 15:43:57', 1),
-(151, 2005, 18, 3, 1, '2014-01-15 15:44:02', 1),
-(152, 4776, 13, 3, 1, '2014-01-15 15:44:17', 1),
-(153, 1217, 15, 3, 1, '2014-01-15 15:44:25', 1),
-(154, 131, 18, 3, 1, '2014-01-15 15:44:39', 1),
-(155, 2052, 18, 3, 1, '2014-01-15 15:44:39', 1),
-(156, 1305, 18, 3, 1, '2014-01-15 15:44:44', 1),
-(157, 569, 17, 3, 1, '2014-01-15 15:44:44', 1),
-(158, 1218, 16, 3, 1, '2014-01-15 15:44:48', 1),
-(159, 4809, 14, 3, 1, '2014-01-15 15:44:57', 1),
-(160, 302, 14, 3, 1, '2014-01-15 15:45:04', 1),
-(161, 2089, 18, 3, 1, '2014-01-15 15:45:04', 1),
-(162, 601, 17, 3, 1, '2014-01-15 15:45:15', 1),
-(163, 1308, 16, 3, 1, '2014-01-15 15:45:18', 1),
-(164, 2091, 18, 3, 1, '2014-01-15 15:45:40', 1),
-(165, 201, 18, 3, 1, '2014-01-15 15:45:51', 1),
-(166, 2164, 18, 3, 1, '2014-01-15 15:46:07', 1),
-(167, 816, 18, 3, 1, '2014-01-15 15:46:12', 1),
-(168, 377, 14, 3, 1, '2014-01-15 15:46:13', 1),
-(169, 378, 15, 3, 1, '2014-01-15 15:46:58', 1),
-(170, 2178, 18, 3, 1, '2014-01-15 15:47:04', 1),
-(171, 1309, 17, 3, 1, '2014-01-15 15:47:10', 1),
-(172, 208, 7, 3, 1, '2014-01-15 15:47:13', 1),
-(173, 1310, 17, 3, 1, '2014-01-15 15:47:41', 1),
-(174, 271, 7, 3, 1, '2014-01-15 15:48:02', 1),
-(175, 1325, 18, 3, 1, '2014-01-15 15:48:04', 1),
-(176, 1342, 18, 3, 1, '2014-01-15 15:48:25', 1),
-(177, 1343, 18, 3, 1, '2014-01-15 15:48:49', 1),
-(178, 1355, 18, 3, 1, '2014-01-15 15:49:28', 1),
-(179, 398, 15, 3, 1, '2014-01-15 15:49:36', 1),
-(180, 1366, 18, 3, 1, '2014-01-15 15:49:59', 1),
-(181, 427, 16, 3, 1, '2014-01-15 15:50:43', 1),
-(182, 454, 16, 3, 1, '2014-01-15 15:51:53', 1),
-(183, 235, 10, 3, 1, '2014-01-15 15:51:54', 1),
-(184, 270, 10, 3, 1, '2014-01-15 15:52:17', 1),
-(185, 273, 11, 3, 1, '2014-01-15 15:52:48', 1),
-(186, 457, 17, 3, 1, '2014-01-15 15:53:08', 1),
-(187, 274, 11, 3, 1, '2014-01-15 15:53:26', 1),
-(188, 288, 12, 3, 1, '2014-01-15 15:53:51', 1),
-(189, 478, 17, 3, 1, '2014-01-15 15:53:55', 1),
-(190, 294, 12, 3, 1, '2014-01-15 15:54:10', 1),
-(191, 296, 13, 3, 1, '2014-01-15 15:54:40', 1),
-(192, 476, 13, 3, 1, '2014-01-15 15:55:06', 1),
-(193, 481, 17, 3, 1, '2014-01-15 15:55:10', 0),
-(194, 541, 14, 3, 1, '2014-01-15 15:55:26', 1),
-(195, 488, 18, 3, 1, '2014-01-15 15:55:36', 0),
-(196, 779, 14, 3, 1, '2014-01-15 15:55:49', 1),
-(197, 818, 15, 3, 1, '2014-01-15 15:56:13', 1),
-(198, 532, 18, 3, 1, '2014-01-15 15:56:19', 1),
-(199, 819, 15, 3, 1, '2014-01-15 15:56:35', 1),
-(200, 539, 18, 3, 1, '2014-01-15 15:56:53', 1),
-(201, 829, 16, 3, 1, '2014-01-15 15:57:09', 1),
-(202, 577, 2, 3, 1, '2014-01-15 15:57:39', 0),
-(203, 832, 16, 3, 1, '2014-01-15 15:57:59', 1),
-(204, 579, 2, 3, 1, '2014-01-15 15:58:07', 0),
-(205, 959, 17, 3, 1, '2014-01-15 15:58:25', 1),
-(206, 1029, 17, 3, 1, '2014-01-15 15:58:51', 1),
-(207, 1407, 18, 3, 1, '2014-01-15 15:59:06', 1),
-(208, 1411, 18, 3, 1, '2014-01-15 15:59:21', 1),
-(209, 1412, 18, 3, 1, '2014-01-15 15:59:41', 1),
-(210, 1413, 18, 3, 1, '2014-01-15 16:00:47', 1),
-(211, 1415, 18, 3, 1, '2014-01-15 16:01:04', 1),
-(212, 616, 8, 3, 1, '2014-01-15 17:47:05', 1),
-(213, 619, 8, 3, 1, '2014-01-15 17:48:01', 0),
-(214, 3664, 1, NULL, 1, '2014-01-22 20:48:04', 2),
-(215, 60, 1, NULL, 1, '2014-01-29 15:47:08', 0);
+(1, 1653, 11, 8, 1, '2014-01-27 07:32:12', 1),
+(2, 4231, 8, 3, 1, '2014-01-28 16:31:26', 1),
+(5, 1797, 12, 6, 1, '2014-01-31 11:14:44', 1),
+(6, 656, 10, NULL, 1, '2014-01-31 12:05:38', 0),
+(7, 3128, 15, NULL, 1, '2014-01-31 12:35:06', 0),
+(8, 2858, 18, NULL, 1, '2014-01-31 16:11:26', 0),
+(9, 1357, 13, 8, 1, '2014-02-01 12:31:42', 1),
+(10, 1472, 12, 8, 1, '2014-02-01 12:34:38', 1),
+(11, 1635, 17, 8, 1, '2014-02-01 13:20:14', 1),
+(12, 1232, 1, NULL, 1, '2014-02-04 16:27:16', 0),
+(13, 1192, 14, 9, 1, '2014-02-04 16:51:27', 1),
+(14, 1131, 16, 9, 1, '2014-02-04 16:51:33', 1),
+(15, 1138, 18, 9, 1, '2014-02-04 16:52:33', 1),
+(16, 1139, 18, 9, 1, '2014-02-05 08:48:49', 1),
+(17, 1154, 15, 9, 1, '2014-02-05 13:10:04', 1),
+(18, 1148, 17, 9, 1, '2014-02-05 13:28:09', 1),
+(19, 1213, 12, 9, 1, '2014-02-05 13:28:42', 1),
+(20, 1214, 13, 9, 1, '2014-02-05 13:29:20', 1),
+(21, 4821, 18, 6, 1, '2014-02-05 13:35:30', 1),
+(22, 1798, 16, 6, 1, '2014-02-05 13:46:18', 1),
+(23, 2164, 10, 6, 1, '2014-02-05 13:47:15', 1),
+(24, 297, 14, 6, 1, '2014-02-05 13:58:56', 1),
+(25, 2131, 15, 6, 1, '2014-02-05 14:05:42', 1),
+(26, 1347, 11, 9, 1, '2014-02-05 14:42:56', 1),
+(27, 1186, 18, 9, 1, '2014-02-05 14:43:03', 1),
+(28, 4822, 18, NULL, 1, '2014-02-05 14:43:29', 0),
+(29, 4823, 18, NULL, 1, '2014-02-05 14:46:24', 0),
+(30, 2039, 18, 6, 1, '2014-02-05 23:28:05', 1),
+(31, 2278, 18, 7, 1, '2014-02-06 20:54:08', 1),
+(32, 2310, 17, 7, 1, '2014-02-06 21:00:47', 1),
+(33, 2328, 18, 7, 1, '2014-02-06 21:02:57', 1),
+(34, 1640, 18, 7, 1, '2014-02-06 21:11:10', 1),
+(35, 3201, 10, NULL, 1, '2014-02-06 21:54:32', 0),
+(36, 2549, 17, NULL, 1, '2014-02-06 21:57:30', 0),
+(37, 1598, 13, NULL, 1, '2014-02-06 22:03:49', 0),
+(38, 4473, 15, NULL, 1, '2014-02-06 22:05:31', 0),
+(39, 2160, 16, 7, 1, '2014-02-06 22:26:12', 1),
+(40, 3408, 16, NULL, 1, '2014-02-06 22:29:45', 0),
+(41, 3202, 12, NULL, 1, '2014-02-06 23:04:04', 0),
+(42, 3226, 9, NULL, 1, '2014-02-07 11:35:37', 0),
+(43, 1867, 11, NULL, 1, '2014-02-07 11:37:16', 0),
+(44, 1241, 18, NULL, 1, '2014-02-07 12:13:13', 0),
+(45, 2159, 15, NULL, 1, '2014-02-07 14:37:26', 0),
+(46, 2363, 12, 7, 1, '2014-02-07 14:40:38', 1),
+(47, 1355, 11, NULL, 1, '2014-02-07 18:04:30', 0),
+(48, 4825, 10, 7, 1, '2014-02-07 21:07:25', 1),
+(49, 4824, 11, 7, 1, '2014-02-08 01:04:12', 1),
+(50, 2150, 3, 6, 1, '2014-02-08 12:06:38', 1),
+(51, 1577, 10, 8, 1, '2014-02-09 15:53:38', 1),
+(52, 2491, 14, NULL, 1, '2014-02-09 16:00:47', 0),
+(53, 1275, 16, 8, 1, '2014-02-09 16:54:38', 1),
+(54, 1654, 15, 8, 1, '2014-02-09 17:17:17', 1),
+(55, 3220, 13, 7, 1, '2014-02-10 14:22:30', 1),
+(56, 2620, 18, NULL, 1, '2014-02-10 16:18:53', 0),
+(57, 1884, 15, NULL, 1, '2014-02-11 10:01:25', 0),
+(58, 2651, 17, NULL, 1, '2014-02-11 10:01:37', 0),
+(59, 3029, 16, NULL, 1, '2014-02-11 10:01:43', 0),
+(60, 1129, 10, 9, 1, '2014-02-11 12:18:07', 1),
+(61, 3255, 10, NULL, 1, '2014-02-11 21:51:21', 0),
+(62, 300, 18, NULL, 1, '2014-02-11 22:45:42', 0),
+(63, 4829, 14, 7, 1, '2014-02-12 09:45:46', 1),
+(64, 644, 17, NULL, 1, '2014-02-12 11:15:24', 0);
 
 -- --------------------------------------------------------
 
@@ -5346,7 +5288,7 @@ CREATE TABLE IF NOT EXISTS `election_voter` (
   PRIMARY KEY (`elect_voter_id`),
   KEY `fk_election_voter_account1_idx` (`acct_id`),
   KEY `fk_election_voter_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4105 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4126 ;
 
 --
 -- Dumping data for table `election_voter`
@@ -9459,7 +9401,28 @@ INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_tim
 (4101, 4814, 1, '2013-10-30 17:04:47'),
 (4102, 4815, 1, '2013-10-30 17:04:50'),
 (4103, 4816, 1, '2013-10-30 17:05:58'),
-(4104, 4818, 1, '2013-10-30 17:13:34');
+(4104, 4818, 1, '2013-10-30 17:13:34'),
+(4105, 4821, 1, '2014-02-05 13:00:00'),
+(4106, 4822, 1, '2014-02-05 00:00:00'),
+(4107, 4823, 1, '2014-02-05 00:00:00'),
+(4108, 4824, 1, '2014-02-07 16:39:01'),
+(4109, 4825, 1, '2014-02-07 16:39:19'),
+(4110, 4832, 1, '2014-02-12 09:36:50'),
+(4111, 4829, 1, '2014-02-12 09:42:55'),
+(4112, 4833, 1, '2014-02-12 09:46:24'),
+(4113, 1575, 1, '2014-02-12 09:46:40'),
+(4114, 4834, 1, '2014-02-12 10:12:10'),
+(4115, 4835, 1, '2014-02-12 10:17:10'),
+(4116, 4836, 1, '2014-02-12 10:38:56'),
+(4117, 4837, 1, '2014-02-12 10:50:12'),
+(4118, 4838, 1, '2014-02-12 11:33:03'),
+(4119, 4839, 1, '2014-02-12 11:49:25'),
+(4120, 4840, 1, '2014-02-12 12:01:05'),
+(4121, 4841, 1, '2014-02-12 12:03:12'),
+(4122, 4842, 1, '2014-02-12 12:11:40'),
+(4123, 4843, 1, '2014-02-12 12:26:07'),
+(4124, 4844, 1, '2014-02-12 12:55:34'),
+(4125, 4845, 1, '2014-02-12 13:13:09');
 
 -- --------------------------------------------------------
 
@@ -9472,7 +9435,7 @@ CREATE TABLE IF NOT EXISTS `party` (
   `party_name` varchar(45) DEFAULT NULL,
   `school_year` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`party_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `party`
@@ -9480,8 +9443,10 @@ CREATE TABLE IF NOT EXISTS `party` (
 
 INSERT INTO `party` (`party_id`, `party_name`, `school_year`) VALUES
 (3, 'Independent', NULL),
-(4, 'Change Party', NULL),
-(5, 'Sigaw UICian Party', NULL);
+(6, 'STD PARTY', NULL),
+(7, 'ELITE PARTY', NULL),
+(8, 'SURE PARTY', NULL),
+(9, 'LEADERS PARTY', NULL);
 
 -- --------------------------------------------------------
 
@@ -9542,14 +9507,14 @@ CREATE TABLE IF NOT EXISTS `program` (
 INSERT INTO `program` (`prog_id`, `prog_code`, `prog_name`) VALUES
 (1, 'ITE', 'Information Technology Education'),
 (2, 'ABA', 'Accountancy and Business Administration'),
-(3, 'Educ', 'Education Program'),
-(4, 'Pharm/Chem', 'Pharmacy/Chemistry Program'),
-(5, 'ND/HM', 'Nutrition and Dietetics/ Hospitality Management Program'),
-(6, 'Music', 'Music Program'),
-(7, 'LA', 'Liberal Arts Program'),
-(8, 'Engr', 'Engineering Program'),
-(9, 'Nursing', 'Nursing Program'),
-(10, 'MLS', 'Medical Laboratory and Science Program');
+(3, 'Educ', 'Education'),
+(4, 'Pharm/Chem', 'Pharmacy/Chemistry'),
+(5, 'ND/HM', 'Nutrition and Dietetics/ Hospitality Management'),
+(6, 'Music', 'Music'),
+(7, 'LA', 'Liberal Arts'),
+(8, 'Engr', 'Engineering'),
+(9, 'Nursing', 'Nursing'),
+(10, 'MLS', 'Medical Laboratory Science');
 
 -- --------------------------------------------------------
 

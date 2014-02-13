@@ -1,23 +1,23 @@
 <html>
 	<head>
 		<script type="text/javascript">
-			var NewCount = 0
+			var NewCount = 0;
 
 			function keep_count()
 			{
 				if (document.getElementById("program_rep").checked)
 	        	{
-	        		NewCount = NewCount + 1
+	        		NewCount = NewCount + 1;
 	        	}
 
 	        	if (NewCount > 3)
 	        	{
-	        		alert('Maximum of 3 candidates must selected for the position of Program Representative.')
-	        		var checkboxes = document.ballot.candidate
-	             	NewCount = 0
+	        		alert('Maximum of 3 candidates must selected for the position of Program Representative.');
+	        		var checkboxes = document.ballot.candidate;
+	             	NewCount = 0;
 	             	for (var i = 0; i < checkboxes.length; i++)
 				 	{
-					    checkboxes[i].checked = false				 
+					    checkboxes[i].checked = false;				 
 				   	}
 	        	}
 			}
