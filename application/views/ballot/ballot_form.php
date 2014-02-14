@@ -102,10 +102,16 @@
 						$candidate = $program_candidates[$i]['acct_fname']." ".$program_candidates[$i]['acct_lname'];
 						$party = $program_candidates[$i]['party_name'];
 
+						$checkbox = array(
+											'name'    => 'program_rep[]',
+											'id'      => $radio_name,
+											'value'   => $candidate_id,
+											'checked' => set_checkbox('program_rep', $candidate_id, FALSE)
+				        
 						echo $tb['tr'];
 						if($position_program[$z]['pos_id'] == 18)
 						{
-							echo '<td>'.form_checkbox($radio_name, $candidate_id, '', '').$tb['td_'];
+							echo '<td>'.form_checkbox($checkbox).$tb['td_'];
 						}
 						else
 						{
