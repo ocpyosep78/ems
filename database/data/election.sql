@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 13, 2014 at 04:12 PM
+-- Generation Time: Feb 13, 2014 at 05:37 PM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -272,6 +272,13 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_account_username`(IN account_id INT)
 BEGIN
 	SELECT acct_username FROM account WHERE acct_id=account_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_course_list`(IN programID INT)
+BEGIN
+	SELECT * FROM election.course
+	WHERE prog_id = programID
+	ORDER BY course.course_name ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_current_election`()
@@ -5083,6 +5090,25 @@ CREATE TABLE IF NOT EXISTS `candidate_votes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ci_session`
+--
+
+CREATE TABLE IF NOT EXISTS `ci_session` (
+  `session_id` varchar(40) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(120) DEFAULT NULL,
+  `last_activity` int(11) DEFAULT NULL,
+  `user_data` text,
+  `time_login` datetime DEFAULT NULL,
+  `time_logout` datetime DEFAULT NULL,
+  `acct_id` int(11) NOT NULL,
+  PRIMARY KEY (`session_id`),
+  KEY `fk_ci_session_account1_idx` (`acct_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `course`
 --
 
@@ -9607,6 +9633,12 @@ ALTER TABLE `candidate_votes`
   ADD CONSTRAINT `fk_candidate_votes_election_candidate1` FOREIGN KEY (`elect_cand_id`) REFERENCES `election_candidate` (`elect_cand_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_candidate_votes_election_voter1` FOREIGN KEY (`elect_voter_id`) REFERENCES `election_voter` (`elect_voter_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_candidate_votes_program1` FOREIGN KEY (`voter_prog_id`) REFERENCES `program` (`prog_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `ci_session`
+--
+ALTER TABLE `ci_session`
+  ADD CONSTRAINT `fk_ci_session_account1` FOREIGN KEY (`acct_id`) REFERENCES `account` (`acct_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `course`
