@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 12, 2014 at 07:57 AM
+-- Generation Time: Feb 13, 2014 at 04:12 PM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -208,6 +208,28 @@ BEGIN
 	ORDER BY order_no ASC;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_ssg_applicants_by_status_and_position`()
+BEGIN
+	SELECT 	position.pos_id,
+		position.pos_name,
+		SUM(election_candidate.pos_id AND position.div_id = 1 AND election.status = 1 AND election_candidate.status = 0) AS pending,
+		SUM(election_candidate.pos_id AND position.div_id = 1 AND election.status = 1 AND election_candidate.status = 2) AS rejected,
+		SUM(election_candidate.pos_id AND position.div_id = 1 AND election.status = 1 AND election_candidate.status = 1) AS approved,
+		SUM(election_candidate.pos_id AND position.div_id = 1 AND election.status = 1 AND program.prog_id = 1) AS total
+
+		FROM position
+
+		LEFT OUTER JOIN election_candidate ON position.pos_id = election_candidate.pos_id
+		INNER JOIN division ON position.div_id = division.div_id  AND position.div_id = 1
+		LEFT OUTER JOIN election ON election_candidate.elect_id = election.elect_id AND election.status = 1
+		LEFT OUTER JOIN account ON election_candidate.acct_id = account.acct_id
+		LEFT OUTER JOIN course ON account.course_id = course.course_id
+		LEFT OUTER JOIN program ON course.prog_id = program.prog_id 
+
+		GROUP BY position.pos_name
+		ORDER BY order_no ASC;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `course_voters_statistics`()
 BEGIN
 	SELECT 	course.course_id,
@@ -250,13 +272,6 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_account_username`(IN account_id INT)
 BEGIN
 	SELECT acct_username FROM account WHERE acct_id=account_id;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_course_list`(IN programID INT)
-BEGIN
-	SELECT * FROM election.course
-	WHERE prog_id = programID
-	ORDER BY course.course_name ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_current_election`()
