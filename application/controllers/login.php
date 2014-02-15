@@ -27,10 +27,9 @@ class Login extends CI_Controller
 		{
 			$this->load->model('voter_model');
 			$list = $this->voter_model->check_voter_login($username, $userpass);		
-			
+
 			if($list != null)
 			{
-
 				$newdata = array(
 							   'acct_id'	=> $list['acct_id'],
 							   'acct_lname'	=> $list['acct_lname'],
@@ -56,7 +55,6 @@ class Login extends CI_Controller
 			}
 			else
 			{
-				$this->session->set_flashdata('access_is_invalid', TRUE);
 				redirect('/login', 'refresh');
 			}
 		}

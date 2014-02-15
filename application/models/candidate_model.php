@@ -87,6 +87,13 @@
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 		}
+
+		public function delete_candidate($elect_cand_id)
+		{
+			$sql = 'CALL delete_candidate('.$elect_cand_id.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+		}
 	}
 
 ?>

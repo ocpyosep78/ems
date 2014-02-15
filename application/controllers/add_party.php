@@ -77,20 +77,33 @@ class Add_party extends CI_Controller {
 		}
 	}
 
-	public function edit_party()
+	public function change_party()
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			$pt_id =  $this->uri->segment(3, 0);
-			$pt_name = $this->uri->segment(4, 0);
+			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
 
-			$page_view_content["page_view_dir"] = "party/edit_party";
+			if($is_election_officer != null)
+			{
+				$elect_cand_id = $this->uri->segment(3, 0);
+				$this->load->model('party_model');
 
+				$party = $this->party_model->get_party();
+				$page_view_content["page_view_data"] = $party;
+				$page_view_content["elect_cand_id"] = $elect_cand_id;
+				$page_view_content["page_view_dir"] = "party/change_party";
 
-			$page_view_content["logged_in"] = TRUE;
-			$page_view_content["party_id"] = $pt_id;
-			$page_view_content["party_name"] = $pt_name;
-			$this->load->view("includes/template",$page_view_content);
+				$page_view_content["is_election_officer"] = TRUE;
+				$page_view_content["logged_in"] = TRUE;	
+				$this->load->view("includes/template",$page_view_content);		
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}
 		}
 		else
 		{
@@ -102,15 +115,15 @@ class Add_party extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{	
-			$pt_id = $this->input->post('pt_id');
-			$pt_name = $this->input->post('pt_name');
+			$elect_cand_id = $this->input->post('elect_cand_id');
+			$pt_id = $this->input->post('party');
 
-			if($pt_id != FALSE AND $pt_name != FALSE)
+			if($pt_id)
 			{
 				$this->load->model('party_model');
-				$this->party_model->update_party($pt_id, $pt_name);
+				$this->party_model->update_candidate_party($pt_id, $elect_cand_id);
 			}
-			redirect('/add_party','refresh');
+			redirect('/ssg_applicant_list','refresh');
 		}
 		else
 		{
