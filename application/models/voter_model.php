@@ -106,6 +106,29 @@
 			return $sQuery->row_array(1);
 		}
 
+		public function insert_logs($logs)
+		{
+			$sql = 'CALL insert_logs("'.$logs['session_id'].'",
+									 "'.$logs['ip_address'].'",
+									 "'.$logs['user_agent'].'",
+									 "'.$logs['last_activity'].'",
+									 "'.$logs['acct_id'].'"
+					)';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array(1);
+		}
+
+		public function update_time_logout($session_id)
+		{
+			$sql = 'CALL update_time_logout("'.$session_id.'")';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
 	}
 
 ?>

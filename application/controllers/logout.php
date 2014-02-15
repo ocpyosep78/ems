@@ -19,7 +19,10 @@ class Logout extends CI_Controller {
 		// $timezone = 'Asia/Manila';
 		// date_default_timezone_set($timezone);
 		// echo date('D, d M Y h:i:s O', $timestamp);
-
+		$session_id = $this->session->userdata('session_id');
+		
+		$this->load->model('voter_model');
+		$this->voter_model->update_time_logout($session_id);
         $this->session->sess_destroy();
         redirect(base_url('index.php/login'), 'refresh');
 	}

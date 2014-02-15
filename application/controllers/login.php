@@ -22,6 +22,7 @@ class Login extends CI_Controller
 		$username = $this->input->post('username');
 		$userpass = $this->input->post('password');
 
+
 		if($username AND $userpass)
 		{
 			$this->load->model('voter_model');
@@ -40,6 +41,17 @@ class Login extends CI_Controller
 				               );
 
 				$this->session->set_userdata($newdata);
+
+				$logs = array(
+							'session_id' => $this->session->userdata('session_id'),
+							'ip_address' => $this->session->userdata('ip_address'),
+							'user_agent' => $this->session->userdata('user_agent'),
+							'last_activity' => $this->session->userdata('last_activity'),
+							'acct_id'    => $list['acct_id']
+							 );
+				
+				$this->voter_model->insert_logs($logs);
+
 				redirect('/home', 'refresh');
 			}
 			else
