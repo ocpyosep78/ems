@@ -129,6 +129,14 @@
 			return $sQuery->result_array();
 		}
 
+		public function reset_password($account_id)
+		{
+			$sql = 'CALL reset_password('.$account_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
 	}
 
 ?>
