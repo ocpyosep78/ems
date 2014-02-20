@@ -137,6 +137,15 @@
 
 			return $sQuery->row_array(1);
 		}
+
+		public function get_account_email($id_number)
+		{
+			$sql = 'CALL get_account_email("'.$id_number.'")';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
 	}
 
 ?>
