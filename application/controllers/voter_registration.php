@@ -117,4 +117,31 @@ class Voter_registration extends CI_Controller
 			redirect('/login', 'refresh');
 		}
 	}
+
+	public function reset_password()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$acct_id = $this->session->userdata('acct_id');
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			if($is_election_officer != null)
+			{
+				$acct_id = $this->uri->segment(3, 0);
+				$this->load->model('voter_model');
+				$this->voter_model->reset_password($acct_id);
+				$account_username = $this->voter_model->get_account_username($acct_id);
+				redirect('/voter_registration/search_account?account='.$account_username['acct_username'],'refresh');
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}	
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}
+	}
 }

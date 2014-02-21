@@ -137,4 +137,90 @@ class Ssg_applicant_list extends CI_Controller
 			redirect('/login', 'refresh');
 		}
 	}
+
+	public function delete_candidate()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$elect_cand_id =  $this->uri->segment(3, 0);
+
+			if($elect_cand_id != FALSE)
+			{
+				$this->load->model('candidate_model');
+				$this->candidate_model->delete_candidate($elect_cand_id);
+			}
+			redirect('/ssg_applicant_list','refresh');
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}
+	}
+
+	public function change_position()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			if($is_election_officer != null)
+			{
+				$elect_cand_id = $this->uri->segment(3, 0);
+				$this->load->model('position_model');
+
+				$page_view_content["page_view_data"] = $this->position_model->get_division();
+				$page_view_content["elect_cand_id"] = $elect_cand_id;
+				$page_view_content["page_view_dir"] = "candidates/change_position";
+
+				$page_view_content["is_election_officer"] = TRUE;
+				$page_view_content["logged_in"] = TRUE;	
+				$this->load->view("includes/template",$page_view_content);		
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}
+	}
+
+	public function select_position()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$acct_id = $this->session->userdata('acct_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			if($is_election_officer != null)
+			{
+				$elect_cand_id = $this->input->post('elect_cand_id');
+				$div_id = $this->input->post('division');
+				$this->load->model('position_model');
+
+				$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($div_id);
+				$page_view_content["elect_cand_id"] = $elect_cand_id;
+				$page_view_content["page_view_dir"] = "candidates/select_position";
+
+				$page_view_content["is_election_officer"] = TRUE;
+				$page_view_content["logged_in"] = TRUE;	
+				$this->load->view("includes/template",$page_view_content);		
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}
+	}
 }

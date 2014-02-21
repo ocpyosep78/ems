@@ -22,7 +22,7 @@
 		}
 
 		echo '<li><a href="">Edit Profile</a></li>';
-		echo '<li><a href="">Reset Password</a></li>';
+		echo '<li><a href="'.base_url('index.php/voter_registration/reset_password/'.$page_view_data['acct_id']).'">Reset Password</a></li>';
 		echo '<li><a href="">Print Details</a></li>';
 		echo '</ul>';
 		echo '</div>';

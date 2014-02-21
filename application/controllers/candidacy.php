@@ -28,6 +28,26 @@ class Candidacy extends CI_Controller {
 		$this->load->view('candidacy/position_list_form',$position);
 
 	}
+
+	public function update_position()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$elect_cand_id = $this->input->post('elect_cand_id');
+			$pos_id = $this->input->post('position');
+
+			if($pos_id)
+			{
+				$this->load->model('position_model');
+				$this->position_model->update_candidate_position($pos_id, $elect_cand_id);
+			}
+			redirect('/ssg_applicant_list','refresh');
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}
+	}
 }
 
 /* End of file welcome.php */

@@ -147,11 +147,13 @@
 
 		echo '<div '.$div_id.'><div id="applicant_container_label">Application Status: </div><div '.$status_id.'>'.$status.'</div></div>';
 		echo '<div '.$div_id.'><a href="'.$url1.'">'.$option1.'</a>&nbsp&nbsp|<a href="'.$url2.'">
-			 '.$option2.'</a>&nbsp|&nbsp<a href=#>Delete</a>';
-		
+			 '.$option2."</a>&nbsp|&nbsp<a href=ssg_applicant_list/delete_candidate/".$candidate_id.">Delete</a>";
+
+		echo '&nbsp|&nbsp<a href=ssg_applicant_list/change_position/'.$candidate_id.'>Change Position</a>';
+
 		if($page_view_data[$x]['party_name'] != null)
 		{	  
-			echo '&nbsp|&nbsp<a href=#>Edit Party</a></div>';	
+			echo '&nbsp|&nbsp<a href=add_party/change_party/'.$candidate_id.'>Change Party</a></div>';	
 		}
 		else
 		{

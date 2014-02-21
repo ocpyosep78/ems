@@ -25,6 +25,14 @@
 			return $sQuery->result_array();
 		}
 
+		public function update_candidate_position($pos_id, $elect_cand_id)
+		{
+			$sql = 'CALL update_candidate_position('.$pos_id.', '.$elect_cand_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
 	}
 
 ?>
