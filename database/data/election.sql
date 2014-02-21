@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Feb 13, 2014 at 05:37 PM
+-- Generation Time: Feb 20, 2014 at 06:41 PM
 -- Server version: 5.5.28
 -- PHP Version: 5.4.19
 
@@ -166,8 +166,8 @@ BEGIN
 	SELECT 	program.prog_id,
 			program.prog_name,
 			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 0 ) AS Pending,
-			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 1 ) AS Approved,
 			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 2 ) AS Rejected,
+			SUM(election_candidate.pos_id AND division.div_id = 2 AND election_candidate.status = 1 ) AS Approved,
 			SUM(election_candidate.pos_id AND division.div_id = 2) AS Total
 
 	FROM election.program
@@ -230,7 +230,7 @@ BEGIN
 		ORDER BY order_no ASC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `course_voters_statistics`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_voters_statistics_by_course`()
 BEGIN
 	SELECT 	course.course_id,
 			course.course_name,
@@ -757,7 +757,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   PRIMARY KEY (`acct_id`),
   UNIQUE KEY `acct_username_UNIQUE` (`acct_username`),
   KEY `fk_voter_course1_idx` (`course_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4846 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4865 ;
 
 --
 -- Dumping data for table `account`
@@ -2267,7 +2267,6 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (1896, '1200107', 0x44b64e90318fae6618801a1d03495c73, 'bas', 'novielyn', 'aragones', 'novielynbas@yahoo.com', NULL, 11, 0, 1, '2013-10-26 11:36:31'),
 (1897, '1200485', 0x5ec2fbbe29df4d6a53dc94433a830e65, 'Mulato', 'Patricia Camille', 'Ybañez', 'c_mulato@yahoo.com.ph', NULL, 11, 0, 1, '2013-10-26 11:36:32'),
 (1899, '1001849', 0xf9b3847a9bb3e4ce2becf8c266df5e40, 'Salva', 'Erwin', 'Cuajao', 'erwincsalva@gmail.com', NULL, 31, 0, 1, '2013-10-26 11:37:25'),
-(1900, '1201576', 0x07debb9590844287dde3249e93a11208, 'Domingo', 'Arvin John', 'Liwag', 'rheinaisqueen@gmail.com', NULL, 11, 0, 1, '2013-10-26 11:37:35'),
 (1901, '1101116', 0xb39a5dabb437671802247a48af3b181b, 'Bajenting', 'Myka', 'Obemio', 'mykatitay@yahoo.com', NULL, 16, 0, 1, '2013-10-26 11:37:40'),
 (1903, '1001450', 0xbd997ae962197c2f8158ef31fefeaaa1, 'delos reyes', 'april love', 'dula', 'yatuko_143@yahoo.com', NULL, 10, 0, 1, '2013-10-26 11:37:42'),
 (1904, '1101279', 0xf896b83d7c213c2b722feeb384c11ecf, 'Makalingkang', 'Noor Ahmed', 'Mulod', 'makalingkang@gmail.com', NULL, 18, 0, 1, '2013-10-26 11:38:11'),
@@ -2391,9 +2390,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (2048, '1201851', 0xd49206d20e8df8c3b4fd683e6d573da4, 'LOMANTAS', 'KIMBERLY', 'TAN', 'klomantas@yahoo.com', NULL, 11, 0, 1, '2013-10-26 12:55:44'),
 (2049, '1300309', 0xf02f74e960c9f549daf5fb925a25f44c, 'Debuma', 'Ethelrida', 'Silva', 'ethelridadebuma@yahoo.com', NULL, 14, 0, 1, '2013-10-26 12:57:40'),
 (2050, '1200336', 0x9a607f46b2675dc6f1e48c6ff058b15c, 'Cebrero', 'Christiana Pearl', 'Rudinas', 'christiana1422@gmail.com', NULL, 11, 0, 1, '2013-10-26 12:58:29'),
-(2052, '1200510', 0xb91dd818fa2f11022413de44818e668c, 'MENDOZA', 'JAMES RYAN', 'De Jesus', 'RYANMENDOZA@YAHOO.COM', NULL, 24, 0, 1, '2013-10-26 13:07:10');
+(2052, '1200510', 0xb91dd818fa2f11022413de44818e668c, 'MENDOZA', 'JAMES RYAN', 'De Jesus', 'RYANMENDOZA@YAHOO.COM', NULL, 24, 0, 1, '2013-10-26 13:07:10'),
+(2053, '1301701', 0xfe33313e4fa4d85421c68d05bb427f38, 'Bello', 'Mark Angelo', 'Berdos', 'markmanship24@yahoo.com', NULL, 21, 0, 1, '2013-10-26 13:09:28');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(2053, '1301701', 0xfe33313e4fa4d85421c68d05bb427f38, 'Bello', 'Mark Angelo', 'Berdos', 'markmanship24@yahoo.com', NULL, 21, 0, 1, '2013-10-26 13:09:28'),
 (2054, '1100640', 0x7f4943acdbb4c06585cbc42c41fa1f9f, 'comandao', 'harold john', 'amascual', 'hjcomandao@gmail.com', NULL, 6, 0, 1, '2013-10-26 13:09:37'),
 (2055, '1102086', 0xb03c6ebe8e1537afdd5431640a56ac48, 'Loyola', 'Ellen', 'Corminal', 'missellendeloyola@yahoo.com', NULL, 6, 0, 1, '2013-10-26 13:09:40'),
 (2056, '1100256', 0x314da99293c27aea5bcf6d79424c6648, 'Ostos', 'Stephanie Kaye', 'Vea', 'stephaniekayeostos@yahoo.com', NULL, 15, 0, 1, '2013-10-26 13:09:54'),
@@ -2715,9 +2714,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (2463, '1201838', 0x84c6af018dcbad861e40a9612f042ebc, 'Sekino', 'Hayato James', 'Serrano', 'hayato_james@yahoo.com', NULL, 6, 0, 1, '2013-10-29 08:00:58'),
 (2464, '1201688', 0x65bcf540ec653e1d3bb31fcb564e63be, 'Galope', 'Anna Katrina', 'Pore', 'katgalope@rocketmail.com', NULL, 5, 0, 1, '2013-10-29 08:02:43'),
 (2465, '1101200', 0xcb48d4cbb62629be7e4e572433a38393, 'Salcedo', 'Quinn Cyra', 'Labiano', 'squinncyra@yahoo.com', NULL, 30, 0, 1, '2013-10-29 08:02:50'),
-(2466, '1200978', 0xf2ed24989ebfa933c2d87e5fbdeef967, 'Delgado', 'Gielyn Crisbelle', 'Luneta', 'gielyn.crisbelle@yahoo.com', NULL, 30, 0, 0, '2013-10-29 08:03:44');
+(2466, '1200978', 0xf2ed24989ebfa933c2d87e5fbdeef967, 'Delgado', 'Gielyn Crisbelle', 'Luneta', 'gielyn.crisbelle@yahoo.com', NULL, 30, 0, 0, '2013-10-29 08:03:44'),
+(2467, '1200678', 0x9d12bf3eb758d5f79ba853842840fde8, 'Quijano', 'Merland Stephanie Joy', 'Ciudadano', 'quijano_steph@yahoo.com', NULL, 4, 0, 1, '2013-10-29 08:08:26');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(2467, '1200678', 0x9d12bf3eb758d5f79ba853842840fde8, 'Quijano', 'Merland Stephanie Joy', 'Ciudadano', 'quijano_steph@yahoo.com', NULL, 4, 0, 1, '2013-10-29 08:08:26'),
 (2468, '1101678', 0x60019e77f15eff7e803618d84a3b9744, 'Corpus', 'Gerard', 'L.', 'sadistic_mayhem@yahoo.com', NULL, 16, 0, 1, '2013-10-29 08:08:37'),
 (2469, '1201119', 0x100f2b6b1d34f4561d86490137b6309d, 'damasin', 'jude nikkolai', 'labrador', 'judenikkolai_silverfist@rocketmail.com', NULL, 4, 0, 1, '2013-10-29 08:08:37'),
 (2470, '1200649', 0x915b16ee9145bb0013407250b35def64, 'Corotan', 'Louisse', 'Buscano', 'corotanloys@yahoo.com', NULL, 6, 0, 1, '2013-10-29 08:08:49'),
@@ -3040,9 +3039,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (2844, '1100443', 0x144fa8207c0f1a96f74eb2e3b467dd7e, 'Pama', 'Maechel', 'Saranillo', 'maechel_babe@yahoo.com', NULL, 27, 0, 1, '2013-10-29 10:43:32'),
 (2845, '1201171', 0x87426d9e14c9da8789ff2c8de3246f4b, 'Cera', 'Lyra Camille', 'Coco', 'ily.aein@yahoo.com', NULL, 1, 0, 1, '2013-10-29 10:43:41'),
 (2846, '1100468', 0x749dbdf7efff7f20f134365a59cc7526, 'Caldoza', 'Diquen Ivy', 'Ibacitas', 'diquenivy1213@gmail.com', NULL, 29, 0, 1, '2013-10-29 10:43:46'),
-(2847, '1100288', 0xbc7e2961765959a4383e657223ed21d4, 'Gutib', 'Rougin Royce', 'Salvador', 'rougin.royce@gmail.com', NULL, 28, 0, 1, '2013-10-29 10:43:53');
+(2847, '1100288', 0xbc7e2961765959a4383e657223ed21d4, 'Gutib', 'Rougin Royce', 'Salvador', 'rougin.royce@gmail.com', NULL, 28, 0, 1, '2013-10-29 10:43:53'),
+(2848, '1200513', 0x182ff46f17c09c2b92ab8bad64021bb6, 'antona', 'bernard robin', 'rivas', 'bernardantona@yahoo.com', NULL, 30, 0, 1, '2013-10-29 10:43:57');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(2848, '1200513', 0x182ff46f17c09c2b92ab8bad64021bb6, 'antona', 'bernard robin', 'rivas', 'bernardantona@yahoo.com', NULL, 30, 0, 1, '2013-10-29 10:43:57'),
 (2849, '1201482', 0x1a00f07fb12a1653288d69669068fdfc, 'ponso', 'orgeline', 'jurial', 'jevieponsomendoza@yahoo.com', NULL, 1, 0, 1, '2013-10-29 10:44:04'),
 (2850, '1100226', 0x4058b40473e1a15d224fb56ad6d7f4dc, 'Uyamot', 'Carollene', 'Manligas', 'iampandabob08@gmail.com', NULL, 27, 0, 1, '2013-10-29 10:44:18'),
 (2851, '1001840', 0x16dbf36c5f4817f682d1756c334434af, 'Villasan', 'Maria Shiela', 'Dela Cruz', 'shiela_8894@yahoo.com', NULL, 27, 0, 1, '2013-10-29 10:44:19'),
@@ -3365,9 +3364,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (3169, '1100252', 0xb5897998141a29e768d19a5a303fd1dc, 'Gepolio', 'Queenie Dianne', 'Magbanua', 'i.lovefries@yahoo.com', NULL, 25, 0, 1, '2013-10-29 13:02:12'),
 (3170, '1100430', 0x6854257d9b8d1f98a8369c62bc63257e, 'Albutra', 'Chardigin', 'Getuaban', 'nigidrach@gmail.com', NULL, 11, 0, 1, '2013-10-29 13:02:15'),
 (3171, '1000420', 0xb966bfd3d7d3cd3aa41098bbf970ac14, 'mondejar', 'sahlee myr', 'salazar', 'sahlee_eric@yahoo.com', NULL, 13, 0, 1, '2013-10-29 13:03:56'),
-(3172, '1201300', 0xcdba22568881d9d5e53c4d190c22d8ab, 'Cenar', 'Jeanne Pauline', 'Cadorna', 'eannepauline_15@yahoo.com', NULL, 4, 0, 1, '2013-10-29 13:04:38');
+(3172, '1201300', 0xcdba22568881d9d5e53c4d190c22d8ab, 'Cenar', 'Jeanne Pauline', 'Cadorna', 'eannepauline_15@yahoo.com', NULL, 4, 0, 1, '2013-10-29 13:04:38'),
+(3173, '1300936', 0x16296aea794b2086b8eb6f1236a8a6d0, 'Abella', 'Caple Jury', 'Abella', 'caple_a@yahoo.com', NULL, 22, 0, 1, '2013-10-29 13:05:58');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(3173, '1300936', 0x16296aea794b2086b8eb6f1236a8a6d0, 'Abella', 'Caple Jury', 'Abella', 'caple_a@yahoo.com', NULL, 22, 0, 1, '2013-10-29 13:05:58'),
 (3174, '1100018', 0x0d8a7fe0e839b87302d85362e80c0f93, 'Gallo', 'Ivan Mari Manolo', 'Frances', 'banstriker1000@gmail.com', NULL, 11, 0, 1, '2013-10-29 13:06:05'),
 (3175, '1100375', 0xd0b6b0f30d4961a70895ad6907a9781c, 'Cosido', 'Sharmaine', 'Galan', 'sharmainecosido@gmail.com', NULL, 25, 0, 1, '2013-10-29 13:06:18'),
 (3176, '1301280', 0xe119664ebaad83edc996399d6a0ff787, 'Hussin', 'Muhr-Shajid Olav', 'Tan', 'sxmuhrsx@yahoo.com', NULL, 18, 0, 1, '2013-10-29 13:07:16'),
@@ -3691,9 +3690,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (3494, '0901334', 0x901847920e396c679054cac424d68581, 'Yap', 'Mari Angeli', 'De Castro', 'annalerts@yahoo.com', NULL, 17, 0, 1, '2013-10-29 15:20:31'),
 (3495, '1300855', 0xf97cd9c45330f721e728740040cfd16b, 'daria', 'Angel elizabeth', 'almaden', 'angelkurazu@yahoo.com', NULL, 10, 0, 1, '2013-10-29 15:20:36'),
 (3496, '1100412', 0xad10a0641d053df05be40e049cbf06a1, 'Lim', 'Richill Gen', 'Arcon', 'rg_9894@yahoo.com', NULL, 11, 0, 1, '2013-10-29 15:20:39'),
-(3497, '1000415', 0x82816ad5dd3044136944eedd06a5494c, 'belano', 'angelie', 'labiscase', 'yuukilee@rocketmail.com', NULL, 11, 0, 1, '2013-10-29 15:20:43');
+(3497, '1000415', 0x82816ad5dd3044136944eedd06a5494c, 'belano', 'angelie', 'labiscase', 'yuukilee@rocketmail.com', NULL, 11, 0, 1, '2013-10-29 15:20:43'),
+(3498, '1100437', 0x6fab36f055cfd67b11cab3a28cfc2027, 'Aloro', 'Julius Wayne', 'Caranzo', 'julius_hip_hopperz@yahoo.com', NULL, 27, 0, 1, '2013-10-29 15:20:58');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(3498, '1100437', 0x6fab36f055cfd67b11cab3a28cfc2027, 'Aloro', 'Julius Wayne', 'Caranzo', 'julius_hip_hopperz@yahoo.com', NULL, 27, 0, 1, '2013-10-29 15:20:58'),
 (3499, '1300209', 0xf02f74e960c9f549daf5fb925a25f44c, 'Albores', 'kimberly', 'Bitang', 'kimberlyalbores@yahoo.com', NULL, 29, 0, 1, '2013-10-29 15:21:17'),
 (3500, '1201321', 0x69d1055d3bcae365eb938b5ad0890018, 'Tabanao', 'Yos', 'Camasura', 'yostabanao@yahoo.com', NULL, 15, 0, 1, '2013-10-29 15:21:40'),
 (3501, '1100034', 0x580d245828584bbc2d054ec560f579a0, 'Sy', 'Kathleen Ashley', 'Bajao', 'kathleen_sy13@yahoo.com', NULL, 11, 0, 1, '2013-10-29 15:21:46'),
@@ -4017,9 +4016,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (3819, '1000072', 0x84882d774c9caa81ee4ae1c2f3690a81, 'Miguel', 'Mike Janrev', 'Lanuza', 'mikejanrev@yahoo.com', NULL, 29, 0, 1, '2013-10-30 09:46:00'),
 (3820, '1300729', 0xac39ac4287c45d19e0770998fd1bb72a, 'San Pablo', 'Nadine Jade', 'D.', 'nadinejade@yahoo.com', NULL, 4, 0, 1, '2013-10-30 09:46:16'),
 (3821, '0800839', 0xb0fae885155c4503c1394597efb121b9, 'Duhaylungsod', 'Leah Mae', 'Nicor', 'chreah014@yahoo.com', NULL, 11, 0, 1, '2013-10-30 09:46:26'),
-(3822, '0900123', 0xdacff62b527b3dee49afc56a4adffd61, 'Cabañero', 'Cashelmara', 'Bautista', 'cabanerocashelmara@yahoo.com', NULL, 20, 0, 1, '2013-10-30 09:46:57');
+(3822, '0900123', 0xdacff62b527b3dee49afc56a4adffd61, 'Cabañero', 'Cashelmara', 'Bautista', 'cabanerocashelmara@yahoo.com', NULL, 20, 0, 1, '2013-10-30 09:46:57'),
+(3823, '0900508', 0xfd6203639c3de8d0e55f4046aba9caa3, 'papalid', 'rimon john', 'vido', 'rimonjohnpapalid@yahoo.com', NULL, 22, 0, 1, '2013-10-30 09:47:00');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(3823, '0900508', 0xfd6203639c3de8d0e55f4046aba9caa3, 'papalid', 'rimon john', 'vido', 'rimonjohnpapalid@yahoo.com', NULL, 22, 0, 1, '2013-10-30 09:47:00'),
 (3824, '1300573', 0xef85a1715150c9d0805ee29749ddde27, 'Estrella', 'Jose Enrique', 'Abenion', 'jose_estrella3@yahoo.com', NULL, 4, 0, 1, '2013-10-30 09:47:21'),
 (3825, '1301113', 0xcf596804be70621d5ea970568c92a467, 'Pamintuan', 'Marlon Jr', 'Dulasan', 'pamintuanmarlonjr@gmail.com', NULL, 12, 0, 1, '2013-10-30 09:47:25'),
 (3826, '1301583', 0xb58d3f5424b6180acd3cb572799a2561, 'Mondejar', 'James Bryan', 'Arocan', 'jamesbryanmondejar@yahoo.com', NULL, 19, 0, 1, '2013-10-30 09:48:28'),
@@ -4341,9 +4340,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4142, '1300480', 0x040a0d4e20863ef4683be19878e11780, 'Espinosa', 'April Raya', 'P.', 'ayachewt04@gmail.com', NULL, 18, 0, 1, '2013-10-30 11:42:22'),
 (4143, '1200690', 0x4b7a1af2c3bd2cd4b1d7c2a58a560fe6, 'carandang', 'karen', 'bisnar', 'carandang_karen@ymail.com', NULL, 25, 0, 1, '2013-10-30 11:42:30'),
 (4144, '1200696', 0xb2a04e4f2009fc0455cfe6f49349c6ca, 'Bunda', 'Cyrene Dawn', 'Janoyan', 'lds_ren16@yahoo.com', NULL, 25, 0, 1, '2013-10-30 11:42:32'),
-(4145, '1101820', 0x7673e84df118859be1501d26113f500a, 'Calope', 'Kris Alman', 'Estaca', 'kris_calope@yahoo.com', NULL, 21, 0, 1, '2013-10-30 11:42:59');
+(4145, '1101820', 0x7673e84df118859be1501d26113f500a, 'Calope', 'Kris Alman', 'Estaca', 'kris_calope@yahoo.com', NULL, 21, 0, 1, '2013-10-30 11:42:59'),
+(4146, '1201264', 0x9ac9f2330f7766c238d73fde659b988f, 'Dalumpines', 'Joy Mae', 'Padrigo', 'joymaedalumpines@rocketmail.com', NULL, 25, 0, 1, '2013-10-30 11:43:10');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(4146, '1201264', 0x9ac9f2330f7766c238d73fde659b988f, 'Dalumpines', 'Joy Mae', 'Padrigo', 'joymaedalumpines@rocketmail.com', NULL, 25, 0, 1, '2013-10-30 11:43:10'),
 (4147, '1201476', 0x99778f6a77b05be7ae25d2a0f2a75807, 'Amatac', 'Charlene Mae', 'Akmad', 'charlenemae_amatac@yahoo.com', NULL, 25, 0, 1, '2013-10-30 11:43:22'),
 (4148, '0900268', 0x34b1d58b28e7792387f938bac0fa14b7, 'Alamis', 'Rey Millikent', 'Noto', 'kentalamis@gmail.com', NULL, 21, 0, 1, '2013-10-30 11:43:28'),
 (4149, '1201355', 0x7c23be774b7ecc5b60aefd80541458b6, 'Bueno', 'Mary Jane', 'Esteban', 'maryjanebueno246@gmail.com', NULL, 25, 0, 1, '2013-10-30 11:43:29'),
@@ -4665,9 +4664,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4465, '0901853', 0x7df1296a45fed6104877a6c96f141f2b, 'Langub', 'Honesta', 'Caitor', 'temp32@yahoo.com', NULL, 11, 0, 1, '2013-10-30 14:36:37'),
 (4466, '1101659', 0x94c705db9a152052eed8f8c6d92b2167, 'galido', 'lovely', 'flores', 'galidolovely@yahoo.com', NULL, 25, 0, 1, '2013-10-30 14:38:25'),
 (4467, '1301305', 0xc13633249427c27aa503b0f61a9db583, 'manliguez', 'rising glory', 'alcordo', 'rgmanliguez63@yahoo.com', NULL, 5, 0, 1, '2013-10-30 14:38:26'),
-(4468, '1301250', 0xfd7959989eb1b1e7467aeed678bcc80f, 'kenneth', 'centina', 'ampatin', 'kenneth_farell09@yahoo.com', NULL, 20, 0, 1, '2013-10-30 14:38:36');
+(4468, '1301250', 0xfd7959989eb1b1e7467aeed678bcc80f, 'kenneth', 'centina', 'ampatin', 'kenneth_farell09@yahoo.com', NULL, 20, 0, 1, '2013-10-30 14:38:36'),
+(4469, '1100941', 0xe6630b0dec941770133022a6de93bee7, 'Sereño', 'Queenie Rose', 'Tolentino', 'quaiize@yahoo.com', NULL, 25, 0, 1, '2013-10-30 14:38:40');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(4469, '1100941', 0xe6630b0dec941770133022a6de93bee7, 'Sereño', 'Queenie Rose', 'Tolentino', 'quaiize@yahoo.com', NULL, 25, 0, 1, '2013-10-30 14:38:40'),
 (4470, '1101566', 0x585c3b3910af2e407f160cd33e018db1, 'Quimpo', 'Kathleen', 'Avila', 'quimpo.kakat@yahoo.com', NULL, 25, 0, 1, '2013-10-30 14:39:06'),
 (4471, '1301765', 0x350a651d347e7cdb9cbe462a6b1429cf, 'sajol', 'sharmine', 'buena', 'sharmine.sajol@ymail.com', NULL, 6, 0, 1, '2013-10-30 14:39:13'),
 (4472, '1100204', 0x83d19d55bee1d734bf1ac8fab0b9f8f0, 'Balbin', 'Heyren', 'Lasaga', 'rhen_95@yahoo.com', NULL, 25, 0, 1, '2013-10-30 14:39:42'),
@@ -4989,9 +4988,9 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4788, '1300628', 0xf8bea8b9dbbacaea7694fbd5f922c841, 'tudio', 'gabriel', 'lupian', 'gabriel.tudio@yahoo.com', NULL, 4, 0, 1, '2013-10-30 16:44:07'),
 (4789, '1300192', 0x93706bff17feaae23f1e1558e27962ac, 'Espaldon', 'Elounah', 'Escarpe', 'louiesanaespaldon@rocketmail.com', NULL, 25, 0, 1, '2013-10-30 16:45:01'),
 (4790, '1301214', 0xf02f74e960c9f549daf5fb925a25f44c, 'valmores', 'mae marellee', 'cauilan', 'mmcv_44@yahoo.com', NULL, 25, 0, 1, '2013-10-30 16:47:17'),
-(4791, '1200207', 0x9323cd536ad8d056579c31bde439d531, 'bariquit', 'cherubim', 'lagrosa', 'cherubimbariquit_17@yahoo.com', NULL, 5, 0, 1, '2013-10-30 16:47:18');
+(4791, '1200207', 0x9323cd536ad8d056579c31bde439d531, 'bariquit', 'cherubim', 'lagrosa', 'cherubimbariquit_17@yahoo.com', NULL, 5, 0, 1, '2013-10-30 16:47:18'),
+(4792, '1301539', 0x09e13d744d64c4672918d8b0357d05cf, 'kimamao', 'islamia', 'dulo', 'islamiakimamao@yahoo.com', NULL, 25, 0, 1, '2013-10-30 16:47:40');
 INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`, `acct_fname`, `acct_mname`, `email_address`, `profile_pic`, `course_id`, `acct_status`, `reg_status`, `time_date_log`) VALUES
-(4792, '1301539', 0x09e13d744d64c4672918d8b0357d05cf, 'kimamao', 'islamia', 'dulo', 'islamiakimamao@yahoo.com', NULL, 25, 0, 1, '2013-10-30 16:47:40'),
 (4793, '1201989', 0xccccce06020561f9ca3e9b662632da96, 'Mamuad', 'Justin Lorenz', 'Razonable', 'jlorenz_005@yahoo.com', NULL, 25, 0, 1, '2013-10-30 16:47:51'),
 (4794, '1201988', 0xb5f12f86d4b491f5e4cc617d06aebabd, 'Gurrea', 'Arff Kevin', 'Viva', 'arffkeviin@yahoo.com', NULL, 25, 0, 1, '2013-10-30 16:48:45'),
 (4795, '1001304', 0x505404ebbdc7225d9d4220a7ee14aa2a, 'marino', 'rigel john', 'monjardin', 'regil_squicky@yahoo.com', NULL, 15, 0, 1, '2013-10-30 16:49:00'),
@@ -5018,7 +5017,6 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4816, '1100527', 0x599423b6a29a6ebfba1ca89262f15636, 'Dilodilo', 'Karl Angelo', 'Caro', 'karl_angelSI@yahoo.com', NULL, 1, 0, 1, '2013-10-30 17:05:58'),
 (4817, '1300893', 0x4065d2eb51901b2b0727d07103564f72, 'siton', 'krizzle mae', 'tahil', 'krizzle_2912@yahoo.com', NULL, 9, 0, 0, '2013-10-30 17:10:26'),
 (4818, '1301608', 0xf02f74e960c9f549daf5fb925a25f44c, 'carracedo', 'ma. angelica', 'obero', 'angelicacarracedo@yahoo.com', NULL, 14, 0, 1, '2013-10-30 17:13:34'),
-(4819, '1102089', 0xc2934c576c4ac28ec28dc2b4c3a53828c3b3c2b0c292c29e5d, 'Tan', 'Chin Tinn Lourence', 'Son', 'chintinntan1391@gmail.com', NULL, 1, 0, 1, '2014-01-11 17:33:19'),
 (4820, '0200941', 0xe6e7ad58b26bfccaec2dbf6cfd71e3cf, 'Padao', 'Francis Rey', 'F', 'fpadao@uic.edu.ph', NULL, 2, 0, 0, '2014-02-03 12:07:26'),
 (4821, '1201041', 0x6505eeb644f7acab3c307e665bd493dc, 'cabiles', 'xavier', 'catapang', 'partx_partidoz13@yahoo.com', NULL, 25, 0, 0, '2014-02-05 13:31:40'),
 (4822, '1300342', 0xa19fe7f8b64154e60d1a9db3632c0b65, 'Villar', 'Rod Bryant', 'Batobalonos', 'villar_rod@yahoo.com', NULL, 24, 0, 0, '2014-02-05 14:23:20'),
@@ -5030,7 +5028,7 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4828, '1400015', 0x52242e9658cbe8bb7f3ac7a0607c8426, 'asdfasdf', 'asfasfasf', 'sdfasdfasd', 'asfasdfadf@gmail.com', NULL, 4, 0, 0, '2014-02-10 13:45:31'),
 (4829, '1201315', 0x5623910b0bea773aaf3f5592e90ed635, 'Lumang II', 'Charlie', 'Geveso', 'bingkays_charlie@yahoo.com', NULL, 1, 0, 0, '2014-02-10 14:21:19'),
 (4830, '1100213', 0x6bab089b88ec4b11c6a3df430da10924, 'Tajantajan', 'Wyrlo Ashley', 'Flores', 'demoneyez.ash@gmail.com', NULL, 20, 0, 0, '2014-02-10 15:34:01'),
-(4831, '1000478', 0xc2ba70c045a2dcf357a4879a24599d81, 'Badilles', 'Paul Jones', 'Flores', 'athrun_marcko@gmail.com', NULL, 22, 0, 0, '2014-02-11 15:32:32'),
+(4831, '1000478', 0xc2ba70c045a2dcf357a4879a24599d81, 'Badilles', 'Paul Jones', 'Flores', 'athrun_marcko@gmail.com', NULL, 20, 0, 0, '2014-02-11 15:32:32'),
 (4832, '1000475', 0x4069901e03d008d8b95c6633388acf74, 'tomale', 'geanna krisantiene', 'pan', 'geanna_tomale@yahoo.com', NULL, 11, 0, 0, '2014-02-12 09:36:11'),
 (4833, '1200537', 0xa55fd82005ae470ddce348966f8c9477, 'Ayco', 'Rexonna', 'Banajera', 'aiko_rex@yahoo.com', NULL, 11, 0, 0, '2014-02-12 09:45:38'),
 (4834, '1200990', 0xce2873f3403d0e7cd34b98c001063452, 'repalam', 'eijay ina', 'fuentes', 'eijayinarepalam@yahoo.com', NULL, 12, 0, 0, '2014-02-12 10:08:57'),
@@ -5044,7 +5042,26 @@ INSERT INTO `account` (`acct_id`, `acct_username`, `acct_password`, `acct_lname`
 (4842, '1000942', 0xc1d023cbc79c8b9e3296e630ea71e073, 'Mondejar', 'January Faith Real', 'Davis', 'bear_23_28@yahoo.com', NULL, 23, 0, 0, '2014-02-12 12:11:26'),
 (4843, '1100019', 0x9839f3d1de08c7d193ded21b6d46646a, 'divinagracia', 'xyresdel', 'mistoso', 'xdivinagracia@yahoo.com', NULL, 12, 0, 0, '2014-02-12 12:25:17'),
 (4844, '1200449', 0x6e0b9d28555b53c920898faba7aa5236, 'Daquipil', 'Arvin Chester', 'Baugbog', 'lancemigueldaquipil@yahoo.com', NULL, 11, 0, 0, '2014-02-12 12:54:56'),
-(4845, '0900353', 0x0e963eb9c73f07e5091ab7c24c1821e7, 'jaranilla', 'alea', 'amella', 'alrouze@gmail.com', NULL, 11, 0, 0, '2014-02-12 13:12:11');
+(4845, '0900353', 0x0e963eb9c73f07e5091ab7c24c1821e7, 'jaranilla', 'alea', 'amella', 'alrouze@gmail.com', NULL, 11, 0, 0, '2014-02-12 13:12:11'),
+(4846, '1200343', 0xd93ae920239b31abc8fe9c6da255be03, 'Bendigosa', 'Carina', 'Donoga', 'jasmine1112000@yahoo.com', NULL, 12, 0, 0, '2014-02-12 14:51:09'),
+(4847, '1100326', 0x8de958c8e9be269966c2df9252409735, 'Abraham', 'Cherry Mae', 'Eder', 'abraham_cherry@ymail.com', NULL, 30, 0, 0, '2014-02-12 14:51:58'),
+(4848, '0900082', 0x30a1fd5139b7c5d086def4a5cd5a0779, 'borbon', 'irah', 'arzaga', 'borbonirah16@yahoo.com', NULL, 12, 0, 0, '2014-02-12 14:54:24'),
+(4849, '1000062', 0x71d6c892d3ade37de099c5085ca4d85d, 'arquita', 'aian alpia', 'nuÑez', 'enn_aia009@yahoo.com', NULL, 12, 0, 0, '2014-02-12 14:56:38'),
+(4850, '1300365', 0xf02f74e960c9f549daf5fb925a25f44c, 'Estive', 'Mary Paula', 'Erbina', 'marypaula_estive@yahoo.com', NULL, 12, 0, 0, '2014-02-12 15:01:51'),
+(4851, '0900340', 0xb5a220caba36b33800f7a01ad92530a9, 'sobrecarey', 'erika', 'tiu', 'elce_26@yahoo.com', NULL, 11, 0, 0, '2014-02-12 15:16:38'),
+(4852, '0900033', 0x20d8540d0da66fbc086a345344a72cf5, 'babon', 'jenny rose', 'camilotes', 'babonjennyrose01@gmail.com', NULL, 11, 0, 0, '2014-02-12 15:18:30'),
+(4853, '1100740', 0xb1efc08947d1a5708e4c345a7f76d1a0, 'Avellanosa', 'Cyrus II', 'Francisco', 'cyrusavellanosa@gmail.com', NULL, 29, 0, 0, '2014-02-12 20:17:05'),
+(4854, '1001207', 0x7579d690ae3983853b77f50ac357e6527fdf219a72dd813d3048ac523c240979, 'Pandili', 'Rod John', 'Diabakid', 'rjpandili@gmail.com', NULL, 28, 0, 0, '2014-02-12 23:52:52'),
+(4855, '1201236', 0xa8da70ec7f128e20fbd3dc9d6ac6dc4a, 'cabilao', 'margaret', 'jalandoni', 'faithcabilao@yahoo.com', NULL, 14, 0, 0, '2014-02-13 09:27:14'),
+(4856, '1101328', 0x9a55c4b132290796fd99102f73c433da, 'Moreno', 'Nicefe Sianelyn', 'Caluban', 'fairytail.floy@gmail.com', NULL, 2, 0, 0, '2014-02-13 10:51:44'),
+(4857, '1200228', 0x7a7a86f5eb7e3feac7d50a42268a558b, 'Pobre', 'Eugene Paul', 'Bucol', 'pobreeugene@yahoo.com', NULL, 2, 0, 0, '2014-02-13 10:53:32'),
+(4858, '1102147', 0x19e547c2b4249b65aaa49c016d013560, 'Mondejar', 'Jazzi Pierre', 'Ancla', 'pierremondejar@gmail.com', NULL, 28, 0, 0, '2014-02-13 10:55:52'),
+(4859, '1101008', 0xf065310d76035a25079fc0c55eadb38a, 'Miedes', 'Rodrigo', 'Vallejo', 'miedesrodrigo@yahoo.com', NULL, 31, 0, 0, '2014-02-13 16:05:04'),
+(4860, '0200942', 0x99778f6a77b05be7ae25d2a0f2a75807, 'alvin', 'alvin', 'alvin', 'weqweq@gmail.com', NULL, 10, 0, 0, '2014-02-13 16:09:22'),
+(4861, '1101166', 0x7820c58eb07a8b7615cb89fa210812e7, 'Literatos', 'Rosemae Joy', 'Salutan', 'hikkichanred@gmail.com', NULL, 4, 0, 0, '2014-02-13 17:11:27'),
+(4862, '1300291', 0x14662f6ed8c51cfa8309dc8e7d3aee60, 'Ibarra', 'Sied Jeremiah', 'CaÑete', 'dudedotiboi2013@gmail.com', NULL, 25, 0, 0, '2014-02-16 10:42:17'),
+(4863, '1201576', 0x4463f0f71072ace84a7af011c1a8fb4a, 'Domingo', 'Arvin John', 'Liwag', 'ajdomingo828@yahoo.com', NULL, 11, 0, 0, '2014-02-17 10:51:58'),
+(4864, '1201470', 0xa492e56207aaabb8cc05a235d7fba59b, 'Sampaga', 'Joanna Paula', 'Parages', 'jps_paula_cute@yahoo.com', NULL, 10, 0, 0, '2014-02-18 16:33:01');
 
 -- --------------------------------------------------------
 
@@ -5188,6 +5205,7 @@ CREATE TABLE IF NOT EXISTS `election` (
   `school_year` varchar(45) DEFAULT NULL,
   `start_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
+  `post_result` int(11) DEFAULT '0',
   `status` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`elect_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
@@ -5196,10 +5214,10 @@ CREATE TABLE IF NOT EXISTS `election` (
 -- Dumping data for table `election`
 --
 
-INSERT INTO `election` (`elect_id`, `school_year`, `start_date`, `end_date`, `status`) VALUES
-(1, 'SY 2013-2014', '2014-02-26 07:30:00', '2014-02-26 17:30:00', 1),
-(2, 'SY 2014-2015', NULL, NULL, 0),
-(3, 'SY 2015-2016', NULL, NULL, 0);
+INSERT INTO `election` (`elect_id`, `school_year`, `start_date`, `end_date`, `post_result`, `status`) VALUES
+(1, 'SY 2013-2014', '2014-02-26 07:30:00', '2014-02-26 17:30:00', 0, 1),
+(2, 'SY 2014-2015', NULL, NULL, 0, 0),
+(3, 'SY 2015-2016', NULL, NULL, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -5220,7 +5238,7 @@ CREATE TABLE IF NOT EXISTS `election_candidate` (
   KEY `fk_candidate_position1_idx` (`pos_id`),
   KEY `fk_candidate_party1_idx` (`party_id`),
   KEY `fk_election_candidate_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=65 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=115 ;
 
 --
 -- Dumping data for table `election_candidate`
@@ -5236,7 +5254,7 @@ INSERT INTO `election_candidate` (`elect_cand_id`, `acct_id`, `pos_id`, `party_i
 (9, 1357, 13, 8, 1, '2014-02-01 12:31:42', 1),
 (10, 1472, 12, 8, 1, '2014-02-01 12:34:38', 1),
 (11, 1635, 17, 8, 1, '2014-02-01 13:20:14', 1),
-(12, 1232, 1, NULL, 1, '2014-02-04 16:27:16', 0),
+(12, 1232, 1, 3, 1, '2014-02-04 16:27:16', 1),
 (13, 1192, 14, 9, 1, '2014-02-04 16:51:27', 1),
 (14, 1131, 16, 9, 1, '2014-02-04 16:51:33', 1),
 (15, 1138, 18, 9, 1, '2014-02-04 16:52:33', 1),
@@ -5259,36 +5277,84 @@ INSERT INTO `election_candidate` (`elect_cand_id`, `acct_id`, `pos_id`, `party_i
 (32, 2310, 17, 7, 1, '2014-02-06 21:00:47', 1),
 (33, 2328, 18, 7, 1, '2014-02-06 21:02:57', 1),
 (34, 1640, 18, 7, 1, '2014-02-06 21:11:10', 1),
-(35, 3201, 10, NULL, 1, '2014-02-06 21:54:32', 0),
-(36, 2549, 17, NULL, 1, '2014-02-06 21:57:30', 0),
-(37, 1598, 13, NULL, 1, '2014-02-06 22:03:49', 0),
-(38, 4473, 15, NULL, 1, '2014-02-06 22:05:31', 0),
+(35, 3201, 10, 10, 1, '2014-02-06 21:54:32', 1),
+(36, 2549, 17, 10, 1, '2014-02-06 21:57:30', 1),
+(37, 1598, 13, 10, 1, '2014-02-06 22:03:49', 1),
+(38, 4473, 15, 10, 1, '2014-02-06 22:05:31', 1),
 (39, 2160, 16, 7, 1, '2014-02-06 22:26:12', 1),
-(40, 3408, 16, NULL, 1, '2014-02-06 22:29:45', 0),
+(40, 3408, 16, 10, 1, '2014-02-06 22:29:45', 1),
 (41, 3202, 12, NULL, 1, '2014-02-06 23:04:04', 0),
-(42, 3226, 9, NULL, 1, '2014-02-07 11:35:37', 0),
-(43, 1867, 11, NULL, 1, '2014-02-07 11:37:16', 0),
+(42, 3226, 9, 3, 1, '2014-02-07 11:35:37', 1),
+(43, 1867, 11, 10, 1, '2014-02-07 11:37:16', 1),
 (44, 1241, 18, NULL, 1, '2014-02-07 12:13:13', 0),
-(45, 2159, 15, NULL, 1, '2014-02-07 14:37:26', 0),
+(45, 2159, 15, 7, 1, '2014-02-07 14:37:26', 1),
 (46, 2363, 12, 7, 1, '2014-02-07 14:40:38', 1),
-(47, 1355, 11, NULL, 1, '2014-02-07 18:04:30', 0),
+(47, 1355, 11, 12, 1, '2014-02-07 18:04:30', 1),
 (48, 4825, 10, 7, 1, '2014-02-07 21:07:25', 1),
 (49, 4824, 11, 7, 1, '2014-02-08 01:04:12', 1),
-(50, 2150, 3, 6, 1, '2014-02-08 12:06:38', 1),
+(50, 2150, 3, 3, 1, '2014-02-08 12:06:38', 1),
 (51, 1577, 10, 8, 1, '2014-02-09 15:53:38', 1),
-(52, 2491, 14, NULL, 1, '2014-02-09 16:00:47', 0),
+(52, 2491, 14, 8, 1, '2014-02-09 16:00:47', 1),
 (53, 1275, 16, 8, 1, '2014-02-09 16:54:38', 1),
 (54, 1654, 15, 8, 1, '2014-02-09 17:17:17', 1),
 (55, 3220, 13, 7, 1, '2014-02-10 14:22:30', 1),
-(56, 2620, 18, NULL, 1, '2014-02-10 16:18:53', 0),
-(57, 1884, 15, NULL, 1, '2014-02-11 10:01:25', 0),
-(58, 2651, 17, NULL, 1, '2014-02-11 10:01:37', 0),
-(59, 3029, 16, NULL, 1, '2014-02-11 10:01:43', 0),
+(56, 2620, 18, 14, 1, '2014-02-10 16:18:53', 1),
+(57, 1884, 15, 14, 1, '2014-02-11 10:01:25', 1),
+(58, 2651, 17, 14, 1, '2014-02-11 10:01:37', 1),
+(59, 3029, 16, 14, 1, '2014-02-11 10:01:43', 1),
 (60, 1129, 10, 9, 1, '2014-02-11 12:18:07', 1),
-(61, 3255, 10, NULL, 1, '2014-02-11 21:51:21', 0),
-(62, 300, 18, NULL, 1, '2014-02-11 22:45:42', 0),
+(61, 3255, 10, 14, 1, '2014-02-11 21:51:21', 1),
+(62, 300, 18, 6, 1, '2014-02-11 22:45:42', 1),
 (63, 4829, 14, 7, 1, '2014-02-12 09:45:46', 1),
-(64, 644, 17, NULL, 1, '2014-02-12 11:15:24', 0);
+(64, 644, 17, 6, 1, '2014-02-12 11:15:24', 1),
+(66, 2038, 18, 6, 1, '2014-02-12 15:07:52', 1),
+(67, 3240, 11, 11, 1, '2014-02-12 17:24:13', 1),
+(68, 2837, 10, 11, 1, '2014-02-12 17:36:15', 1),
+(69, 2971, 14, 11, 1, '2014-02-12 17:37:07', 1),
+(70, 2640, 18, 11, 1, '2014-02-12 17:44:11', 1),
+(71, 3674, 15, 11, 1, '2014-02-12 17:45:42', 1),
+(72, 3807, 12, 11, 1, '2014-02-12 17:46:41', 1),
+(73, 3263, 10, 12, 1, '2014-02-12 21:40:57', 1),
+(74, 3265, 17, 12, 1, '2014-02-12 21:44:13', 1),
+(75, 4838, 13, 12, 1, '2014-02-12 21:47:34', 1),
+(76, 1174, 18, 12, 1, '2014-02-12 21:48:02', 1),
+(77, 1792, 12, 12, 1, '2014-02-12 21:49:08', 1),
+(78, 3585, 16, 12, 1, '2014-02-12 22:17:51', 1),
+(79, 2045, 11, 6, 1, '2014-02-13 08:57:13', 1),
+(80, 2369, 13, 11, 1, '2014-02-13 11:04:50', 1),
+(81, 4857, 18, 11, 1, '2014-02-13 11:05:52', 1),
+(82, 4856, 16, 11, 1, '2014-02-13 11:10:07', 1),
+(83, 1972, 13, 6, 1, '2014-02-13 11:44:56', 1),
+(84, 4855, 14, 12, 1, '2014-02-13 11:54:10', 1),
+(85, 1773, 18, 11, 1, '2014-02-13 13:56:56', 1),
+(86, 2998, 17, 13, 1, '2014-02-13 18:09:03', 1),
+(87, 3103, 10, 13, 1, '2014-02-13 18:14:22', 1),
+(88, 4861, 7, 3, 1, '2014-02-13 20:40:55', 1),
+(90, 1202, 15, 12, 1, '2014-02-13 21:42:40', 1),
+(91, 3170, 15, 13, 1, '2014-02-13 22:01:08', 1),
+(92, 591, 14, NULL, 1, '2014-02-13 22:02:42', 0),
+(93, 591, 14, NULL, 1, '2014-02-13 22:12:03', 0),
+(94, 4858, 17, 11, 1, '2014-02-13 22:38:38', 1),
+(95, 2605, 12, 13, 1, '2014-02-14 15:55:02', 1),
+(96, 2573, 16, 13, 1, '2014-02-14 16:09:15', 1),
+(97, 2477, 18, NULL, 1, '2014-02-14 17:39:58', 0),
+(98, 1542, 11, 13, 1, '2014-02-14 21:12:37', 1),
+(99, 2250, 14, 13, 1, '2014-02-14 22:39:33', 1),
+(100, 4324, 18, 13, 1, '2014-02-16 11:46:35', 1),
+(101, 2606, 13, 13, 1, '2014-02-17 11:31:06', 1),
+(102, 1602, 18, 13, 1, '2014-02-17 11:43:42', 1),
+(103, 4863, 18, 13, 1, '2014-02-17 12:04:08', 1),
+(104, 2835, 2, NULL, 1, '2014-02-18 13:27:16', 0),
+(105, 3116, 6, NULL, 1, '2014-02-18 13:29:43', 0),
+(106, 1409, 6, 3, 1, '2014-02-18 14:21:21', 1),
+(107, 4831, 18, 14, 1, '2014-02-18 15:45:18', 1),
+(108, 1284, 13, 14, 1, '2014-02-18 15:50:32', 1),
+(109, 1868, 14, 14, 1, '2014-02-18 15:51:05', 1),
+(110, 4424, 12, NULL, 1, '2014-02-18 16:21:49', 0),
+(111, 3495, 18, NULL, 1, '2014-02-18 16:22:06', 0),
+(112, 2790, 16, NULL, 1, '2014-02-18 16:26:39', 0),
+(113, 3988, 11, 14, 1, '2014-02-18 16:43:52', 1),
+(114, 2794, 13, NULL, 1, '2014-02-18 16:45:46', 0);
 
 -- --------------------------------------------------------
 
@@ -5329,7 +5395,7 @@ CREATE TABLE IF NOT EXISTS `election_voter` (
   PRIMARY KEY (`elect_voter_id`),
   KEY `fk_election_voter_account1_idx` (`acct_id`),
   KEY `fk_election_voter_election1_idx` (`elect_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4126 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4141 ;
 
 --
 -- Dumping data for table `election_voter`
@@ -6736,7 +6802,6 @@ INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_tim
 (1397, 1896, 1, '2013-10-26 11:36:31'),
 (1398, 1897, 1, '2013-10-26 11:36:32'),
 (1399, 1899, 1, '2013-10-26 11:37:25'),
-(1400, 1900, 1, '2013-10-26 11:37:35'),
 (1401, 1901, 1, '2013-10-26 11:37:40'),
 (1402, 1903, 1, '2013-10-26 11:37:42'),
 (1403, 1904, 1, '2013-10-26 11:38:11'),
@@ -8012,9 +8077,9 @@ INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_tim
 (2673, 3369, 1, '2013-10-29 14:46:16'),
 (2674, 3370, 1, '2013-10-29 14:47:12'),
 (2675, 3371, 1, '2013-10-29 14:47:55'),
-(2676, 3372, 1, '2013-10-29 14:48:39');
+(2676, 3372, 1, '2013-10-29 14:48:39'),
+(2677, 3373, 1, '2013-10-29 14:48:43');
 INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_time_log`) VALUES
-(2677, 3373, 1, '2013-10-29 14:48:43'),
 (2678, 3374, 1, '2013-10-29 14:49:35'),
 (2679, 3375, 1, '2013-10-29 14:49:57'),
 (2680, 3376, 1, '2013-10-29 14:50:21'),
@@ -9326,9 +9391,9 @@ INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_tim
 (3986, 4695, 1, '2013-10-30 16:03:47'),
 (3987, 4697, 1, '2013-10-30 16:07:36'),
 (3988, 4698, 1, '2013-10-30 16:08:23'),
-(3989, 4699, 1, '2013-10-30 16:08:23');
+(3989, 4699, 1, '2013-10-30 16:08:23'),
+(3990, 4700, 1, '2013-10-30 16:08:52');
 INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_time_log`) VALUES
-(3990, 4700, 1, '2013-10-30 16:08:52'),
 (3991, 4701, 1, '2013-10-30 16:09:30'),
 (3992, 4702, 1, '2013-10-30 16:09:42'),
 (3993, 4703, 1, '2013-10-30 16:09:55'),
@@ -9463,7 +9528,22 @@ INSERT INTO `election_voter` (`elect_voter_id`, `acct_id`, `elect_id`, `date_tim
 (4122, 4842, 1, '2014-02-12 12:11:40'),
 (4123, 4843, 1, '2014-02-12 12:26:07'),
 (4124, 4844, 1, '2014-02-12 12:55:34'),
-(4125, 4845, 1, '2014-02-12 13:13:09');
+(4125, 4845, 1, '2014-02-12 13:13:09'),
+(4126, 4846, 1, '2014-02-12 14:51:32'),
+(4127, 4849, 1, '2014-02-12 14:57:49'),
+(4128, 4848, 1, '2014-02-12 14:58:21'),
+(4129, 4850, 1, '2014-02-12 15:02:37'),
+(4130, 4851, 1, '2014-02-12 15:16:50'),
+(4131, 4852, 1, '2014-02-12 15:18:42'),
+(4132, 4856, 1, '2014-02-13 10:52:32'),
+(4133, 4857, 1, '2014-02-13 10:54:21'),
+(4134, 4858, 1, '2014-02-13 10:56:18'),
+(4135, 4855, 1, '2014-02-13 11:48:00'),
+(4136, 4861, 1, '2014-02-13 17:44:09'),
+(4137, 4862, 1, '2014-02-16 10:43:15'),
+(4138, 4863, 1, '2014-02-17 10:52:41'),
+(4139, 4831, 1, '2014-02-18 15:26:26'),
+(4140, 4830, 1, '2014-02-18 20:59:28');
 
 -- --------------------------------------------------------
 
@@ -9476,7 +9556,7 @@ CREATE TABLE IF NOT EXISTS `party` (
   `party_name` varchar(45) DEFAULT NULL,
   `school_year` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`party_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `party`
@@ -9487,7 +9567,12 @@ INSERT INTO `party` (`party_id`, `party_name`, `school_year`) VALUES
 (6, 'STD PARTY', NULL),
 (7, 'ELITE PARTY', NULL),
 (8, 'SURE PARTY', NULL),
-(9, 'LEADERS PARTY', NULL);
+(9, 'LEADERS PARTY', NULL),
+(10, 'P.A.R.T.Y. PARTY', NULL),
+(11, 'INFINITY PARTY', NULL),
+(12, 'A.L.W.A.Y.S PARTY', NULL),
+(13, 'BLACK PARTY', NULL),
+(14, 'EPSO PARTY', NULL);
 
 -- --------------------------------------------------------
 
