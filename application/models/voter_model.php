@@ -138,9 +138,9 @@
 			return $sQuery->row_array(1);
 		}
 
-		public function get_account_email($id_number)
+		public function get_account_email($id_number, $email)
 		{
-			$sql = 'CALL get_account_email("'.$id_number.'")';
+			$sql = 'CALL get_account_email("'.$id_number.'","'.$email.'")';
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 
