@@ -38,15 +38,15 @@ class Email extends CI_Controller {
 			'protocol'  => 'smtp',
 			'smtp_host' => 'ssl://smtp.googlemail.com',
 			'smtp_port' => '465',
-			'smtp_user' => '',
-			'smtp_pass' => '',
+			'smtp_user' => 'uiccea@gmail.com',
+			'smtp_pass' => 'uicelection2013',
 			'mailtype'  => 'html',
 			'charset'   => 'iso-8859-1'
 			);
 			$this->load->library('email', $config);
 			$this->email->set_newline("\r\n");
 
-			$this->email->from('xxx@gmail.com', 'UIC COMELEC');
+			$this->email->from('uiccea@gmail.com', 'UIC COMELEC');
 			$this->email->to($info['email_address']);
 
 			$this->email->subject('Forgot Password');
