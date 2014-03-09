@@ -2,21 +2,35 @@
 
 class Voter_statistics extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/01
-	 *
-	 */
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))
 		{
-			$this->load->model('voter_model');
-			$page_view_content["page_view_dir"] = "voter/voter_statistics";
-			$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
-			$page_view_content["logged_in"] = TRUE;		
-			$this->load->view("includes/template",$page_view_content);	
+			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
+			$page_view_content["is_election_officer"] = FALSE;
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
+
+			if($is_election_officer != null)
+			{
+				$this->load->model('voter_model');
+				$page_view_content["page_view_dir"] = "voter/voter_statistics";
+				$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
+				$page_view_content["program_statistics"] = $this->voter_model->get_program_statistics();
+				$page_view_content["student_id"] = $student_id;
+				$page_view_content["election_countdown"] = $election_countdown;
+				$page_view_content["is_election_officer"] = TRUE;
+				$page_view_content["logged_in"] = TRUE;		
+				$this->load->view("includes/template",$page_view_content);
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}
 		}
 		else
 		{

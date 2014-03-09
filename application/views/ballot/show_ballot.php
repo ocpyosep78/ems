@@ -1,5 +1,31 @@
-<div id="content_header">BALLOT</div>
-<div id="body">
+<div id="container_1">Online Ballot</div>
+<div id="container_2">
+<?php
+	
+	$url = 'http://www3.uic.edu.ph/images/100x102/'.$student_id.'.jpg';
+
+		echo '<div id="container_3">';
+		echo '<div id="container_5"><img src="'.$url.'" width=180></div>';
+		echo '<div id="container_6">';
+		echo '<ul>';
+
+		echo '<li><a href="'.base_url('index.php/home').'">My Profile</a></li>';
+		
+		echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+		echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
+		echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
+		echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>'; // remove this line when election schedule is activated
+		echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; // remove this line when election schedule is activated
+		echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>'; // remove this line when election schedule is activated
+		echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+
+		echo '</ul>';
+		echo '</div>';
+		echo '</div>';
+
+	echo '<div id="container_4">';
+	echo '<div id="container_9">';
+?>
 
 <?php
 
@@ -17,13 +43,11 @@
 
 	echo '<table id="ballot">';
 	echo $tb['tr'];
-	echo '<th colspan=3>SSG Executive Position</th>';
+	echo '<th colspan=3>Candidates You Voted (SSG and Program Level)</th>';
 	echo $tb['tr_'];
 
 	for($x=0;$x<count($page_view_data);$x++)
 	{
-		if($page_view_data[$x]['div_name'] == 'SSG Executive Position')
-		{
 			echo $tb['tr'];
 			echo '<td colspan=3 id="position_header"><b>'.$page_view_data[$x]['pos_name'].'</b></td>';
 			echo $tb['tr_'];
@@ -38,35 +62,12 @@
 			echo $tb['td'];
 			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
 			echo $tb['td_'];
-			echo $tb['tr_'];			
-		}
-	}
-
-	echo $tb['tr'];
-	echo '<th colspan=3>Program Level Position</th>';
-	echo $tb['tr_'];
-
-	for($y=0;$y<count($page_view_data);$y++)
-	{
-		if($page_view_data[$y]['div_name'] == 'Program Level Position')
-		{
-			echo $tb['tr'];
-			echo '<td colspan=3 id="position_header"><b>'.$page_view_data[$y]['pos_name'].'</b></td>';
-			echo $tb['tr_'];
-
-			$candidate_name = 	$page_view_data[$y]['acct_lname'].", ".
-								$page_view_data[$y]['acct_fname']." ".
-								$page_view_data[$y]['acct_mname'];
-
-			echo $tb['tr'];
-			echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$page_view_data[$y]['acct_username'].'.jpg">'.$tb['td_'];
-			echo $tb['td'];
-			echo 'Name: <b>'.$candidate_name.'</b><br>Party: '.$party;
-			echo $tb['td_'];
-			echo $tb['tr_'];			
-		}
+			echo $tb['tr_'];	
 	}
 	echo $tb['table_'];
+
+	echo '</div>';
+	echo '</div>';
 ?>
 
 </div>

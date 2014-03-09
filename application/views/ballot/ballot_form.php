@@ -1,5 +1,31 @@
-<div id="content_header">Ballot</div>
-<div id="body">
+<div id="container_1">Online Ballot</div>
+<div id="container_2">
+<?php
+	
+	$url = 'http://www3.uic.edu.ph/images/100x102/'.$student_id.'.jpg';
+
+		echo '<div id="container_3">';
+		echo '<div id="container_5"><img src="'.$url.'" width=180></div>';
+		echo '<div id="container_6">';
+		echo '<ul>';
+
+		echo '<li><a href="'.base_url('index.php/home').'">My Profile</a></li>';
+		
+		echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+		echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
+		echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
+		echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>'; // remove this line when election schedule is activated
+		echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; // remove this line when election schedule is activated
+		echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>'; // remove this line when election schedule is activated
+		echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+
+		echo '</ul>';
+		echo '</div>';
+		echo '</div>';
+
+	echo '<div id="container_4">';
+	echo '<div id="container_9">';
+?>
 
 <?php
 
@@ -86,7 +112,17 @@
 		else
 		{
 			echo $tb['tr'];
-			echo '<td colspan=3 id="position_header"><b>'.$position_program[$z]['pos_name'].'</b></td>';
+			
+
+			if($position_program[$z]['pos_name'] == 'Program Representative')
+			{
+				echo '<td colspan=3 id="position_header"><b>'.$position_program[$z]['pos_name'].' (Please Select 3 Program Representatives)</b></td>';
+			}
+			else
+			{
+				echo '<td colspan=3 id="position_header"><b>'.$position_program[$z]['pos_name'].'</b></td>';
+			}
+			
 			echo $tb['tr_'];
 		
 			$candidate_ctr = 0;
@@ -104,10 +140,12 @@
 
 						$checkbox = array(
 											'name'    => 'program_rep[]',
-											'id'      => $radio_name,
+											// 'id'      => $radio_name,
+											'id'      => 'program_rep',
 											'value'   => $candidate_id,
-											'checked' => set_checkbox('program_rep', $candidate_id, FALSE)
-				        
+											);
+				        // 'checked' => set_checkbox('program_rep', $candidate_id, FALSE)
+
 						echo $tb['tr'];
 						if($position_program[$z]['pos_id'] == 18)
 						{
@@ -116,6 +154,7 @@
 						else
 						{
 							echo '<td>'.form_radio($radio_name, $candidate_id, '', '').$tb['td_'];
+							echo form_hidden('program_rep', 'FALSE');
 						}
 						echo '<td>'.'<img src="http://www3.uic.edu.ph/images/100x102/'.$program_candidates[$i]['acct_username'].'.jpg">'.$tb['td_'];
 						echo $tb['td'];
@@ -141,7 +180,10 @@
 	}
 
 	echo $tb['table_'];
-	echo form_close()
+	echo form_close();
+
+	echo '</div>';
+	echo '</div>';
 ?>
 
 </div>

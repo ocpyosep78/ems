@@ -20,7 +20,34 @@
 
 		public function get_voter_statistics()
 		{
-			$sql = 'CALL get_voter_statistics()';
+			$sql = 'CALL course_voters_statistics()';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
+		public function get_population()
+		{
+			$sql = 'CALL population()';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
+		public function get_voters()
+		{
+			$sql = 'CALL voters()';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+				
+			return $sQuery->result_array();
+		}
+
+		public function get_program_statistics()
+		{
+			$sql = 'CALL voter_statistics_per_program()';
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 				
@@ -141,6 +168,15 @@
 		public function get_account_email($id_number, $email)
 		{
 			$sql = 'CALL get_account_email("'.$id_number.'","'.$email.'")';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
+
+		public function reset_vote($account_id)
+		{
+			$sql = 'CALL reset_vote('.$account_id.')';
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 

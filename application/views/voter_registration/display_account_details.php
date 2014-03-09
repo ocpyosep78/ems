@@ -23,6 +23,7 @@
 
 		echo '<li><a href="">Edit Profile</a></li>';
 		echo '<li><a href="'.base_url('index.php/voter_registration/reset_password/'.$page_view_data['acct_id']).'">Reset Password</a></li>';
+		echo '<li><a href="'.base_url('index.php/voter_registration/reset_vote/'.$page_view_data['acct_id']).'">Reset Vote</a></li>';
 		echo '<li><a href="">Print Details</a></li>';
 		echo '</ul>';
 		echo '</div>';
@@ -41,8 +42,6 @@
 		echo '<div id="container_8">'.$page_view_data['email_address'].'</div>';
 		echo '<div id="container_7">Student ID </div>';
 		echo '<div id="container_8">'.$page_view_data['acct_username'].'</div>';
-		// echo '<div id="container_7">Account ID</div>';
-		// echo '<div id="container_8">'.$page_view_data['acct_id'].'</div>';
 		echo '<div id="container_7">Date Created</div>';
 		echo '<div id="container_8">'.$page_view_data['date_created'].'</div>';
 		echo '<div id="container_7">Account Status</div>';

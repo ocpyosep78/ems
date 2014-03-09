@@ -1,4 +1,4 @@
-<div id="container_1">Program Election Results</div>
+<div id="container_1">Online Ballot</div>
 <div id="container_2">
 <?php
 	
@@ -25,11 +25,14 @@
 
 	echo '<div id="container_4">';
 	echo '<div id="container_9">';
-		
-	echo "Successfully Voted";
+?>
+
+<?php
+
+	echo 'Maximum of 3 program representative must be selected. Please click here to load again the online ballot 
+			<b><a href="'.base_url('index.php/ballot').'">Back</a></b>';
 
 	echo '</div>';
 	echo '</div>';
-	?>
-	
+?>
 </div>

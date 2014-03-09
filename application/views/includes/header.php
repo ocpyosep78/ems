@@ -5,11 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>University of the Immaculate Conception - Commission on Elections and Appointments</title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>css/layout2.css" type="text/css" media="screen" charset="utf-8">
+    
     <script type="text/javascript">					
-    	var days = <?php echo $election_countdown['day']; ?>	
+  		var days = <?php echo $election_countdown['day']; ?>	
 		var hours = <?php echo $election_countdown['hour']; ?>	
 		var minutes = <?php echo $election_countdown['minute']; ?>	
 		var seconds = <?php echo $election_countdown['second']; ?>
+
+		
 
 		function display()
 		{
