@@ -2,12 +2,6 @@
 
 class Ballot extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))
@@ -17,6 +11,7 @@ class Ballot extends CI_Controller {
 			 * election officer
 			 */
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
@@ -43,22 +38,78 @@ class Ballot extends CI_Controller {
 			{
 				if($check_voter)
 				{	
-					for($i=0;$i<count($check_voter);$i++)
+					$ip_address_list = array(
+											'192.168.201',
+											'192.168.202',
+											'192.168.203',
+											'192.168.204',
+											'192.168.106',
+											'127.0.0.1'
+											);
+
+					$ip_add = array('ip_address' => $this->session->userdata('ip_address'));
+					$current_ip = substr($ip_add['ip_address'],0, 11);
+					$voting_station = 0;
+
+					for($x=0;$x<count($ip_address_list);$x++)
 					{
-						if($check_voter[$i]['elect_voter_id'] == $voter_id[0]['elect_voter_id'])
+						if($current_ip == $ip_address_list[$x])
 						{
-							$page_view_content["page_view_dir"] = "ballot/show_ballot";
-							$page_view_content["page_view_data"] = $this->voter_model->get_voted_candidates_by_voter($voter_id[0]['elect_voter_id']);
+							$voting_station = 1;
 						}
+					}
+
+					if($voting_station == 1)
+					{
+						for($i=0;$i<count($check_voter);$i++)
+						{
+							if($check_voter[$i]['elect_voter_id'] == $voter_id[0]['elect_voter_id'])
+							{
+								$page_view_content["page_view_dir"] = "ballot/show_ballot";
+								$page_view_content["page_view_data"] = $this->voter_model->get_voted_candidates_by_voter($voter_id[0]['elect_voter_id']);
+							}
+						}
+					}
+					else
+					{
+						$page_view_content["page_view_dir"] = "ballot/ballot_restriction";
 					}
 				}
 				else
 				{
-					$page_view_content["page_view_dir"] = "ballot/ballot_form";			
-					$page_view_content["page_view_data"] = $this->candidate_model->get_ssg_candidate_list();
-					$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($voter_prog_id[0]['prog_id']);
-					$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
-					$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
+					$ip_address_list = array(
+											'192.168.201',
+											'192.168.202',
+											'192.168.203',
+											'192.168.204',
+											'192.168.106',
+											'127.0.0.1'
+											);
+
+					$ip_add = array('ip_address' => $this->session->userdata('ip_address'));
+					$current_ip = substr($ip_add['ip_address'],0, 11);
+					$voting_station = 0;
+
+					for($x=0;$x<count($ip_address_list);$x++)
+					{
+						if($current_ip == $ip_address_list[$x])
+						{
+							$voting_station = 1;
+						}
+					}
+
+					if($voting_station == 1)
+					{
+						$page_view_content["page_view_dir"] = "ballot/ballot_form";			
+						$page_view_content["page_view_data"] = $this->candidate_model->get_ssg_candidate_list();
+						$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($voter_prog_id[0]['prog_id']);
+						$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
+						$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
+					}
+					else
+					{
+						$page_view_content["page_view_dir"] = "ballot/ballot_restriction";
+					}
 				}
 			}
 			else
@@ -66,7 +117,8 @@ class Ballot extends CI_Controller {
 				$page_view_content["page_view_dir"] = "error_message/message_1";
 			}
 			
-			$page_view_content["logged_in"] = TRUE;	
+			$page_view_content["logged_in"] = TRUE;
+			$page_view_content["student_id"] = $student_id;	
 			$this->load->view("includes/template",$page_view_content);		
 		}
 		else
@@ -85,6 +137,7 @@ class Ballot extends CI_Controller {
 			 * election officer
 			 */
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
@@ -95,56 +148,71 @@ class Ballot extends CI_Controller {
 			/*
 			 * Election officer checker ends here
 			 */
-			
-			$this->load->model('voter_model');
-			$voter_prog_id = $this->voter_model->get_voter_prog_id($acct_id);
-			$voter_id = $this->voter_model->get_election_voter_id($acct_id); 
+			$program_rep = $this->input->post('program_rep');
 
-			$this->load->model('candidate_model');
-			$position_id = $this->candidate_model->get_position_list(1);
-
-			for($x=0;$x<count($position_id);$x++)
+			if(count($program_rep) > 3)
 			{
-				$pos_id = $position_id[$x]['pos_id'];
-				$elect_cand_id = $this->input->post($pos_id);
-
-				if($elect_cand_id)
-				{
-					$this->load->model('ballot_model');
-					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
-				}
+				$page_view_content["page_view_dir"] = "ballot/program_rep_restriction";
+				$page_view_content["logged_in"] = TRUE;
+				$page_view_content["student_id"] = $student_id;	
+				$this->load->view("includes/template",$page_view_content);
 			}
-
-			$position_id = $this->candidate_model->get_position_list(2);
-			for($x=0;$x<count($position_id);$x++)
+			else
 			{
-				$pos_id = $position_id[$x]['pos_id'];
-				$elect_cand_id = $this->input->post($pos_id);
+				$this->load->model('voter_model');
+				$voter_prog_id = $this->voter_model->get_voter_prog_id($acct_id);
+				$voter_id = $this->voter_model->get_election_voter_id($acct_id); 
 
-				if($elect_cand_id != NULL)
+				$this->load->model('candidate_model');
+				$position_id = $this->candidate_model->get_position_list(1);
+
+				for($x=0;$x<count($position_id);$x++)
 				{
-					$this->load->model('ballot_model');
-					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+					$pos_id = $position_id[$x]['pos_id'];
+					$elect_cand_id = $this->input->post($pos_id);
+
+					if($elect_cand_id)
+					{
+						$this->load->model('ballot_model');
+						$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+					}
 				}
-			}
-			
-			if($elect_cand_id == NULL)
-			{
+
+				
+				$position_id = $this->candidate_model->get_position_list(2);
+				for($x=0;$x<count($position_id);$x++)
+				{
+					$pos_id = $position_id[$x]['pos_id'];
+					$elect_cand_id = $this->input->post($pos_id);
+
+					if($elect_cand_id != NULL)
+					{
+						$this->load->model('ballot_model');
+						$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+					}
+				}
+
 				$program_rep = $this->input->post('program_rep');
-				for($x=0;$x<count($program_rep);$x++)
+				if($program_rep != "FALSE")
 				{
-					$elect_cand_id = $program_rep[$x];
-					// echo '<pre>';
-					// echo print_r($elect_cand_id);
-					// echo '</pre>';
-					$this->load->model('ballot_model');
-					$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
-				}
-			}
+					if($elect_cand_id == NULL AND isset($program_rep))
+					{
+						$program_rep = $this->input->post('program_rep');
 
-			$page_view_content["page_view_dir"] = "ballot/successful_vote";
-			$page_view_content["logged_in"] = TRUE;
-			$this->load->view("includes/template",$page_view_content);
+						for($x=0;$x<count($program_rep);$x++)
+						{
+							$elect_cand_id = $program_rep[$x];
+							$this->load->model('ballot_model');
+							$this->ballot_model->insert_vote($elect_cand_id, $voter_id[0]['elect_voter_id'], $voter_prog_id[0]['prog_id']);
+						}
+					}
+				}
+
+					$page_view_content["page_view_dir"] = "ballot/successful_vote";
+					$page_view_content["student_id"] = $student_id;	
+					$page_view_content["logged_in"] = TRUE;
+					$this->load->view("includes/template",$page_view_content);
+			}
 		}
 		else
 		{

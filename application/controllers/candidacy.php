@@ -2,12 +2,6 @@
 
 class Candidacy extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
 	public function index()
 	{
 		$this->load->helper('form');

@@ -16,9 +16,13 @@ class Apply_candidacy extends CI_Controller
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
 
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
+
 			$page_view_content["logged_in"] = TRUE;	
 			$page_view_content["student_id"] = $student_id;
 			$page_view_content["is_election_officer"] = FALSE;
+			$page_view_content["election_countdown"] = $election_countdown;
 
 			if($is_election_officer != null)
 			{
@@ -62,6 +66,9 @@ class Apply_candidacy extends CI_Controller
 
 			$this->load->model('position_model');
 			$this->load->model('election_officer_model');
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 			
 			$page_view_content["is_election_officer"] = FALSE;
 			$page_view_content["student_id"] = $student_id;
@@ -76,6 +83,7 @@ class Apply_candidacy extends CI_Controller
 			{
 				$page_view_content["logged_in"] = TRUE;	
 				$page_view_content["page_view_dir"] = "candidacy/position_list_form";
+				$page_view_content["election_countdown"] = $election_countdown;
 				$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($division);
 				$this->load->view("includes/template",$page_view_content);		
 			}

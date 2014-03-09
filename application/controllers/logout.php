@@ -2,12 +2,6 @@
 
 class Logout extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
 	public function index()
 	{
 		// $this->session->set_userdata('user_data', '');
@@ -22,7 +16,7 @@ class Logout extends CI_Controller {
 		$session_id = $this->session->userdata('session_id');
 		
 		$this->load->model('voter_model');
-		$this->voter_model->update_time_logout($session_id);
+		// $this->voter_model->update_time_logout($session_id);
         $this->session->sess_destroy();
         redirect(base_url('index.php/login'), 'refresh');
 	}

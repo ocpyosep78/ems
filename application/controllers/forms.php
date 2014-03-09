@@ -2,13 +2,6 @@
 
 class Forms extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
-
 	function __construct()
 	{
 		parent::__construct();

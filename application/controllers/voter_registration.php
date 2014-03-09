@@ -7,9 +7,13 @@ class Voter_registration extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -18,6 +22,8 @@ class Voter_registration extends CI_Controller
 				$page_view_content["page_view_dir"] = "voter_registration/search_account";
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;
+				$page_view_content["student_id"] = $student_id;
+				$page_view_content["election_countdown"] = $election_countdown;
 				$this->load->view("includes/template",$page_view_content);
 			}
 			else
@@ -36,6 +42,7 @@ class Voter_registration extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
@@ -56,6 +63,7 @@ class Voter_registration extends CI_Controller
 						$page_view_content["is_election_officer"] = TRUE;
 						$page_view_content["page_view_dir"] = "voter_registration/display_account_details";
 						$page_view_content['is_registered_voter'] = FALSE;
+						$page_view_content["student_id"] = $student_id;
 
 						if($account)
 						{
@@ -131,6 +139,33 @@ class Voter_registration extends CI_Controller
 				$acct_id = $this->uri->segment(3, 0);
 				$this->load->model('voter_model');
 				$this->voter_model->reset_password($acct_id);
+				$account_username = $this->voter_model->get_account_username($acct_id);
+				redirect('/voter_registration/search_account?account='.$account_username['acct_username'],'refresh');
+			}
+			else
+			{
+				redirect('/home', 'refresh');	
+			}	
+		}
+		else
+		{
+			redirect('/login', 'refresh');
+		}
+	}
+
+	public function reset_vote()
+	{
+		if($this->session->userdata('logged_in'))
+		{	
+			$acct_id = $this->session->userdata('acct_id');
+			$this->load->model('election_officer_model');
+			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			if($is_election_officer != null)
+			{
+				$acct_id = $this->uri->segment(3, 0);
+				$this->load->model('voter_model');
+				$this->voter_model->reset_vote($acct_id);
 				$account_username = $this->voter_model->get_account_username($acct_id);
 				redirect('/voter_registration/search_account?account='.$account_username['acct_username'],'refresh');
 			}

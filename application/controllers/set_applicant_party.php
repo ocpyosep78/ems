@@ -2,12 +2,6 @@
 
 class Set_applicant_party extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))

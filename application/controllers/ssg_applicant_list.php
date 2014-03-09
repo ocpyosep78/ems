@@ -8,9 +8,13 @@ class Ssg_applicant_list extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -22,6 +26,7 @@ class Ssg_applicant_list extends CI_Controller
 				{
 					$ssg_applicants = $this->chairman_model->get_ssg_applicants_by_status($application_status);	
 					$page_view_content["page_view_data"] = $ssg_applicants;
+					$page_view_content["student_id"] = $student_id;
 					$page_view_content["page_view_dir"] = "candidates/list_of_approved_ssg_applicants";
 				}
 				else
@@ -30,9 +35,11 @@ class Ssg_applicant_list extends CI_Controller
 					$party = $this->party_model->get_party();
 					$page_view_content["page_view_data"] = $ssg_applicants;
 					$page_view_content["party"] = $party;
+					$page_view_content["student_id"] = $student_id;
 					$page_view_content["page_view_dir"] = "candidates/list_of_ssg_applicants";
 				}
 
+				$page_view_content["election_countdown"] = $election_countdown;
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;	
 				$this->load->view("includes/template",$page_view_content);		
@@ -162,9 +169,13 @@ class Ssg_applicant_list extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -173,7 +184,9 @@ class Ssg_applicant_list extends CI_Controller
 
 				$page_view_content["page_view_data"] = $this->position_model->get_division();
 				$page_view_content["elect_cand_id"] = $elect_cand_id;
+				$page_view_content["student_id"] = $student_id;
 				$page_view_content["page_view_dir"] = "candidates/change_position";
+				$page_view_content["election_countdown"] = $election_countdown;
 
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;	
@@ -195,9 +208,13 @@ class Ssg_applicant_list extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -207,7 +224,9 @@ class Ssg_applicant_list extends CI_Controller
 
 				$page_view_content["page_view_data"] = $this->position_model->get_list_of_position($div_id);
 				$page_view_content["elect_cand_id"] = $elect_cand_id;
+				$page_view_content["student_id"] = $student_id;
 				$page_view_content["page_view_dir"] = "candidates/select_position";
+				$page_view_content["election_countdown"] = $election_countdown;
 
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;	

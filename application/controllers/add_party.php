@@ -2,20 +2,18 @@
 
 class Add_party extends CI_Controller {
 
-	/**
-	 * 
-	 * Created by Francis Rey Padao
-	 * Date 2014/01/03
-	 *
-	 */
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -25,7 +23,9 @@ class Add_party extends CI_Controller {
 				$page_view_content["page_view_dir"] = "party/add_party";
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;
+				$page_view_content["student_id"] = $student_id;
 				$page_view_content["page_view_data"] = $party;
+				$page_view_content["election_countdown"] = $election_countdown;
 				$this->load->view("includes/template",$page_view_content);	
 			}
 			else
@@ -82,9 +82,13 @@ class Add_party extends CI_Controller {
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -94,7 +98,9 @@ class Add_party extends CI_Controller {
 				$party = $this->party_model->get_party();
 				$page_view_content["page_view_data"] = $party;
 				$page_view_content["elect_cand_id"] = $elect_cand_id;
+				$page_view_content["student_id"] = $student_id;
 				$page_view_content["page_view_dir"] = "party/change_party";
+				$page_view_content["election_countdown"] = $election_countdown;
 
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;	

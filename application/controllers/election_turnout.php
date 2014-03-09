@@ -1,33 +1,24 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Results extends CI_Controller 
-{
+class Election_turnout extends CI_Controller {
 
 	public function index()
 	{
 		if($this->session->userdata('logged_in'))
-		{	
+		{
 			$acct_id = $this->session->userdata('acct_id');
-			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
 
-			$this->load->model('timer_model');
-			$election_countdown = $this->timer_model->get_election_countdown();
-
 			if($is_election_officer != null)
 			{
-
-				$this->load->model('results_model');
-				$results = $this->results_model->get_result();
-
-				$page_view_content["page_view_dir"] = "results/view_results";
+				$this->load->model('voter_model');
+				$page_view_content["page_view_dir"] = "voter/voter_population";
+				$page_view_content["page_view_data"] = $this->voter_model->get_population();
+				$page_view_content["voters"] = $this->voter_model->get_voters();
 				$page_view_content["is_election_officer"] = TRUE;
-				$page_view_content["logged_in"] = TRUE;
-				$page_view_content["student_id"] = $student_id;
-				$page_view_content["page_view_data"] = $results;
-				$page_view_content["election_countdown"] = $election_countdown;
+				$page_view_content["logged_in"] = TRUE;		
 				$this->load->view("includes/template",$page_view_content);
 			}
 			else
@@ -39,5 +30,11 @@ class Results extends CI_Controller
 		{
 			redirect('/login', 'refresh');
 		}
+	}
+
+	public function registration_form()
+	{
+		$page_view_content["page_view_dir"] = "registration_form";		
+		$this->load->view("includes/template",$page_view_content);	
 	}
 }

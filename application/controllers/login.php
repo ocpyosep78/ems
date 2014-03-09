@@ -49,7 +49,7 @@ class Login extends CI_Controller
 							'acct_id'    => $list['acct_id']
 							 );
 				
-				$this->voter_model->insert_logs($logs);
+				// $this->voter_model->insert_logs($logs);
 
 				redirect('/home', 'refresh');
 			}

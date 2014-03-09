@@ -7,8 +7,12 @@ class Program_result extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -16,6 +20,8 @@ class Program_result extends CI_Controller
 
 			$page_view_content["is_election_officer"] = TRUE;
 			$page_view_content["logged_in"] = TRUE;	
+			$page_view_content["student_id"] = $student_id;
+			$page_view_content["election_countdown"] = $election_countdown;
 			$this->load->view("includes/template",$page_view_content);
 			}
 			else
@@ -34,9 +40,13 @@ class Program_result extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$student_id = $this->session->userdata('student_id');
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
 
 			if($is_election_officer != null)
 			{
@@ -50,6 +60,8 @@ class Program_result extends CI_Controller
 				$page_view_content["is_election_officer"] = TRUE;
 				$page_view_content["logged_in"] = TRUE;
 				$page_view_content["page_view_data"] = $results;
+				$page_view_content["student_id"] = $student_id;
+				$page_view_content["election_countdown"] = $election_countdown;
 				$this->load->view("includes/template",$page_view_content);
 			}
 			else
