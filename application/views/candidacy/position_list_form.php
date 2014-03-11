@@ -16,7 +16,7 @@
 		echo '<li><a href="'.base_url('index.php/apply_candidacy').'">Apply Candidacy</a></li>';
 	}
 	
-	if($election_countdown['day'] > 0)
+	if($election_countdown['day'] < 0)
 	{
 		echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
 	}

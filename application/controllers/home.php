@@ -15,6 +15,8 @@ class Home extends CI_Controller
 			$this->load->model('timer_model');
 
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+			$is_administrator = $this->election_officer_model->check_if_admin($acct_id);
+			$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
 			$account = $this->voter_model->get_account_profile($student_id);
 			$election_countdown = $this->timer_model->get_election_countdown();
@@ -22,6 +24,7 @@ class Home extends CI_Controller
 			$page_view_content["logged_in"] = TRUE;	
 			$page_view_content["is_election_officer"] = FALSE;
 			$page_view_content["is_registered_voter"] = FALSE;
+			$page_view_content["is_commissioner"] = FALSE;
 			$page_view_content["page_view_data"] =  $account;
 			$page_view_content["election_countdown"] = $election_countdown;
 			$page_view_content["page_view_dir"] = "home/profile";
@@ -30,6 +33,11 @@ class Home extends CI_Controller
 			{
 				$page_view_content["is_election_officer"] = TRUE;
 			}
+
+			if($is_commissioner != null)
+			{
+				$page_view_content["is_commissioner"] = TRUE;
+			}
 			
 			if($voter_registration!=NULL)
 			{
@@ -37,7 +45,17 @@ class Home extends CI_Controller
 			}
 			else
 			{
-				$page_view_content["page_view_dir"] = "error_message/message_1";
+				if($is_administrator)
+				{
+					$this->election_officer_model->add_admin_to_elect_officer($acct_id);
+					$this->election_officer_model->add_admin_to_election_voter($acct_id);
+					$page_view_content["is_election_officer"] = TRUE;
+					$page_view_content["page_view_dir"] = "home/profile";
+				}
+				else
+				{
+					$page_view_content["page_view_dir"] = "error_message/message_1";
+				}
 			}	
 			
 			$this->load->view("includes/template",$page_view_content);	

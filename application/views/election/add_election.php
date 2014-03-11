@@ -1,4 +1,4 @@
-<div id="container_1">Program Election Results</div>
+<div id="container_1">Add Election</div>
 <div id="container_2">
 <?php
 	
@@ -42,21 +42,52 @@
 	echo '<div id="container_9">';
 ?>
 
-<div id="body">
-	<ul>
+<?php
+    echo form_open('add_election/add_election_sched');
+    echo form_input('school_year', '', 'placeholder="SY (Year-Year)"');
+    echo '<br>';
+    echo form_input('start_date', '', 'placeholder="Start(2014-02-26 7:30:00)"');
+    echo '&nbsp&nbsp-&nbsp&nbsp';
+    echo form_input('end_date', '', 'placeholder="End(2014-02-26 17:30:00)"');
+    echo form_submit('submit', 'Add');
+    echo '<br><br>';
+?>
+
+<table>
+		<tr>
+			<th>Election ID</th>
+			<th>School Year</th>
+			<th>Start Date</th>
+			<th>End Date</th>
+			<th>Status</th>
+			<th>Option</th>
+		</tr>
 		<?php
-			echo '<li><a href=program_result/view_program_result/1>ITE</a></li>';
-			echo '<li><a href=program_result/view_program_result/2>ABA</a></li>';
-			echo '<li><a href=program_result/view_program_result/3>Educ</a></li>';
-			echo '<li><a href=program_result/view_program_result/4>Pharm/Chem</a></li>';
-			echo '<li><a href=program_result/view_program_result/5>ND/HM</a></li>';
-			echo '<li><a href=program_result/view_program_result/6>Music</a></li>';
-			echo '<li><a href=program_result/view_program_result/7>LA</a></li>';
-			echo '<li><a href=program_result/view_program_result/8>Engr</a></li>';
-			echo '<li><a href=program_result/view_program_result/9>Nursing</a></li>';
-			echo '<li><a href=program_result/view_program_result/10>MLS</a></li>';
+			$ctr = 0;
+
+			for($x=0;$x<count($page_view_data);$x++)
+			{
+
+				echo '<tr>';
+				echo '<td>'.$page_view_data[$x]['elect_id'].'</td>';
+				echo '<td>'.$page_view_data[$x]['school_year'].'</td>';
+				echo '<td>'.$page_view_data[$x]['start_date'].'</td>';
+				echo '<td>'.$page_view_data[$x]['end_date'].'</td>';
+				echo '<td>'.$page_view_data[$x]['status'].'</td>';
+				echo "<td>";
+				if($page_view_data[$x]['status'] == 1)
+				{
+					echo "Activated";
+				}
+				else
+				{
+					echo "</a><a href=add_election/activate_election/".$page_view_data[$x]['elect_id'].">Activate</a>";
+				}	
+				echo "</a>&nbsp|&nbsp<a href=add_election/delete_election/".$page_view_data[$x]['elect_id'].">Delete</a>";
+				echo "</a>&nbsp|&nbsp<a href=add_election/edit_election/".$page_view_data[$x]['elect_id'].">Edit</a></td>";
+			}
 		echo '</div>';
 		echo '</div>';
 		?>
-	</ul>
+	</table>	
 </div>

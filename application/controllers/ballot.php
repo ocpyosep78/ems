@@ -15,6 +15,17 @@ class Ballot extends CI_Controller {
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
+
+			$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+			$page_view_content["is_commissioner"] = FALSE;
+			if($is_commissioner != null)
+			{
+				$page_view_content["is_commissioner"] = TRUE;
+			}
+
 			if($is_election_officer != null)
 			{
 				$page_view_content["is_election_officer"] = TRUE;
@@ -73,6 +84,7 @@ class Ballot extends CI_Controller {
 					else
 					{
 						$page_view_content["page_view_dir"] = "ballot/ballot_restriction";
+						$page_view_content["election_countdown"] = $election_countdown;
 					}
 				}
 				else
@@ -105,6 +117,7 @@ class Ballot extends CI_Controller {
 						$page_view_content["program_candidates"] = $this->candidate_model->get_program_candidate_list($voter_prog_id[0]['prog_id']);
 						$page_view_content["position_ssg"] = $this->candidate_model->get_position_list(1);
 						$page_view_content["position_program"] = $this->candidate_model->get_position_list(2);
+						$page_view_content["election_countdown"] = $election_countdown;
 					}
 					else
 					{
@@ -118,7 +131,8 @@ class Ballot extends CI_Controller {
 			}
 			
 			$page_view_content["logged_in"] = TRUE;
-			$page_view_content["student_id"] = $student_id;	
+			$page_view_content["student_id"] = $student_id;
+			$page_view_content["election_countdown"] = $election_countdown;	
 			$this->load->view("includes/template",$page_view_content);		
 		}
 		else
@@ -141,6 +155,10 @@ class Ballot extends CI_Controller {
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('timer_model');
+			$election_countdown = $this->timer_model->get_election_countdown();
+
 			if($is_election_officer != null)
 			{
 				$page_view_content["is_election_officer"] = TRUE;
@@ -154,7 +172,8 @@ class Ballot extends CI_Controller {
 			{
 				$page_view_content["page_view_dir"] = "ballot/program_rep_restriction";
 				$page_view_content["logged_in"] = TRUE;
-				$page_view_content["student_id"] = $student_id;	
+				$page_view_content["student_id"] = $student_id;
+				$page_view_content["election_countdown"] = $election_countdown;	
 				$this->load->view("includes/template",$page_view_content);
 			}
 			else
@@ -209,7 +228,8 @@ class Ballot extends CI_Controller {
 				}
 
 					$page_view_content["page_view_dir"] = "ballot/successful_vote";
-					$page_view_content["student_id"] = $student_id;	
+					$page_view_content["student_id"] = $student_id;
+					$page_view_content["election_countdown"] = $election_countdown;	
 					$page_view_content["logged_in"] = TRUE;
 					$this->load->view("includes/template",$page_view_content);
 			}

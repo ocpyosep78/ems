@@ -17,6 +17,13 @@ class Voter_statistics extends CI_Controller {
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+			
 				$this->load->model('voter_model');
 				$page_view_content["page_view_dir"] = "voter/voter_statistics";
 				$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();

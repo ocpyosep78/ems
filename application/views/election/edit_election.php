@@ -1,4 +1,4 @@
-<div id="container_1">Program Election Results</div>
+<div id="container_1">Add Election</div>
 <div id="container_2">
 <?php
 	
@@ -42,21 +42,37 @@
 	echo '<div id="container_9">';
 ?>
 
-<div id="body">
-	<ul>
-		<?php
-			echo '<li><a href=program_result/view_program_result/1>ITE</a></li>';
-			echo '<li><a href=program_result/view_program_result/2>ABA</a></li>';
-			echo '<li><a href=program_result/view_program_result/3>Educ</a></li>';
-			echo '<li><a href=program_result/view_program_result/4>Pharm/Chem</a></li>';
-			echo '<li><a href=program_result/view_program_result/5>ND/HM</a></li>';
-			echo '<li><a href=program_result/view_program_result/6>Music</a></li>';
-			echo '<li><a href=program_result/view_program_result/7>LA</a></li>';
-			echo '<li><a href=program_result/view_program_result/8>Engr</a></li>';
-			echo '<li><a href=program_result/view_program_result/9>Nursing</a></li>';
-			echo '<li><a href=program_result/view_program_result/10>MLS</a></li>';
-		echo '</div>';
-		echo '</div>';
-		?>
-	</ul>
+<?php
+	
+	$elect_id = array(
+						'type'  => 'hidden',
+						'name'  => 'elect_id',
+						'value' => $elect_id
+						);
+	$school_year = array(
+						'name'  => 'school_year',
+						'value' => $page_view_data[0]['school_year']
+						);
+	$start_date = array(
+						'name'  => 'start_date',
+						'value' => $page_view_data[0]['start_date']
+						);
+	$end_date = array(
+						'name'  => 'end_date',
+						'value' => $page_view_data[0]['end_date']
+						);
+
+    echo form_open('add_election/update_election_sched');
+    echo form_input($elect_id);
+    echo form_input($school_year);
+    echo '<br>';
+    echo form_input($start_date);
+    echo '&nbsp&nbsp-&nbsp&nbsp';
+    echo form_input($end_date);
+    echo form_submit('submit', 'Edit');
+    echo '<br><br>';
+
+	echo '</div>';
+	echo '</div>';
+	?>
 </div>

@@ -49,5 +49,37 @@
 
 	    	return $sQuery->result_array();
 	    }
+
+	    public function search_commissioner_acct_id($student_id)
+	    {
+	    	$sql = 'CALL search_commissioner_acct_id('.$student_id.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+
+	    	return $sQuery->result_array(1);
+	    }
+
+	    public function add_new_commissioner($commissioner_acct_id)
+	    {
+	    	$sql = "CALL add_new_commissioner('".$commissioner_acct_id."')";
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+	    }
+
+	     public function get_commissioner()
+	    {
+	    	$sql = 'CALL get_commissioner()';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+
+	    	return $sQuery->result_array();
+	    }
+
+	    public function delete_commissioner($acct_id)
+	    {
+	    	$sql = 'CALL delete_commissioner('.$acct_id.')';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+	    }
 	 }
 ?>

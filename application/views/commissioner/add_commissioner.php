@@ -1,4 +1,4 @@
-<div id="container_1">Program Election Results</div>
+<div id="container_1">Add Election</div>
 <div id="container_2">
 <?php
 	
@@ -42,21 +42,45 @@
 	echo '<div id="container_9">';
 ?>
 
-<div id="body">
-	<ul>
+<?php
+    echo form_open('add_commissioner/add_new_commissioner');
+    echo form_input('student_id', '', 'placeholder="Enter ID Number"');
+    echo form_submit('submit', 'Add');
+    echo '<br><br>';
+?>
+
+<table>
+		<tr>
+			<th>No.</th>
+			<th>Name</th>
+			<th>Course</th>
+			<th>Election ID</th>
+			<th>School Year</th>
+			<th>Option</th>
+		</tr>
 		<?php
-			echo '<li><a href=program_result/view_program_result/1>ITE</a></li>';
-			echo '<li><a href=program_result/view_program_result/2>ABA</a></li>';
-			echo '<li><a href=program_result/view_program_result/3>Educ</a></li>';
-			echo '<li><a href=program_result/view_program_result/4>Pharm/Chem</a></li>';
-			echo '<li><a href=program_result/view_program_result/5>ND/HM</a></li>';
-			echo '<li><a href=program_result/view_program_result/6>Music</a></li>';
-			echo '<li><a href=program_result/view_program_result/7>LA</a></li>';
-			echo '<li><a href=program_result/view_program_result/8>Engr</a></li>';
-			echo '<li><a href=program_result/view_program_result/9>Nursing</a></li>';
-			echo '<li><a href=program_result/view_program_result/10>MLS</a></li>';
+			$ctr = 0;
+
+			for($x=0;$x<count($commissioner_data);$x++)
+			{
+				$acct_id =  $commissioner_data[$x]['acct_id'];
+				$name = $commissioner_data[$x]['acct_fname'].' '.
+						$commissioner_data[$x]['acct_mname'].' '.
+						$commissioner_data[$x]['acct_lname'];
+
+				echo '<tr>';
+				echo '<td>'.++$ctr.'</td>';
+				echo '<td>'.$name.'</td>';
+				echo '<td>'.$commissioner_data[$x]['course_name'].'</td>';
+				echo '<td>'.$commissioner_data[$x]['elect_id'].'</td>';
+				echo '<td>'.$commissioner_data[$x]['school_year'].'</td>';
+
+				echo '<td>';	
+				echo "<a href=add_commissioner/delete_commissioner/".$acct_id.">Delete</a>";
+				echo '</td>';
+			}
 		echo '</div>';
 		echo '</div>';
 		?>
-	</ul>
+	</table>	
 </div>

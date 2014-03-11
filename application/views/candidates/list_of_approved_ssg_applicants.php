@@ -11,17 +11,29 @@
 
 		echo '<li><a href="'.base_url('index.php/home').'">My Profile</a></li>';
 		
-		if($election_countdown['day'] > 0)
+		$time_status = $election_countdown['time_status'];
+		$cur_time = $election_countdown['cur_time'];
+		$end_time = $election_countdown['end_time'];
+
+		if($time_status <= 0 AND $cur_time <= $end_time)
 		{
 			echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
-			echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>'; // remove this line when election schedule is activated
-			echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; // remove this line when election schedule is activated
-			echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+			if($is_commissioner == FALSE)
+			{
+				echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>'; // remove this line when election schedule is activated
+				echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; // remove this line when election schedule is activated
+				echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+			}
 		}
-		echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
-		echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
-		echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>'; // remove this line when election schedule is activated
-
+		if($is_commissioner == FALSE)
+		{
+			echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
+			echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
+			echo '<li><a href="'.base_url().'index.php/add_election">Add Election</a></li>';
+			echo '<li><a href="'.base_url().'index.php/add_commissioner">Add Commissioner</a></li>';
+		}
+		echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>';
+		
 		echo '</ul>';
 		echo '</div>';
 		echo '</div>';

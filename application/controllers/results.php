@@ -18,6 +18,12 @@ class Results extends CI_Controller
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
 
 				$this->load->model('results_model');
 				$results = $this->results_model->get_result();

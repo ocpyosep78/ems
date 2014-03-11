@@ -21,7 +21,6 @@
 			echo '<li><a href="'.base_url('index.php/voter_registration/register_account/'.$page_view_data['acct_id']).'">Activate Account</a></li>';
 		}
 
-		echo '<li><a href="">Edit Profile</a></li>';
 		echo '<li><a href="'.base_url('index.php/voter_registration/reset_password/'.$page_view_data['acct_id']).'">Reset Password</a></li>';
 		echo '<li><a href="'.base_url('index.php/voter_registration/reset_vote/'.$page_view_data['acct_id']).'">Reset Vote</a></li>';
 		echo '<li><a href="">Print Details</a></li>';

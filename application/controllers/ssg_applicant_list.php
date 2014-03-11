@@ -16,6 +16,13 @@ class Ssg_applicant_list extends CI_Controller
 			$this->load->model('timer_model');
 			$election_countdown = $this->timer_model->get_election_countdown();
 
+			$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+			$page_view_content["is_commissioner"] = FALSE;
+			if($is_commissioner != null)
+			{
+				$page_view_content["is_commissioner"] = TRUE;
+			}
+
 			if($is_election_officer != null)
 			{
 				$application_status = $this->input->post('applicant_status');
@@ -94,6 +101,13 @@ class Ssg_applicant_list extends CI_Controller
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+
 				$this->load->model('chairman_model');
 				$ssg_applicants = $this->chairman_model->get_ssg_applicants_by_status(1);
 				
@@ -179,6 +193,13 @@ class Ssg_applicant_list extends CI_Controller
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+
 				$elect_cand_id = $this->uri->segment(3, 0);
 				$this->load->model('position_model');
 
@@ -218,6 +239,13 @@ class Ssg_applicant_list extends CI_Controller
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+				
 				$elect_cand_id = $this->input->post('elect_cand_id');
 				$div_id = $this->input->post('division');
 				$this->load->model('position_model');

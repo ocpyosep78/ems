@@ -17,6 +17,13 @@ class Voter_registration extends CI_Controller
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+				
 				$page_view_content['record_not_found'] = $this->session->flashdata('record_not_found');
 				$page_view_content['is_not_numeric'] = $this->session->flashdata('is_not_numeric');
 				$page_view_content["page_view_dir"] = "voter_registration/search_account";
@@ -55,6 +62,13 @@ class Voter_registration extends CI_Controller
 				{
 					if(is_numeric($student_id))
 					{
+						$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+						$page_view_content["is_commissioner"] = FALSE;
+						if($is_commissioner != null)
+						{
+							$page_view_content["is_commissioner"] = TRUE;
+						}
+
 						$this->load->model('voter_model');
 						$this->load->model('candidate_model');
 						$account = $this->voter_model->get_account_profile($student_id);

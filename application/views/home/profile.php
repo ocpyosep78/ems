@@ -20,24 +20,44 @@
 		echo '<li><a href="'.base_url('index.php/home').'">My Profile</a></li>';
 		if(!$is_election_officer)
 		{
-			echo '<li><a href="'.base_url('index.php/apply_candidacy').'">Apply Candidacy</a></li>';
-			if($election_countdown['day'] > 0)
+			$time_status = $election_countdown['time_status'];
+			$cur_time = $election_countdown['cur_time'];
+			$end_time = $election_countdown['end_time'];
+			$start_time = $election_countdown['start_time'];
+
+			if($time_status > 0)
+			{
+				echo '<li><a href="'.base_url('index.php/apply_candidacy').'">Apply Candidacy</a></li>';
+			}
+			if($time_status <= 0 AND $cur_time <= $end_time)
 			{
 				echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
 			}
 		}
 		else
 		{
-			if($election_countdown['day'] > 0)
+			$time_status = $election_countdown['time_status'];
+			$cur_time = $election_countdown['cur_time'];
+			$end_time = $election_countdown['end_time'];
+
+			if($time_status <= 0 AND $cur_time <= $end_time)
 			{
 				echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
-				echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>'; // remove this line when election schedule is activated
-				echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; // remove this line when election schedule is activated
-				echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+				if($is_commissioner == FALSE)
+				{
+					echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
+					echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; 
+					echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+				}
 			}
-			echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
-			echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
-			echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>'; // remove this line when election schedule is activated
+			if($is_commissioner == FALSE)
+			{
+				echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
+				echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
+				echo '<li><a href="'.base_url().'index.php/add_election">Add Election</a></li>';
+				echo '<li><a href="'.base_url().'index.php/add_commissioner">Add Commissioner</a></li>';
+			}
+			echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>'; 	
 		}
 		echo '</ul>';
 		echo '</div>';
@@ -61,14 +81,24 @@
 		echo '<div id="container_7">Account Status</div>';
 		echo '<div id="container_8">'.$account_status.'</div>';
 		echo '<div id="container_7">Election Countdown</div>';
-		if($election_countdown['day'] > 0)
+
+		$time_status = $election_countdown['time_status'];
+		$cur_time = $election_countdown['cur_time'];
+		$end_time = $election_countdown['end_time'];
+
+		if($time_status > 0)
 		{
 		echo '<div id="container_8"><div id="counter"><script>display()</script></div></div>';
 		}
-		else
+		else if($time_status <= 0 AND $cur_time <= $end_time)
 		{
-			echo '<div id="container_8"><div id="counter">End of Countdown</div></div>';
+			echo '<div id="container_8"><div id="counter"><font color=green><b>BALLOT IS NOW ACCESSIBLE</b></font></div></div>';
 		}
+		else if($time_status <= 0 AND $cur_time > $end_time)
+		{
+			echo '<div id="container_8"><div id="counter"><font color=red><b>Election Closed</b></font></div></div>';
+		}
+
 		echo '</div>';
 	}
 	else

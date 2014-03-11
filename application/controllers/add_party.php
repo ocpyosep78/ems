@@ -17,6 +17,13 @@ class Add_party extends CI_Controller {
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+
 				$this->load->model('party_model');
 				$party = $this->party_model->get_party();
 
@@ -92,6 +99,13 @@ class Add_party extends CI_Controller {
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+			
 				$elect_cand_id = $this->uri->segment(3, 0);
 				$this->load->model('party_model');
 

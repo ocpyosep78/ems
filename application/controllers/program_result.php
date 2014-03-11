@@ -16,13 +16,20 @@ class Program_result extends CI_Controller
 
 			if($is_election_officer != null)
 			{
-			$page_view_content["page_view_dir"] = "results/program_list";
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
 
-			$page_view_content["is_election_officer"] = TRUE;
-			$page_view_content["logged_in"] = TRUE;	
-			$page_view_content["student_id"] = $student_id;
-			$page_view_content["election_countdown"] = $election_countdown;
-			$this->load->view("includes/template",$page_view_content);
+				$page_view_content["page_view_dir"] = "results/program_list";
+
+				$page_view_content["is_election_officer"] = TRUE;
+				$page_view_content["logged_in"] = TRUE;	
+				$page_view_content["student_id"] = $student_id;
+				$page_view_content["election_countdown"] = $election_countdown;
+				$this->load->view("includes/template",$page_view_content);
 			}
 			else
 			{
@@ -50,6 +57,13 @@ class Program_result extends CI_Controller
 
 			if($is_election_officer != null)
 			{
+				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+				$page_view_content["is_commissioner"] = FALSE;
+				if($is_commissioner != null)
+				{
+					$page_view_content["is_commissioner"] = TRUE;
+				}
+				
 				$this->load->model('voter_model');
 				$this->load->model('results_model');
 
