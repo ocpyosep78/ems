@@ -21,6 +21,7 @@ class Home extends CI_Controller
 			$account = $this->voter_model->get_account_profile($student_id);
 			$election_countdown = $this->timer_model->get_election_countdown();
 
+			$page_view_content["is_change_password"] = FALSE;
 			$page_view_content["logged_in"] = TRUE;	
 			$page_view_content["is_election_officer"] = FALSE;
 			$page_view_content["is_registered_voter"] = FALSE;

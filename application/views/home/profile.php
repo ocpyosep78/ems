@@ -32,6 +32,8 @@
 			if($time_status <= 0 AND $cur_time <= $end_time)
 			{
 				echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+				echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
+				echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>';
 			}
 		}
 		else
@@ -43,12 +45,9 @@
 			if($time_status <= 0 AND $cur_time <= $end_time)
 			{
 				echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
-				if($is_commissioner == FALSE)
-				{
-					echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
-					echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>'; 
-					echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
-				}
+				echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
+				echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>';
+				echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
 			}
 			if($is_commissioner == FALSE)
 			{
@@ -97,6 +96,22 @@
 		else if($time_status <= 0 AND $cur_time > $end_time)
 		{
 			echo '<div id="container_8"><div id="counter"><font color=red><b>Election Closed</b></font></div></div>';
+		}
+
+		echo '<div id="container_7">';
+		echo "<a href=voter_registration/change_password>Change Password</a>";
+		echo '</div>';
+		if($is_change_password == FALSE)
+		{
+			echo '<div id="container_8"><-- Click this link to change password</div>';
+		}
+		else
+		{
+			echo '<div id="container_8">';
+			echo form_open('voter_registration/update_password');
+		    echo form_input('new_password', '', 'placeholder="Enter new password"');
+		    echo form_submit('submit', 'Change Password');
+		    echo '</div>';
 		}
 
 		echo '</div>';

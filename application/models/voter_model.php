@@ -182,6 +182,15 @@
 
 			return $sQuery->row_array(1);
 		}
+
+		public function update_acct_password($new_password, $account_id)
+		{
+			$sql = 'CALL update_acct_password('.$new_password.','.$account_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
 	}
 
 ?>
