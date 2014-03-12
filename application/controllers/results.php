@@ -18,28 +18,25 @@ class Results extends CI_Controller
 
 			if($is_election_officer != null)
 			{
-				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
-				$page_view_content["is_commissioner"] = FALSE;
-				if($is_commissioner != null)
-				{
-					$page_view_content["is_commissioner"] = TRUE;
-				}
-
-				$this->load->model('results_model');
-				$results = $this->results_model->get_result();
-
-				$page_view_content["page_view_dir"] = "results/view_results";
 				$page_view_content["is_election_officer"] = TRUE;
-				$page_view_content["logged_in"] = TRUE;
-				$page_view_content["student_id"] = $student_id;
-				$page_view_content["page_view_data"] = $results;
-				$page_view_content["election_countdown"] = $election_countdown;
-				$this->load->view("includes/template",$page_view_content);
 			}
-			else
+			
+			$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+			$page_view_content["is_commissioner"] = FALSE;
+			if($is_commissioner != null)
 			{
-				redirect('/home', 'refresh');	
+				$page_view_content["is_commissioner"] = TRUE;
 			}
+
+			$this->load->model('results_model');
+			$results = $this->results_model->get_result();
+
+			$page_view_content["page_view_dir"] = "results/view_results";
+			$page_view_content["logged_in"] = TRUE;
+			$page_view_content["student_id"] = $student_id;
+			$page_view_content["page_view_data"] = $results;
+			$page_view_content["election_countdown"] = $election_countdown;
+			$this->load->view("includes/template",$page_view_content);
 		}
 		else
 		{

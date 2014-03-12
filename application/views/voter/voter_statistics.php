@@ -22,15 +22,18 @@
 			echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>';
 			echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
 		}
-		if($is_commissioner == FALSE)
+		if($is_election_officer == TRUE)
 		{
-			echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
-			echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
-			echo '<li><a href="'.base_url().'index.php/add_election">Add Election</a></li>';
-			echo '<li><a href="'.base_url().'index.php/add_commissioner">Add Commissioner</a></li>';
+			if($is_commissioner == FALSE)
+			{
+				echo '<li><a href="'.base_url().'index.php/ssg_applicant_list">Applicant List</a></li>'; 
+				echo '<li><a href="'.base_url().'index.php/add_party">Add Party</a></li>';
+				echo '<li><a href="'.base_url().'index.php/add_election">Add Election</a></li>';
+				echo '<li><a href="'.base_url().'index.php/add_commissioner">Add Commissioner</a></li>';
+			}
+			echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>';
 		}
-		echo '<li><a href="'.base_url().'index.php/voter_registration">Register Voter</a></li>';
-
+		
 		echo '</ul>';
 		echo '</div>';
 		echo '</div>';

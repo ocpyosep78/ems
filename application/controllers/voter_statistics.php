@@ -17,27 +17,24 @@ class Voter_statistics extends CI_Controller {
 
 			if($is_election_officer != null)
 			{
-				$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
-				$page_view_content["is_commissioner"] = FALSE;
-				if($is_commissioner != null)
-				{
-					$page_view_content["is_commissioner"] = TRUE;
-				}
-			
-				$this->load->model('voter_model');
-				$page_view_content["page_view_dir"] = "voter/voter_statistics";
-				$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
-				$page_view_content["program_statistics"] = $this->voter_model->get_program_statistics();
-				$page_view_content["student_id"] = $student_id;
-				$page_view_content["election_countdown"] = $election_countdown;
 				$page_view_content["is_election_officer"] = TRUE;
-				$page_view_content["logged_in"] = TRUE;		
-				$this->load->view("includes/template",$page_view_content);
 			}
-			else
+
+			$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+			$page_view_content["is_commissioner"] = FALSE;
+			if($is_commissioner != null)
 			{
-				redirect('/home', 'refresh');	
+				$page_view_content["is_commissioner"] = TRUE;
 			}
+		
+			$this->load->model('voter_model');
+			$page_view_content["page_view_dir"] = "voter/voter_statistics";
+			$page_view_content["page_view_data"] = $this->voter_model->get_voter_statistics();
+			$page_view_content["program_statistics"] = $this->voter_model->get_program_statistics();
+			$page_view_content["student_id"] = $student_id;
+			$page_view_content["election_countdown"] = $election_countdown;
+			$page_view_content["logged_in"] = TRUE;		
+			$this->load->view("includes/template",$page_view_content);
 		}
 		else
 		{

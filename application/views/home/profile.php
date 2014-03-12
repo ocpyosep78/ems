@@ -34,6 +34,7 @@
 				echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
 				echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
 				echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>';
+				echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
 			}
 		}
 		else
