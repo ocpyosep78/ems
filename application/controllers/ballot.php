@@ -159,6 +159,13 @@ class Ballot extends CI_Controller {
 			$this->load->model('timer_model');
 			$election_countdown = $this->timer_model->get_election_countdown();
 
+			$is_commissioner = $this->election_officer_model->check_if_commissioner($acct_id);
+			$page_view_content["is_commissioner"] = FALSE;
+			if($is_commissioner != null)
+			{
+				$page_view_content["is_commissioner"] = TRUE;
+			}
+
 			if($is_election_officer != null)
 			{
 				$page_view_content["is_election_officer"] = TRUE;
