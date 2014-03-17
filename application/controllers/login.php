@@ -36,6 +36,7 @@ class Login extends CI_Controller
 							   'acct_fname'	=> $list['acct_fname'],
 							   'course_id'	=> $list['course_id'],
 							   'student_id'	=> $list['acct_username'],
+							   'prog_id'    => $list['prog_id'],
 							   'logged_in'	=>	TRUE
 				               );
 

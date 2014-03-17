@@ -44,7 +44,7 @@
 				}	
 				setTimeout("display()",1000) 
 			}
-		}
+		}		
 	</script>
 </head>
 <body>

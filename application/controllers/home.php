@@ -7,6 +7,7 @@ class Home extends CI_Controller
 		if($this->session->userdata('logged_in'))
 		{	
 			$acct_id = $this->session->userdata('acct_id');
+			$prog_id = $this->session->userdata('prog_id');
 			$student_id = $this->session->userdata('student_id');
 
 			$this->load->model('election_officer_model');
@@ -21,12 +22,17 @@ class Home extends CI_Controller
 			$account = $this->voter_model->get_account_profile($student_id);
 			$election_countdown = $this->timer_model->get_election_countdown();
 
+			$this->load->model('election_model');
+			$elect_sched = $this->election_model->get_election_schedule();
+
 			$page_view_content["is_change_password"] = FALSE;
 			$page_view_content["logged_in"] = TRUE;	
 			$page_view_content["is_election_officer"] = FALSE;
 			$page_view_content["is_registered_voter"] = FALSE;
 			$page_view_content["is_commissioner"] = FALSE;
 			$page_view_content["page_view_data"] =  $account;
+			$page_view_content["prog_id"] =  $prog_id;
+			$page_view_content["elect_sched"] =  $elect_sched;
 			$page_view_content["election_countdown"] = $election_countdown;
 			$page_view_content["page_view_dir"] = "home/profile";
 

@@ -17,7 +17,17 @@
 
 		if($time_status <= 0 AND $cur_time <= $end_time)
 		{
-			echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+			if($elect_sched[0]['cur_time'] >= '2014-03-18 07:30:00')
+				{
+					if($elect_sched[0]['cur_time'] <= '2014-03-18 12:00:00')
+					{
+						echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+					}
+					else if($elect_sched[0]['prog_id'] == $prog_id AND $elect_sched[0]['cur_time'] >= $elect_sched[0]['start_date'] AND $elect_sched[0]['cur_time'] <= $elect_sched[0]['end_date'])
+					{
+						echo '<li><a href="'.base_url('index.php/ballot').'">Vote Candidates</a></li>';
+					}
+				}
 			echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
 			echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>';
 			echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
@@ -58,6 +68,8 @@
 			<th>End Date</th>
 			<th>Status</th>
 			<th>Option</th>
+			<th>Activate Election Schedule</th>
+			<th>Status</th>
 		</tr>
 		<?php
 			$ctr = 0;
@@ -82,6 +94,9 @@
 				}	
 				echo "</a>&nbsp|&nbsp<a href=add_election/delete_election/".$page_view_data[$x]['elect_id'].">Delete</a>";
 				echo "</a>&nbsp|&nbsp<a href=add_election/edit_election/".$page_view_data[$x]['elect_id'].">Edit</a></td>";
+				echo "<td></a><a href=election_schedule/activate_election_schedule/".$page_view_data[$x]['elect_id'].">Activate</a>";
+				echo "</a>&nbsp|&nbsp<a href=election_schedule/deactivate_election_schedule/".$page_view_data[$x]['elect_id'].">Deactivate</a></td>";
+				echo '<td>'.$page_view_data[$x]['elect_schedule_status'].'</td>';
 			}
 		echo '</div>';
 		echo '</div>';

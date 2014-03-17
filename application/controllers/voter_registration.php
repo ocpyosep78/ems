@@ -54,6 +54,13 @@ class Voter_registration extends CI_Controller
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
 
+			$this->load->model('election_model');
+			$elect_sched = $this->election_model->get_election_schedule();
+			$prog_id = $this->session->userdata('prog_id');
+			$page_view_content["prog_id"] =  $prog_id;
+			$page_view_content["elect_sched"] =  $elect_sched;
+
+
 			if($is_election_officer != null)
 			{
 				$student_id = $this->input->get('account');
@@ -212,6 +219,13 @@ class Voter_registration extends CI_Controller
 			$voter_registration = $this->candidate_model->check_voter_registration($acct_id);
 			$account = $this->voter_model->get_account_profile($student_id);
 			$election_countdown = $this->timer_model->get_election_countdown();
+
+			$this->load->model('election_model');
+			$elect_sched = $this->election_model->get_election_schedule();
+			$prog_id = $this->session->userdata('prog_id');
+			$page_view_content["prog_id"] =  $prog_id;
+			$page_view_content["elect_sched"] =  $elect_sched;
+
 
 			$page_view_content["is_change_password"] = TRUE;
 			$page_view_content["logged_in"] = TRUE;	

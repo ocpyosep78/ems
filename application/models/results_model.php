@@ -24,5 +24,14 @@
 
 	    	return $sQuery->result_array();
 	    }
+
+	     public function get_elected_ssg_officers()
+	    {
+	    	$sql = 'CALL get_elected_ssg_officers()';
+	    	$sQuery = $this->db->query($sql);
+	    	$this->db->close();
+
+	    	return $sQuery->result_array();
+	    }
 	 }
 ?>

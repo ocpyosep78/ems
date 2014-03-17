@@ -6,7 +6,14 @@ DELIMITER $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_election`()
 BEGIN
-	SELECT *
+	SELECT 
+		election.elect_id,
+		election.school_year,
+		election.start_date,
+		election.end_date,
+		election.status AS status,
+		election_schedule_checker.status AS elect_schedule_status
 	FROM election
+	LEFT OUTER JOIN election_schedule_checker ON election.elect_id = election_schedule_checker.elect_id
 	ORDER BY elect_id ASC;
 END

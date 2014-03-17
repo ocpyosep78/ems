@@ -12,6 +12,13 @@ class Add_party extends CI_Controller {
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
 
+			$this->load->model('election_model');
+			$elect_sched = $this->election_model->get_election_schedule();
+			$prog_id = $this->session->userdata('prog_id');
+			$page_view_content["prog_id"] =  $prog_id;
+			$page_view_content["elect_sched"] =  $elect_sched;
+
+
 			$this->load->model('timer_model');
 			$election_countdown = $this->timer_model->get_election_countdown();
 
@@ -93,6 +100,13 @@ class Add_party extends CI_Controller {
 			$page_view_content["is_election_officer"] = FALSE;
 			$this->load->model('election_officer_model');
 			$is_election_officer = $this->election_officer_model->check_if_election_officer($acct_id);
+
+			$this->load->model('election_model');
+			$elect_sched = $this->election_model->get_election_schedule();
+			$prog_id = $this->session->userdata('prog_id');
+			$page_view_content["prog_id"] =  $prog_id;
+			$page_view_content["elect_sched"] =  $elect_sched;
+
 
 			$this->load->model('timer_model');
 			$election_countdown = $this->timer_model->get_election_countdown();

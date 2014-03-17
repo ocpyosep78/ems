@@ -49,42 +49,22 @@
 	echo '<div id="container_9">';
 ?>
 
-<?php
-    echo form_open('add_commissioner/add_new_commissioner');
-    echo form_input('student_id', '', 'placeholder="Enter ID Number"');
-    echo form_submit('submit', 'Add');
-    echo '<br><br>';
-?>
-
 <table>
 		<tr>
-			<th>No.</th>
-			<th>Name</th>
-			<th>Course</th>
-			<th>Election ID</th>
-			<th>School Year</th>
-			<th>Option</th>
+			<th>PROGRAM</th>
+			<th>START DATE</th>
+			<th>END DATE</th>
 		</tr>
 		<?php
 			$ctr = 0;
 
-			for($x=0;$x<count($commissioner_data);$x++)
+			for($x=0;$x<count($election_schedule);$x++)
 			{
-				$acct_id =  $commissioner_data[$x]['acct_id'];
-				$name = $commissioner_data[$x]['acct_fname'].' '.
-						$commissioner_data[$x]['acct_mname'].' '.
-						$commissioner_data[$x]['acct_lname'];
 
 				echo '<tr>';
-				echo '<td>'.++$ctr.'</td>';
-				echo '<td>'.$name.'</td>';
-				echo '<td>'.$commissioner_data[$x]['course_name'].'</td>';
-				echo '<td>'.$commissioner_data[$x]['elect_id'].'</td>';
-				echo '<td>'.$commissioner_data[$x]['school_year'].'</td>';
-
-				echo '<td>';	
-				echo "<a href=add_commissioner/delete_commissioner/".$acct_id.">Delete</a>";
-				echo '</td>';
+				echo '<td>'.$election_schedule[$x]['prog_name'].'</td>';
+				echo '<td>'.$election_schedule[$x]['start_date'].'</td>';
+				echo '<td>'.$election_schedule[$x]['end_date'].'</td>';
 			}
 		echo '</div>';
 		echo '</div>';
