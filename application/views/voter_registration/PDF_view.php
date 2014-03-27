@@ -9,13 +9,13 @@
 	date_default_timezone_set($timezone);		
 												
 	$timestamp = time();
-    for($x=0;$x<count($result);$x++)
-	{
-		$acct_username = "Username: ".$result[$x]->acct_username;
-<<<<<<< HEAD
-                $acct_password = "Password: ".$result[$x]->acct_password;
-		$acct_name = "Name: ".$result[$x]->acct_fName." ".$result[$x]->acct_mName." ".$result[$x]->acct_lName;
-		$course = "Course: ".$result[$x]->course_id;
+ //    for($x=0;$x<count($result);$x++)
+	// {
+		$acct_username = "Username: ".$result['acct_username'];
+
+                $acct_password = "Password: ".$result['acct_password'];
+		$acct_name = "Name: ".$result['acct_fname']." ".$result['acct_mname']." ".$result['acct_lname'];
+		$course = "Course: ".$result['course_name'];
                 $dateTime_printed = "Date and Time Printed: ".date("Y-m-d H:i:s", time()-14400);
 		
                 $this->pdf->AddPage('L',array(107.95,139.7));
@@ -31,13 +31,13 @@
 		$this->pdf->Ln();$this->pdf->Ln();
 		$this->pdf->MultiCell(0,5, $dateTime_printed,0,'D');
                 $this->pdf->Output();
-	    }
-=======
-	    $acct_password = "Password: ".utf8_decode($result[$x]->acct_password);
-		$acct_name = strtoupper(utf8_decode($result[$x]->acct_fName." ".
-													 $result[$x]->acct_mName." ".
-													 $result[$x]->acct_lName));
-		$course = $result[$x]->course_id;
+	    
+
+	    $acct_password = "Password: ".utf8_decode($result['acct_password']);
+		$acct_name = strtoupper(utf8_decode($result['acct_fname']." ".
+													 $result['acct_mName']." ".
+													 $result['acct_lName']));
+		$course = $result['course_name'];
 		$dateTime_printed = "***Date_Time_Printed ".unix_to_human($timestamp);	
 		$message_1 = "This document is CONFIDENTIAL.";
 		$message_2 = "Present this to the UIC COMELEC during the signing of clearance.";
@@ -74,6 +74,5 @@
 		$this->pdf->SetFont('Courier','',8);
 		$this->pdf->Text(5,5, $dateTime_printed);
 	    $this->pdf->Output();
-	}
->>>>>>> 81d6237970294c63b5d367d901c0310ed91eecb3
+	// }
 ?>

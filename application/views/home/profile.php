@@ -70,6 +70,7 @@
 				echo '<li><a href="'.base_url().'index.php/results">SSG Election Results</a></li>';
 				echo '<li><a href="'.base_url().'index.php/program_result">Program Election Results</a></li>';
 				echo '<li><a href="'.base_url().'index.php/voter_statistics">Voter Statistics</a></li>';
+				echo '<li><a href="'.base_url().'index.php/election_turnout">Election Statistics</a></li>';
 				// echo '<li><a href="'.base_url().'index.php/results/get_elected_officers">Elected Officers</a></li>';
 			}
 			if($is_commissioner == FALSE)

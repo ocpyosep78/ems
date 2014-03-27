@@ -4,10 +4,8 @@
 -- --------------------------------------------------------------------------------
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_party`(IN `pt_name` VARCHAR(45))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_election_voter`(IN account_id INT)
 BEGIN
-	 INSERT IGNORE INTO `party`
-	(`party_id`,`party_name`)
-	VALUES
-	((SELECT p.party_id FROM party p WHERE p.party_name = pt_name), pt_name);
+	DELETE FROM election_voter
+	WHERE acct_id = account_id;
 END

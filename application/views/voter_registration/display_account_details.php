@@ -14,7 +14,7 @@
 		if($is_registered_voter)
 		{
 			$account_status = 'ACTIVE';
-			echo '<li><a href="">Deactivate</a></li>';
+			echo '<li><a href="'.base_url('index.php/voter_registration/deactivate_account/'.$page_view_data['acct_id']).'">Deactivate</a></li>';
 		}
 		else
 		{
@@ -23,7 +23,7 @@
 
 		echo '<li><a href="'.base_url('index.php/voter_registration/reset_password/'.$page_view_data['acct_id']).'">Reset Password</a></li>';
 		echo '<li><a href="'.base_url('index.php/voter_registration/reset_vote/'.$page_view_data['acct_id']).'">Reset Vote</a></li>';
-		echo '<li><a href="">Print Details</a></li>';
+		echo '<li><a href="'.base_url('index.php/voter_registration/generate_pdf/'.$page_view_data['acct_id']).'">Print Details</a></li>';
 		echo '</ul>';
 		echo '</div>';
 		echo '</div>';

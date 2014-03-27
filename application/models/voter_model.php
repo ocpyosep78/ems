@@ -124,6 +124,15 @@
 			return $sQuery->row_array(1);
 		}
 
+		public function delete_election_voter($account_id)
+		{
+			$sql = 'CALL delete_election_voter('.$account_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
+
 		public function get_account_username($account_id)
 		{
 			$sql = "CALL get_account_username('".$account_id."')";
@@ -186,6 +195,15 @@
 		public function update_acct_password($new_password, $account_id)
 		{
 			$sql = 'CALL update_acct_password('.$new_password.','.$account_id.')';
+			$sQuery = $this->db->query($sql);
+			$this->db->close();
+
+			return $sQuery->row_array(1);
+		}
+
+		public function get_pdf_details($account_id)
+		{
+			$sql = 'CALL get_pdf_print_details('.$account_id.')';
 			$sQuery = $this->db->query($sql);
 			$this->db->close();
 
